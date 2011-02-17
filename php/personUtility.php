@@ -543,7 +543,7 @@ class PersonUtility {
                 	} else if($callback == 'rootspersonafamilyc') {
     					$xp->setParameter('','hideFamC',0);  
     				} else if($callback == 'rootspersonafamilys') {
-    					$xp->setParameter('','hideFamC',0);              	
+    					$xp->setParameter('','hideFamS',0);              	
   	              	} else if($callback == 'rootspersonapictures') {
     					$xp->setParameter('','hidePic',0);                	
 					} else if($callback == 'rootspersonaevidence') {
