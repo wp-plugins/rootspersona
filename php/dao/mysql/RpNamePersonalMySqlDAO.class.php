@@ -13,30 +13,10 @@ class RpNamePersonalMySqlDAO implements RpNamePersonalDAO{
 	 * @param String $id primary key
 	 * @return RpNamePersonalMySql 
 	 */
-	public function load($id){
+	public function loadList($id){
 		$sql = 'SELECT * FROM rp_name_personal WHERE id = ?';
 		$sqlQuery = new SqlQuery($sql);
 		$sqlQuery->setNumber($id);
-		return $this->getRow($sqlQuery);
-	}
-
-	/**
-	 * Get all records from table
-	 */
-	public function queryAll(){
-		$sql = 'SELECT * FROM rp_name_personal';
-		$sqlQuery = new SqlQuery($sql);
-		return $this->getList($sqlQuery);
-	}
-	
-	/**
-	 * Get all records from table ordered by field
-	 *
-	 * @param $orderColumn column name
-	 */
-	public function queryAllOrderBy($orderColumn){
-		$sql = 'SELECT * FROM rp_name_personal ORDER BY '.$orderColumn;
-		$sqlQuery = new SqlQuery($sql);
 		return $this->getList($sqlQuery);
 	}
 	
@@ -57,7 +37,7 @@ class RpNamePersonalMySqlDAO implements RpNamePersonalDAO{
  	 * @param RpNamePersonalMySql rpNamePersonal
  	 */
 	public function insert($rpNamePersonal){
-		$sql = 'INSERT INTO rp_name_personal (personal_name, name_type, prefix, given, nickname, surname_prefix, surname, suffix, update_datetime) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+		$sql = 'INSERT INTO rp_name_personal (personal_name, name_type, prefix, given, nickname, surname_prefix, surname, suffix, update_datetime) VALUES (?, ?, ?, ?, ?, ?, ?, ?, now())';
 		$sqlQuery = new SqlQuery($sql);
 		
 		$sqlQuery->set($rpNamePersonal->personalName);
@@ -68,7 +48,6 @@ class RpNamePersonalMySqlDAO implements RpNamePersonalDAO{
 		$sqlQuery->set($rpNamePersonal->surnamePrefix);
 		$sqlQuery->set($rpNamePersonal->surname);
 		$sqlQuery->set($rpNamePersonal->suffix);
-		$sqlQuery->set($rpNamePersonal->updateDatetime);
 
 		$id = $this->executeInsert($sqlQuery);	
 		$rpNamePersonal->id = $id;
@@ -81,7 +60,7 @@ class RpNamePersonalMySqlDAO implements RpNamePersonalDAO{
  	 * @param RpNamePersonalMySql rpNamePersonal
  	 */
 	public function update($rpNamePersonal){
-		$sql = 'UPDATE rp_name_personal SET personal_name = ?, name_type = ?, prefix = ?, given = ?, nickname = ?, surname_prefix = ?, surname = ?, suffix = ?, update_datetime = ? WHERE id = ?';
+		$sql = 'UPDATE rp_name_personal SET personal_name = ?, name_type = ?, prefix = ?, given = ?, nickname = ?, surname_prefix = ?, surname = ?, suffix = ?, update_datetime = now() WHERE id = ?';
 		$sqlQuery = new SqlQuery($sql);
 		
 		$sqlQuery->set($rpNamePersonal->personalName);
@@ -92,149 +71,10 @@ class RpNamePersonalMySqlDAO implements RpNamePersonalDAO{
 		$sqlQuery->set($rpNamePersonal->surnamePrefix);
 		$sqlQuery->set($rpNamePersonal->surname);
 		$sqlQuery->set($rpNamePersonal->suffix);
-		$sqlQuery->set($rpNamePersonal->updateDatetime);
 
 		$sqlQuery->setNumber($rpNamePersonal->id);
 		return $this->executeUpdate($sqlQuery);
 	}
-
-	/**
- 	 * Delete all rows
- 	 */
-	public function clean(){
-		$sql = 'DELETE FROM rp_name_personal';
-		$sqlQuery = new SqlQuery($sql);
-		return $this->executeUpdate($sqlQuery);
-	}
-
-	public function queryByPersonalName($value){
-		$sql = 'SELECT * FROM rp_name_personal WHERE personal_name = ?';
-		$sqlQuery = new SqlQuery($sql);
-		$sqlQuery->set($value);
-		return $this->getList($sqlQuery);
-	}
-
-	public function queryByNameType($value){
-		$sql = 'SELECT * FROM rp_name_personal WHERE name_type = ?';
-		$sqlQuery = new SqlQuery($sql);
-		$sqlQuery->set($value);
-		return $this->getList($sqlQuery);
-	}
-
-	public function queryByPrefix($value){
-		$sql = 'SELECT * FROM rp_name_personal WHERE prefix = ?';
-		$sqlQuery = new SqlQuery($sql);
-		$sqlQuery->set($value);
-		return $this->getList($sqlQuery);
-	}
-
-	public function queryByGiven($value){
-		$sql = 'SELECT * FROM rp_name_personal WHERE given = ?';
-		$sqlQuery = new SqlQuery($sql);
-		$sqlQuery->set($value);
-		return $this->getList($sqlQuery);
-	}
-
-	public function queryByNickname($value){
-		$sql = 'SELECT * FROM rp_name_personal WHERE nickname = ?';
-		$sqlQuery = new SqlQuery($sql);
-		$sqlQuery->set($value);
-		return $this->getList($sqlQuery);
-	}
-
-	public function queryBySurnamePrefix($value){
-		$sql = 'SELECT * FROM rp_name_personal WHERE surname_prefix = ?';
-		$sqlQuery = new SqlQuery($sql);
-		$sqlQuery->set($value);
-		return $this->getList($sqlQuery);
-	}
-
-	public function queryBySurname($value){
-		$sql = 'SELECT * FROM rp_name_personal WHERE surname = ?';
-		$sqlQuery = new SqlQuery($sql);
-		$sqlQuery->set($value);
-		return $this->getList($sqlQuery);
-	}
-
-	public function queryBySuffix($value){
-		$sql = 'SELECT * FROM rp_name_personal WHERE suffix = ?';
-		$sqlQuery = new SqlQuery($sql);
-		$sqlQuery->set($value);
-		return $this->getList($sqlQuery);
-	}
-
-	public function queryByUpdateDatetime($value){
-		$sql = 'SELECT * FROM rp_name_personal WHERE update_datetime = ?';
-		$sqlQuery = new SqlQuery($sql);
-		$sqlQuery->set($value);
-		return $this->getList($sqlQuery);
-	}
-
-
-	public function deleteByPersonalName($value){
-		$sql = 'DELETE FROM rp_name_personal WHERE personal_name = ?';
-		$sqlQuery = new SqlQuery($sql);
-		$sqlQuery->set($value);
-		return $this->executeUpdate($sqlQuery);
-	}
-
-	public function deleteByNameType($value){
-		$sql = 'DELETE FROM rp_name_personal WHERE name_type = ?';
-		$sqlQuery = new SqlQuery($sql);
-		$sqlQuery->set($value);
-		return $this->executeUpdate($sqlQuery);
-	}
-
-	public function deleteByPrefix($value){
-		$sql = 'DELETE FROM rp_name_personal WHERE prefix = ?';
-		$sqlQuery = new SqlQuery($sql);
-		$sqlQuery->set($value);
-		return $this->executeUpdate($sqlQuery);
-	}
-
-	public function deleteByGiven($value){
-		$sql = 'DELETE FROM rp_name_personal WHERE given = ?';
-		$sqlQuery = new SqlQuery($sql);
-		$sqlQuery->set($value);
-		return $this->executeUpdate($sqlQuery);
-	}
-
-	public function deleteByNickname($value){
-		$sql = 'DELETE FROM rp_name_personal WHERE nickname = ?';
-		$sqlQuery = new SqlQuery($sql);
-		$sqlQuery->set($value);
-		return $this->executeUpdate($sqlQuery);
-	}
-
-	public function deleteBySurnamePrefix($value){
-		$sql = 'DELETE FROM rp_name_personal WHERE surname_prefix = ?';
-		$sqlQuery = new SqlQuery($sql);
-		$sqlQuery->set($value);
-		return $this->executeUpdate($sqlQuery);
-	}
-
-	public function deleteBySurname($value){
-		$sql = 'DELETE FROM rp_name_personal WHERE surname = ?';
-		$sqlQuery = new SqlQuery($sql);
-		$sqlQuery->set($value);
-		return $this->executeUpdate($sqlQuery);
-	}
-
-	public function deleteBySuffix($value){
-		$sql = 'DELETE FROM rp_name_personal WHERE suffix = ?';
-		$sqlQuery = new SqlQuery($sql);
-		$sqlQuery->set($value);
-		return $this->executeUpdate($sqlQuery);
-	}
-
-	public function deleteByUpdateDatetime($value){
-		$sql = 'DELETE FROM rp_name_personal WHERE update_datetime = ?';
-		$sqlQuery = new SqlQuery($sql);
-		$sqlQuery->set($value);
-		return $this->executeUpdate($sqlQuery);
-	}
-
-
 	
 	/**
 	 * Read row

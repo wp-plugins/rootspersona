@@ -10,8 +10,8 @@ class Transaction{
 
 	private $connection;
 
-	public function Transaction(){
-		$this->connection = new Connection();
+	public function Transaction($credentials){
+		$this->connection = new Connection($credentials);
 		if(!Transaction::$transactions){
 			Transaction::$transactions = new ArrayList();
 		}

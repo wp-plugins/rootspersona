@@ -13,24 +13,13 @@ interface RpIndiNameDAO{
 	 * @param String $id primary key
 	 * @Return RpIndiName 
 	 */
-	public function load($indiId, $indiBatchId, $nameId);
+	public function loadList($indiId, $indiBatchId);
 
-	/**
-	 * Get all records from table
-	 */
-	public function queryAll();
-	
-	/**
-	 * Get all records from table ordered by field
-	 * @Param $orderColumn column name
-	 */
-	public function queryAllOrderBy($orderColumn);
-	
 	/**
  	 * Delete record from table
  	 * @param rpIndiName primary key
  	 */
-	public function delete($indiId, $indiBatchId, $nameId);
+	public function delete($indiId, $indiBatchId);
 	
 	/**
  	 * Insert record to table
@@ -38,24 +27,5 @@ interface RpIndiNameDAO{
  	 * @param RpIndiName rpIndiName
  	 */
 	public function insert($rpIndiName);
-	
-	/**
- 	 * Update record in table
- 	 *
- 	 * @param RpIndiName rpIndiName
- 	 */
-	public function update($rpIndiName);	
-
-	/**
-	 * Delete all rows
-	 */
-	public function clean();
-
-	public function queryByUpdateDatetime($value);
-
-
-	public function deleteByUpdateDatetime($value);
-
-
 }
 ?>

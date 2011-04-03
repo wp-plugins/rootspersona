@@ -8,8 +8,8 @@
 class Connection{
 	private $connection;
 
-	public function Connection(){
-		$this->connection = ConnectionFactory::getConnection();
+	public function Connection($credentials){
+		$this->connection = ConnectionFactory::getConnection($credentials);
 	}
 
 	public function close(){

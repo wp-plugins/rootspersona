@@ -13,33 +13,12 @@ class RpIndiNameMySqlDAO implements RpIndiNameDAO{
 	 * @param String $id primary key
 	 * @return RpIndiNameMySql 
 	 */
-	public function load($indiId, $indiBatchId, $nameId){
-		$sql = 'SELECT * FROM rp_indi_name WHERE indi_id = ?  AND indi_batch_id = ?  AND name_id = ? ';
+	public function loadList($indiId, $indiBatchId){
+		$sql = 'SELECT * FROM rp_indi_name WHERE indi_id = ?  AND indi_batch_id = ?';
 		$sqlQuery = new SqlQuery($sql);
-		$sqlQuery->setNumber($indiId);
+		$sqlQuery->set($indiId);
 		$sqlQuery->setNumber($indiBatchId);
-		$sqlQuery->setNumber($nameId);
 
-		return $this->getRow($sqlQuery);
-	}
-
-	/**
-	 * Get all records from table
-	 */
-	public function queryAll(){
-		$sql = 'SELECT * FROM rp_indi_name';
-		$sqlQuery = new SqlQuery($sql);
-		return $this->getList($sqlQuery);
-	}
-	
-	/**
-	 * Get all records from table ordered by field
-	 *
-	 * @param $orderColumn column name
-	 */
-	public function queryAllOrderBy($orderColumn){
-		$sql = 'SELECT * FROM rp_indi_name ORDER BY '.$orderColumn;
-		$sqlQuery = new SqlQuery($sql);
 		return $this->getList($sqlQuery);
 	}
 	
@@ -47,12 +26,11 @@ class RpIndiNameMySqlDAO implements RpIndiNameDAO{
  	 * Delete record from table
  	 * @param rpIndiName primary key
  	 */
-	public function delete($indiId, $indiBatchId, $nameId){
-		$sql = 'DELETE FROM rp_indi_name WHERE indi_id = ?  AND indi_batch_id = ?  AND name_id = ? ';
+	public function delete($indiId, $indiBatchId){
+		$sql = 'DELETE FROM rp_indi_name WHERE indi_id = ?  AND indi_batch_id = ?';
 		$sqlQuery = new SqlQuery($sql);
-		$sqlQuery->setNumber($indiId);
+		$sqlQuery->set($indiId);
 		$sqlQuery->setNumber($indiBatchId);
-		$sqlQuery->setNumber($nameId);
 
 		return $this->executeUpdate($sqlQuery);
 	}
@@ -63,69 +41,17 @@ class RpIndiNameMySqlDAO implements RpIndiNameDAO{
  	 * @param RpIndiNameMySql rpIndiName
  	 */
 	public function insert($rpIndiName){
-		$sql = 'INSERT INTO rp_indi_name (update_datetime, indi_id, indi_batch_id, name_id) VALUES (?, ?, ?, ?)';
+		$sql = 'INSERT INTO rp_indi_name (update_datetime, indi_id, indi_batch_id, name_id) VALUES (now(), ?, ?, ?)';
 		$sqlQuery = new SqlQuery($sql);
 		
-		$sqlQuery->setNumber($rpIndiName->updateDatetime);
-
-		
-		$sqlQuery->setNumber($rpIndiName->indiId);
+		$sqlQuery->set($rpIndiName->indiId);
 
 		$sqlQuery->setNumber($rpIndiName->indiBatchId);
 
 		$sqlQuery->setNumber($rpIndiName->nameId);
 
 		$this->executeInsert($sqlQuery);	
-		//$rpIndiName->id = $id;
-		//return $id;
 	}
-	
-	/**
- 	 * Update record in table
- 	 *
- 	 * @param RpIndiNameMySql rpIndiName
- 	 */
-	public function update($rpIndiName){
-		$sql = 'UPDATE rp_indi_name SET update_datetime = ? WHERE indi_id = ?  AND indi_batch_id = ?  AND name_id = ? ';
-		$sqlQuery = new SqlQuery($sql);
-		
-		$sqlQuery->setNumber($rpIndiName->updateDatetime);
-
-		
-		$sqlQuery->setNumber($rpIndiName->indiId);
-
-		$sqlQuery->setNumber($rpIndiName->indiBatchId);
-
-		$sqlQuery->setNumber($rpIndiName->nameId);
-
-		return $this->executeUpdate($sqlQuery);
-	}
-
-	/**
- 	 * Delete all rows
- 	 */
-	public function clean(){
-		$sql = 'DELETE FROM rp_indi_name';
-		$sqlQuery = new SqlQuery($sql);
-		return $this->executeUpdate($sqlQuery);
-	}
-
-	public function queryByUpdateDatetime($value){
-		$sql = 'SELECT * FROM rp_indi_name WHERE update_datetime = ?';
-		$sqlQuery = new SqlQuery($sql);
-		$sqlQuery->setNumber($value);
-		return $this->getList($sqlQuery);
-	}
-
-
-	public function deleteByUpdateDatetime($value){
-		$sql = 'DELETE FROM rp_indi_name WHERE update_datetime = ?';
-		$sqlQuery = new SqlQuery($sql);
-		$sqlQuery->setNumber($value);
-		return $this->executeUpdate($sqlQuery);
-	}
-
-
 	
 	/**
 	 * Read row

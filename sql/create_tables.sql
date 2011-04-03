@@ -162,7 +162,7 @@ CREATE TABLE IF NOT EXISTS rp_indi_name (
   indi_id varchar(22) NOT NULL,
   indi_batch_id tinyint(4) NOT NULL,
   name_id int(11) NOT NULL,
-  update_datetime int(11) NOT NULL,
+  update_datetime datetime NOT NULL,
   PRIMARY KEY (indi_id,indi_batch_id,name_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 

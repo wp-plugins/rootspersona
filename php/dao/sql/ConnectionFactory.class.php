@@ -12,9 +12,9 @@ class ConnectionFactory{
 	 *
 	 * @return polaczenie
 	 */
-	static public function getConnection(){
-		$conn = mysql_connect(ConnectionProperty::getHost(), ConnectionProperty::getUser(), ConnectionProperty::getPassword());
-		mysql_select_db(ConnectionProperty::getDatabase());
+	static public function getConnection($credentials){
+		$conn = mysql_connect($credentials['hostname'], $credentials['dbuser'], $credentials['dbpassword']);
+		mysql_select_db($credentials['dbname']);
 		if(!$conn){
 			throw new Exception('could not connect to database');
 		}

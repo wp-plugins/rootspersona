@@ -65,23 +65,15 @@ class RpFamChildMySqlDAO implements RpFamChildDAO{
  	 * @param RpFamChildMySql rpFamChild
  	 */
 	public function insert($rpFamChild){
-		$sql = 'INSERT INTO rp_fam_child (update_datetime, fam_id, fam_batch_id, child_id, indi_batch_id) VALUES (?, ?, ?, ?, ?)';
+		$sql = 'INSERT INTO rp_fam_child (update_datetime, fam_id, fam_batch_id, child_id, indi_batch_id) VALUES (now(), ?, ?, ?, ?)';
 		$sqlQuery = new SqlQuery($sql);
 		
-		$sqlQuery->set($rpFamChild->updateDatetime);
-
-		
-		$sqlQuery->setNumber($rpFamChild->famId);
-
+		$sqlQuery->set($rpFamChild->famId);
 		$sqlQuery->setNumber($rpFamChild->famBatchId);
-
-		$sqlQuery->setNumber($rpFamChild->childId);
-
+		$sqlQuery->set($rpFamChild->childId);
 		$sqlQuery->setNumber($rpFamChild->indiBatchId);
 
 		$this->executeInsert($sqlQuery);	
-		//$rpFamChild->id = $id;
-		//return $id;
 	}
 	
 	/**
@@ -90,18 +82,11 @@ class RpFamChildMySqlDAO implements RpFamChildDAO{
  	 * @param RpFamChildMySql rpFamChild
  	 */
 	public function update($rpFamChild){
-		$sql = 'UPDATE rp_fam_child SET update_datetime = ? WHERE fam_id = ?  AND fam_batch_id = ?  AND child_id = ?  AND indi_batch_id = ? ';
+		$sql = 'UPDATE rp_fam_child SET update_datetime = now() WHERE fam_id = ?  AND fam_batch_id = ?  AND child_id = ?  AND indi_batch_id = ? ';
 		$sqlQuery = new SqlQuery($sql);
-		
-		$sqlQuery->set($rpFamChild->updateDatetime);
-
-		
-		$sqlQuery->setNumber($rpFamChild->famId);
-
+		$sqlQuery->set($rpFamChild->famId);
 		$sqlQuery->setNumber($rpFamChild->famBatchId);
-
-		$sqlQuery->setNumber($rpFamChild->childId);
-
+		$sqlQuery->set($rpFamChild->childId);
 		$sqlQuery->setNumber($rpFamChild->indiBatchId);
 
 		return $this->executeUpdate($sqlQuery);

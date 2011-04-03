@@ -16,7 +16,7 @@ class RpIndiMySqlDAO implements RpIndiDAO{
 	public function load($id, $batchId){
 		$sql = 'SELECT * FROM rp_indi WHERE id = ?  AND batch_id = ? ';
 		$sqlQuery = new SqlQuery($sql);
-		$sqlQuery->setNumber($id);
+		$sqlQuery->set($id);
 		$sqlQuery->setNumber($batchId);
 
 		return $this->getRow($sqlQuery);
@@ -49,7 +49,7 @@ class RpIndiMySqlDAO implements RpIndiDAO{
 	public function delete($id, $batchId){
 		$sql = 'DELETE FROM rp_indi WHERE id = ?  AND batch_id = ? ';
 		$sqlQuery = new SqlQuery($sql);
-		$sqlQuery->setNumber($id);
+		$sqlQuery->set($id);
 		$sqlQuery->setNumber($batchId);
 
 		return $this->executeUpdate($sqlQuery);
@@ -61,7 +61,7 @@ class RpIndiMySqlDAO implements RpIndiDAO{
  	 * @param RpIndiMySql rpIndi
  	 */
 	public function insert($rpIndi){
-		$sql = 'INSERT INTO rp_indi (restriction_notice, gender, perm_rec_file_nbr, anc_rec_file_nbr, auto_rec_id, ged_change_date, update_datetime, id, batch_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+		$sql = 'INSERT INTO rp_indi (restriction_notice, gender, perm_rec_file_nbr, anc_rec_file_nbr, auto_rec_id, ged_change_date, update_datetime, id, batch_id) VALUES (?, ?, ?, ?, ?, ?, now(), ?, ?)';
 		$sqlQuery = new SqlQuery($sql);
 		
 		$sqlQuery->set($rpIndi->restrictionNotice);
@@ -70,10 +70,7 @@ class RpIndiMySqlDAO implements RpIndiDAO{
 		$sqlQuery->set($rpIndi->ancRecFileNbr);
 		$sqlQuery->set($rpIndi->autoRecId);
 		$sqlQuery->set($rpIndi->gedChangeDate);
-		$sqlQuery->set($rpIndi->updateDatetime);
-
-		
-		$sqlQuery->setNumber($rpIndi->id);
+		$sqlQuery->set($rpIndi->id);
 
 		$sqlQuery->setNumber($rpIndi->batchId);
 
@@ -88,7 +85,7 @@ class RpIndiMySqlDAO implements RpIndiDAO{
  	 * @param RpIndiMySql rpIndi
  	 */
 	public function update($rpIndi){
-		$sql = 'UPDATE rp_indi SET restriction_notice = ?, gender = ?, perm_rec_file_nbr = ?, anc_rec_file_nbr = ?, auto_rec_id = ?, ged_change_date = ?, update_datetime = ? WHERE id = ?  AND batch_id = ? ';
+		$sql = 'UPDATE rp_indi SET restriction_notice = ?, gender = ?, perm_rec_file_nbr = ?, anc_rec_file_nbr = ?, auto_rec_id = ?, ged_change_date = ?, update_datetime = now() WHERE id = ?  AND batch_id = ? ';
 		$sqlQuery = new SqlQuery($sql);
 		
 		$sqlQuery->set($rpIndi->restrictionNotice);
@@ -96,11 +93,8 @@ class RpIndiMySqlDAO implements RpIndiDAO{
 		$sqlQuery->set($rpIndi->permRecFileNbr);
 		$sqlQuery->set($rpIndi->ancRecFileNbr);
 		$sqlQuery->set($rpIndi->autoRecId);
-		$sqlQuery->set($rpIndi->gedChangeDate);
-		$sqlQuery->set($rpIndi->updateDatetime);
-
-		
-		$sqlQuery->setNumber($rpIndi->id);
+		$sqlQuery->set($rpIndi->gedChangeDate);		
+		$sqlQuery->set($rpIndi->id);
 
 		$sqlQuery->setNumber($rpIndi->batchId);
 

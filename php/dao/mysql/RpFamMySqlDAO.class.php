@@ -61,7 +61,7 @@ class RpFamMySqlDAO implements RpFamDAO{
  	 * @param RpFamMySql rpFam
  	 */
 	public function insert($rpFam){
-		$sql = 'INSERT INTO rp_fam (spouse1, indi_batch_id_1, spouse2, indi_batch_id_2, auto_rec_id, ged_change_date, update_datetime, id, batch_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+		$sql = 'INSERT INTO rp_fam (spouse1, indi_batch_id_1, spouse2, indi_batch_id_2, auto_rec_id, ged_change_date, update_datetime, id, batch_id) VALUES (?, ?, ?, ?, ?, ?, now(), ?, ?)';
 		$sqlQuery = new SqlQuery($sql);
 		
 		$sqlQuery->set($rpFam->spouse1);
@@ -70,10 +70,7 @@ class RpFamMySqlDAO implements RpFamDAO{
 		$sqlQuery->setNumber($rpFam->indiBatchId2);
 		$sqlQuery->set($rpFam->autoRecId);
 		$sqlQuery->set($rpFam->gedChangeDate);
-		$sqlQuery->set($rpFam->updateDatetime);
-
-		
-		$sqlQuery->setNumber($rpFam->id);
+		$sqlQuery->set($rpFam->id);
 
 		$sqlQuery->setNumber($rpFam->batchId);
 
@@ -88,7 +85,7 @@ class RpFamMySqlDAO implements RpFamDAO{
  	 * @param RpFamMySql rpFam
  	 */
 	public function update($rpFam){
-		$sql = 'UPDATE rp_fam SET spouse1 = ?, indi_batch_id_1 = ?, spouse2 = ?, indi_batch_id_2 = ?, auto_rec_id = ?, ged_change_date = ?, update_datetime = ? WHERE id = ?  AND batch_id = ? ';
+		$sql = 'UPDATE rp_fam SET spouse1 = ?, indi_batch_id_1 = ?, spouse2 = ?, indi_batch_id_2 = ?, auto_rec_id = ?, ged_change_date = ?, update_datetime = now() WHERE id = ?  AND batch_id = ? ';
 		$sqlQuery = new SqlQuery($sql);
 		
 		$sqlQuery->set($rpFam->spouse1);
@@ -97,10 +94,7 @@ class RpFamMySqlDAO implements RpFamDAO{
 		$sqlQuery->setNumber($rpFam->indiBatchId2);
 		$sqlQuery->set($rpFam->autoRecId);
 		$sqlQuery->set($rpFam->gedChangeDate);
-		$sqlQuery->set($rpFam->updateDatetime);
-
-		
-		$sqlQuery->setNumber($rpFam->id);
+		$sqlQuery->set($rpFam->id);
 
 		$sqlQuery->setNumber($rpFam->batchId);
 

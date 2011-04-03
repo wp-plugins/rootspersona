@@ -13,10 +13,10 @@ class QueryExecutor{
 	 * @param sqlQuery obiekt typu SqlQuery
 	 * @return wynik zapytania 
 	 */
-	public static function execute($sqlQuery){
+	public static function execute($sqlQuery,$credentials=null){
 		$transaction = Transaction::getCurrentTransaction();
 		if(!$transaction){
-			$connection = new Connection();
+			$connection = new Connection($credentials);
 		}else{
 			$connection = $transaction->getConnection();
 		}		
@@ -38,10 +38,10 @@ class QueryExecutor{
 	}
 	
 	
-	public static function executeUpdate($sqlQuery){
+	public static function executeUpdate($sqlQuery,$credentials=null){
 		$transaction = Transaction::getCurrentTransaction();
 		if(!$transaction){
-			$connection = new Connection();
+			$connection = new Connection($credentials);
 		}else{
 			$connection = $transaction->getConnection();
 		}		
@@ -53,8 +53,8 @@ class QueryExecutor{
 		return mysql_affected_rows();		
 	}
 
-	public static function executeInsert($sqlQuery){
-		QueryExecutor::executeUpdate($sqlQuery);
+	public static function executeInsert($sqlQuery,$credentials=null){
+		QueryExecutor::executeUpdate($sqlQuery,$credentials);
 		return mysql_insert_id();
 	}
 	
@@ -64,10 +64,10 @@ class QueryExecutor{
 	 * @param sqlQuery obiekt typu SqlQuery
 	 * @return wynik zapytania 
 	 */
-	public static function queryForString($sqlQuery){
+	public static function queryForString($sqlQuery,$credentials=null){
 		$transaction = Transaction::getCurrentTransaction();
 		if(!$transaction){
-			$connection = new Connection();
+			$connection = new Connection($credentials);
 		}else{
 			$connection = $transaction->getConnection();
 		}
