@@ -44,7 +44,48 @@ function addIndi($credentials, $person) {
 		}
 	}
 	updateNames($person);
+	updateEvents($person);
 	$transaction->commit();
+}
+
+function updateEvents($person) {
+	$oldNames = DAOFactory::getRpIndiNameDAO()->loadList($person->Id,1);
+	if($oldNames != null && count($oldNames)>0) {
+		foreach($oldNames as $name) {
+			DAOFactory::getRpNamePersonalDAO()->delete($name->id);
+		}
+		DAOFactory::getRpIndiNameDAO()->deleteByIndi($person->Id, 1);
+	}
+
+	foreach($person->Names as $pName) {
+		$name = new RpNamePersonal();
+		$name->personalName = $pName->rpName->getFullName();
+		$name->nameType = $pName->rpName->Type;
+		$name->prefix = $pName->rpName->Pieces->Prefix;
+		$name->given = $pName->rpName->Pieces->Given;
+		$name->nickname = $pName->rpName->Pieces->NickName;
+		$name->surnamePrefix = $pName->rpName->Pieces->SurnamePrefix;
+		$name->surname = $pName->rpName->getSurname();
+		$name->suffix = $pName->rpName->Pieces->Suffix;
+
+		$id = null;
+		try {
+			$id = DAOFactory::getRpNamePersonalDAO()->insert($name);
+		} catch (Exception $e) {
+			echo $e->getMessage();
+			throw $e;
+		}
+		$indiName = new RpIndiName();
+		$indiName->indiId = $person->Id;
+		$indiName->indiBatchId = 1;
+		$indiName->nameId = $id;
+		try {
+			$id = DAOFactory::getRpIndiNameDAO()->insert($indiName);
+		} catch (Exception $e) {
+			echo $e->getMessage();
+			throw $e;
+		}
+	}
 }
 
 function updateNames($person) {
@@ -53,7 +94,7 @@ function updateNames($person) {
 		foreach($oldNames as $name) {
 			DAOFactory::getRpNamePersonalDAO()->delete($name->id);
 		}
-		DAOFactory::getRpIndiNameDAO()->delete($person->Id, 1);
+		DAOFactory::getRpIndiNameDAO()->deleteByIndi($person->Id, 1);
 	}
 
 	foreach($person->Names as $pName) {

@@ -3,7 +3,7 @@
  * Class that operate on table 'rp_fam'. Database Mysql.
  *
  * @author: http://phpdao.com
- * @date: 2011-04-02 09:44
+ * @date: 2011-04-03 18:56
  */
 class RpFamMySqlDAO implements RpFamDAO{
 
@@ -11,7 +11,7 @@ class RpFamMySqlDAO implements RpFamDAO{
 	 * Get Domain object by primry key
 	 *
 	 * @param String $id primary key
-	 * @return RpFamMySql 
+	 * @return RpFamMySql
 	 */
 	public function load($id, $batchId){
 		$sql = 'SELECT * FROM rp_fam WHERE id = ?  AND batch_id = ? ';
@@ -30,7 +30,7 @@ class RpFamMySqlDAO implements RpFamDAO{
 		$sqlQuery = new SqlQuery($sql);
 		return $this->getList($sqlQuery);
 	}
-	
+
 	/**
 	 * Get all records from table ordered by field
 	 *
@@ -41,7 +41,7 @@ class RpFamMySqlDAO implements RpFamDAO{
 		$sqlQuery = new SqlQuery($sql);
 		return $this->getList($sqlQuery);
 	}
-	
+
 	/**
  	 * Delete record from table
  	 * @param rpFam primary key
@@ -54,16 +54,17 @@ class RpFamMySqlDAO implements RpFamDAO{
 
 		return $this->executeUpdate($sqlQuery);
 	}
-	
+
 	/**
  	 * Insert record to table
  	 *
  	 * @param RpFamMySql rpFam
  	 */
 	public function insert($rpFam){
-		$sql = 'INSERT INTO rp_fam (spouse1, indi_batch_id_1, spouse2, indi_batch_id_2, auto_rec_id, ged_change_date, update_datetime, id, batch_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+		$sql = 'INSERT INTO rp_fam (restriction_notice, spouse1, indi_batch_id_1, spouse2, indi_batch_id_2, auto_rec_id, ged_change_date, update_datetime, id, batch_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 		$sqlQuery = new SqlQuery($sql);
-		
+
+		$sqlQuery->set($rpFam->restrictionNotice);
 		$sqlQuery->set($rpFam->spouse1);
 		$sqlQuery->setNumber($rpFam->indiBatchId1);
 		$sqlQuery->set($rpFam->spouse2);
@@ -72,25 +73,26 @@ class RpFamMySqlDAO implements RpFamDAO{
 		$sqlQuery->set($rpFam->gedChangeDate);
 		$sqlQuery->set($rpFam->updateDatetime);
 
-		
+
 		$sqlQuery->setNumber($rpFam->id);
 
 		$sqlQuery->setNumber($rpFam->batchId);
 
-		$this->executeInsert($sqlQuery);	
+		$this->executeInsert($sqlQuery);
 		//$rpFam->id = $id;
 		//return $id;
 	}
-	
+
 	/**
  	 * Update record in table
  	 *
  	 * @param RpFamMySql rpFam
  	 */
 	public function update($rpFam){
-		$sql = 'UPDATE rp_fam SET spouse1 = ?, indi_batch_id_1 = ?, spouse2 = ?, indi_batch_id_2 = ?, auto_rec_id = ?, ged_change_date = ?, update_datetime = ? WHERE id = ?  AND batch_id = ? ';
+		$sql = 'UPDATE rp_fam SET restriction_notice = ?, spouse1 = ?, indi_batch_id_1 = ?, spouse2 = ?, indi_batch_id_2 = ?, auto_rec_id = ?, ged_change_date = ?, update_datetime = ? WHERE id = ?  AND batch_id = ? ';
 		$sqlQuery = new SqlQuery($sql);
-		
+
+		$sqlQuery->set($rpFam->restrictionNotice);
 		$sqlQuery->set($rpFam->spouse1);
 		$sqlQuery->setNumber($rpFam->indiBatchId1);
 		$sqlQuery->set($rpFam->spouse2);
@@ -99,7 +101,7 @@ class RpFamMySqlDAO implements RpFamDAO{
 		$sqlQuery->set($rpFam->gedChangeDate);
 		$sqlQuery->set($rpFam->updateDatetime);
 
-		
+
 		$sqlQuery->setNumber($rpFam->id);
 
 		$sqlQuery->setNumber($rpFam->batchId);
@@ -114,6 +116,13 @@ class RpFamMySqlDAO implements RpFamDAO{
 		$sql = 'DELETE FROM rp_fam';
 		$sqlQuery = new SqlQuery($sql);
 		return $this->executeUpdate($sqlQuery);
+	}
+
+	public function queryByRestrictionNotice($value){
+		$sql = 'SELECT * FROM rp_fam WHERE restriction_notice = ?';
+		$sqlQuery = new SqlQuery($sql);
+		$sqlQuery->set($value);
+		return $this->getList($sqlQuery);
 	}
 
 	public function queryBySpouse1($value){
@@ -166,6 +175,13 @@ class RpFamMySqlDAO implements RpFamDAO{
 	}
 
 
+	public function deleteByRestrictionNotice($value){
+		$sql = 'DELETE FROM rp_fam WHERE restriction_notice = ?';
+		$sqlQuery = new SqlQuery($sql);
+		$sqlQuery->set($value);
+		return $this->executeUpdate($sqlQuery);
+	}
+
 	public function deleteBySpouse1($value){
 		$sql = 'DELETE FROM rp_fam WHERE spouse1 = ?';
 		$sqlQuery = new SqlQuery($sql);
@@ -216,17 +232,18 @@ class RpFamMySqlDAO implements RpFamDAO{
 	}
 
 
-	
+
 	/**
 	 * Read row
 	 *
-	 * @return RpFamMySql 
+	 * @return RpFamMySql
 	 */
 	protected function readRow($row){
 		$rpFam = new RpFam();
-		
+
 		$rpFam->id = $row['id'];
 		$rpFam->batchId = $row['batch_id'];
+		$rpFam->restrictionNotice = $row['restriction_notice'];
 		$rpFam->spouse1 = $row['spouse1'];
 		$rpFam->indiBatchId1 = $row['indi_batch_id_1'];
 		$rpFam->spouse2 = $row['spouse2'];
@@ -237,7 +254,7 @@ class RpFamMySqlDAO implements RpFamDAO{
 
 		return $rpFam;
 	}
-	
+
 	protected function getList($sqlQuery){
 		$tab = QueryExecutor::execute($sqlQuery);
 		$ret = array();
@@ -246,28 +263,28 @@ class RpFamMySqlDAO implements RpFamDAO{
 		}
 		return $ret;
 	}
-	
+
 	/**
 	 * Get row
 	 *
-	 * @return RpFamMySql 
+	 * @return RpFamMySql
 	 */
 	protected function getRow($sqlQuery){
 		$tab = QueryExecutor::execute($sqlQuery);
 		if(count($tab)==0){
 			return null;
 		}
-		return $this->readRow($tab[0]);		
+		return $this->readRow($tab[0]);
 	}
-	
+
 	/**
 	 * Execute sql query
 	 */
 	protected function execute($sqlQuery){
 		return QueryExecutor::execute($sqlQuery);
 	}
-	
-		
+
+
 	/**
 	 * Execute sql query
 	 */

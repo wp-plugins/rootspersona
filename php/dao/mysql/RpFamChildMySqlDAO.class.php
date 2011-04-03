@@ -11,14 +11,14 @@ class RpFamChildMySqlDAO implements RpFamChildDAO{
 	 * Get Domain object by primry key
 	 *
 	 * @param String $id primary key
-	 * @return RpFamChildMySql 
+	 * @return RpFamChildMySql
 	 */
 	public function load($famId, $famBatchId, $childId, $indiBatchId){
 		$sql = 'SELECT * FROM rp_fam_child WHERE fam_id = ?  AND fam_batch_id = ?  AND child_id = ?  AND indi_batch_id = ? ';
 		$sqlQuery = new SqlQuery($sql);
-		$sqlQuery->setNumber($famId);
+		$sqlQuery->set($famId);
 		$sqlQuery->setNumber($famBatchId);
-		$sqlQuery->setNumber($childId);
+		$sqlQuery->set($childId);
 		$sqlQuery->setNumber($indiBatchId);
 
 		return $this->getRow($sqlQuery);
@@ -32,7 +32,7 @@ class RpFamChildMySqlDAO implements RpFamChildDAO{
 		$sqlQuery = new SqlQuery($sql);
 		return $this->getList($sqlQuery);
 	}
-	
+
 	/**
 	 * Get all records from table ordered by field
 	 *
@@ -43,7 +43,7 @@ class RpFamChildMySqlDAO implements RpFamChildDAO{
 		$sqlQuery = new SqlQuery($sql);
 		return $this->getList($sqlQuery);
 	}
-	
+
 	/**
  	 * Delete record from table
  	 * @param rpFamChild primary key
@@ -51,56 +51,50 @@ class RpFamChildMySqlDAO implements RpFamChildDAO{
 	public function delete($famId, $famBatchId, $childId, $indiBatchId){
 		$sql = 'DELETE FROM rp_fam_child WHERE fam_id = ?  AND fam_batch_id = ?  AND child_id = ?  AND indi_batch_id = ? ';
 		$sqlQuery = new SqlQuery($sql);
-		$sqlQuery->setNumber($famId);
+		$sqlQuery->set($famId);
 		$sqlQuery->setNumber($famBatchId);
 		$sqlQuery->setNumber($childId);
-		$sqlQuery->setNumber($indiBatchId);
+		$sqlQuery->set($indiBatchId);
 
 		return $this->executeUpdate($sqlQuery);
 	}
-	
+
 	/**
  	 * Insert record to table
  	 *
  	 * @param RpFamChildMySql rpFamChild
  	 */
 	public function insert($rpFamChild){
-		$sql = 'INSERT INTO rp_fam_child (update_datetime, fam_id, fam_batch_id, child_id, indi_batch_id) VALUES (?, ?, ?, ?, ?)';
+		$sql = 'INSERT INTO rp_fam_child (update_datetime, fam_id, fam_batch_id, child_id, indi_batch_id) VALUES (now(), ?, ?, ?, ?)';
 		$sqlQuery = new SqlQuery($sql);
-		
-		$sqlQuery->set($rpFamChild->updateDatetime);
 
-		
-		$sqlQuery->setNumber($rpFamChild->famId);
+		$sqlQuery->set($rpFamChild->famId);
 
 		$sqlQuery->setNumber($rpFamChild->famBatchId);
 
-		$sqlQuery->setNumber($rpFamChild->childId);
+		$sqlQuery->set($rpFamChild->childId);
 
 		$sqlQuery->setNumber($rpFamChild->indiBatchId);
 
-		$this->executeInsert($sqlQuery);	
+		$this->executeInsert($sqlQuery);
 		//$rpFamChild->id = $id;
 		//return $id;
 	}
-	
+
 	/**
  	 * Update record in table
  	 *
  	 * @param RpFamChildMySql rpFamChild
  	 */
 	public function update($rpFamChild){
-		$sql = 'UPDATE rp_fam_child SET update_datetime = ? WHERE fam_id = ?  AND fam_batch_id = ?  AND child_id = ?  AND indi_batch_id = ? ';
+		$sql = 'UPDATE rp_fam_child SET update_datetime = now() WHERE fam_id = ?  AND fam_batch_id = ?  AND child_id = ?  AND indi_batch_id = ? ';
 		$sqlQuery = new SqlQuery($sql);
-		
-		$sqlQuery->set($rpFamChild->updateDatetime);
 
-		
-		$sqlQuery->setNumber($rpFamChild->famId);
+		$sqlQuery->set($rpFamChild->famId);
 
 		$sqlQuery->setNumber($rpFamChild->famBatchId);
 
-		$sqlQuery->setNumber($rpFamChild->childId);
+		$sqlQuery->set($rpFamChild->childId);
 
 		$sqlQuery->setNumber($rpFamChild->indiBatchId);
 
@@ -132,15 +126,15 @@ class RpFamChildMySqlDAO implements RpFamChildDAO{
 	}
 
 
-	
+
 	/**
 	 * Read row
 	 *
-	 * @return RpFamChildMySql 
+	 * @return RpFamChildMySql
 	 */
 	protected function readRow($row){
 		$rpFamChild = new RpFamChild();
-		
+
 		$rpFamChild->famId = $row['fam_id'];
 		$rpFamChild->famBatchId = $row['fam_batch_id'];
 		$rpFamChild->childId = $row['child_id'];
@@ -149,7 +143,7 @@ class RpFamChildMySqlDAO implements RpFamChildDAO{
 
 		return $rpFamChild;
 	}
-	
+
 	protected function getList($sqlQuery){
 		$tab = QueryExecutor::execute($sqlQuery);
 		$ret = array();
@@ -158,28 +152,28 @@ class RpFamChildMySqlDAO implements RpFamChildDAO{
 		}
 		return $ret;
 	}
-	
+
 	/**
 	 * Get row
 	 *
-	 * @return RpFamChildMySql 
+	 * @return RpFamChildMySql
 	 */
 	protected function getRow($sqlQuery){
 		$tab = QueryExecutor::execute($sqlQuery);
 		if(count($tab)==0){
 			return null;
 		}
-		return $this->readRow($tab[0]);		
+		return $this->readRow($tab[0]);
 	}
-	
+
 	/**
 	 * Execute sql query
 	 */
 	protected function execute($sqlQuery){
 		return QueryExecutor::execute($sqlQuery);
 	}
-	
-		
+
+
 	/**
 	 * Execute sql query
 	 */

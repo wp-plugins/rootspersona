@@ -1,7 +1,13 @@
 <?php
 
 function createTables($credentials, $sqlFileToExecute) {
+	try {
 	$link = mysql_connect($credentials['hostname'], $credentials['dbuser'], $credentials['dbpassword']);
+	} catch (Exception $e) {
+		echo $e;
+		throw $e;
+	}
+
 	if (!$link) {
 		echo "MySQL Connection error";
 		die ("MySQL Connection error");

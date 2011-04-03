@@ -7,7 +7,7 @@
 	require_once('dao/sql/SqlQuery.class.php');
 	require_once('dao/core/ArrayList.class.php');
 	require_once('dao/dao/DAOFactory.class.php');
- 	
+
 	require_once('dao/dao/RpAddressDAO.class.php');
 	require_once('dao/dto/RpAddres.class.php');
 	require_once('dao/mysql/RpAddressMySqlDAO.class.php');
@@ -104,49 +104,5 @@
 	require_once('dao/dto/RpSubmitterNote.class.php');
 	require_once('dao/mysql/RpSubmitterNoteMySqlDAO.class.php');
 	require_once('dao/mysql/ext/RpSubmitterNoteMySqlExtDAO.class.php');
-	require_once('dao/dao/WpCommentmetaDAO.class.php');
-	require_once('dao/dto/WpCommentmeta.class.php');
-	require_once('dao/mysql/WpCommentmetaMySqlDAO.class.php');
-	require_once('dao/mysql/ext/WpCommentmetaMySqlExtDAO.class.php');
-	require_once('dao/dao/WpCommentsDAO.class.php');
-	require_once('dao/dto/WpComment.class.php');
-	require_once('dao/mysql/WpCommentsMySqlDAO.class.php');
-	require_once('dao/mysql/ext/WpCommentsMySqlExtDAO.class.php');
-	require_once('dao/dao/WpLinksDAO.class.php');
-	require_once('dao/dto/WpLink.class.php');
-	require_once('dao/mysql/WpLinksMySqlDAO.class.php');
-	require_once('dao/mysql/ext/WpLinksMySqlExtDAO.class.php');
-	require_once('dao/dao/WpOptionsDAO.class.php');
-	require_once('dao/dto/WpOption.class.php');
-	require_once('dao/mysql/WpOptionsMySqlDAO.class.php');
-	require_once('dao/mysql/ext/WpOptionsMySqlExtDAO.class.php');
-	require_once('dao/dao/WpPostmetaDAO.class.php');
-	require_once('dao/dto/WpPostmeta.class.php');
-	require_once('dao/mysql/WpPostmetaMySqlDAO.class.php');
-	require_once('dao/mysql/ext/WpPostmetaMySqlExtDAO.class.php');
-	require_once('dao/dao/WpPostsDAO.class.php');
-	require_once('dao/dto/WpPost.class.php');
-	require_once('dao/mysql/WpPostsMySqlDAO.class.php');
-	require_once('dao/mysql/ext/WpPostsMySqlExtDAO.class.php');
-	require_once('dao/dao/WpTermRelationshipsDAO.class.php');
-	require_once('dao/dto/WpTermRelationship.class.php');
-	require_once('dao/mysql/WpTermRelationshipsMySqlDAO.class.php');
-	require_once('dao/mysql/ext/WpTermRelationshipsMySqlExtDAO.class.php');
-	require_once('dao/dao/WpTermTaxonomyDAO.class.php');
-	require_once('dao/dto/WpTermTaxonomy.class.php');
-	require_once('dao/mysql/WpTermTaxonomyMySqlDAO.class.php');
-	require_once('dao/mysql/ext/WpTermTaxonomyMySqlExtDAO.class.php');
-	require_once('dao/dao/WpTermsDAO.class.php');
-	require_once('dao/dto/WpTerm.class.php');
-	require_once('dao/mysql/WpTermsMySqlDAO.class.php');
-	require_once('dao/mysql/ext/WpTermsMySqlExtDAO.class.php');
-	require_once('dao/dao/WpUsermetaDAO.class.php');
-	require_once('dao/dto/WpUsermeta.class.php');
-	require_once('dao/mysql/WpUsermetaMySqlDAO.class.php');
-	require_once('dao/mysql/ext/WpUsermetaMySqlExtDAO.class.php');
-	require_once('dao/dao/WpUsersDAO.class.php');
-	require_once('dao/dto/WpUser.class.php');
-	require_once('dao/mysql/WpUsersMySqlDAO.class.php');
-	require_once('dao/mysql/ext/WpUsersMySqlExtDAO.class.php');
 
 ?>

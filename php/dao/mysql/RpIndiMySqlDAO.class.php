@@ -11,12 +11,12 @@ class RpIndiMySqlDAO implements RpIndiDAO{
 	 * Get Domain object by primry key
 	 *
 	 * @param String $id primary key
-	 * @return RpIndiMySql 
+	 * @return RpIndiMySql
 	 */
 	public function load($id, $batchId){
 		$sql = 'SELECT * FROM rp_indi WHERE id = ?  AND batch_id = ? ';
 		$sqlQuery = new SqlQuery($sql);
-		$sqlQuery->setNumber($id);
+		$sqlQuery->set($id);
 		$sqlQuery->setNumber($batchId);
 
 		return $this->getRow($sqlQuery);
@@ -30,7 +30,7 @@ class RpIndiMySqlDAO implements RpIndiDAO{
 		$sqlQuery = new SqlQuery($sql);
 		return $this->getList($sqlQuery);
 	}
-	
+
 	/**
 	 * Get all records from table ordered by field
 	 *
@@ -41,7 +41,7 @@ class RpIndiMySqlDAO implements RpIndiDAO{
 		$sqlQuery = new SqlQuery($sql);
 		return $this->getList($sqlQuery);
 	}
-	
+
 	/**
  	 * Delete record from table
  	 * @param rpIndi primary key
@@ -49,12 +49,12 @@ class RpIndiMySqlDAO implements RpIndiDAO{
 	public function delete($id, $batchId){
 		$sql = 'DELETE FROM rp_indi WHERE id = ?  AND batch_id = ? ';
 		$sqlQuery = new SqlQuery($sql);
-		$sqlQuery->setNumber($id);
+		$sqlQuery->set($id);
 		$sqlQuery->setNumber($batchId);
 
 		return $this->executeUpdate($sqlQuery);
 	}
-	
+
 	/**
  	 * Insert record to table
  	 *
@@ -63,7 +63,7 @@ class RpIndiMySqlDAO implements RpIndiDAO{
 	public function insert($rpIndi){
 		$sql = 'INSERT INTO rp_indi (restriction_notice, gender, perm_rec_file_nbr, anc_rec_file_nbr, auto_rec_id, ged_change_date, update_datetime, id, batch_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
 		$sqlQuery = new SqlQuery($sql);
-		
+
 		$sqlQuery->set($rpIndi->restrictionNotice);
 		$sqlQuery->set($rpIndi->gender);
 		$sqlQuery->set($rpIndi->permRecFileNbr);
@@ -72,16 +72,16 @@ class RpIndiMySqlDAO implements RpIndiDAO{
 		$sqlQuery->set($rpIndi->gedChangeDate);
 		$sqlQuery->set($rpIndi->updateDatetime);
 
-		
-		$sqlQuery->setNumber($rpIndi->id);
+
+		$sqlQuery->set($rpIndi->id);
 
 		$sqlQuery->setNumber($rpIndi->batchId);
 
-		$this->executeInsert($sqlQuery);	
+		$this->executeInsert($sqlQuery);
 		//$rpIndi->id = $id;
 		//return $id;
 	}
-	
+
 	/**
  	 * Update record in table
  	 *
@@ -90,7 +90,7 @@ class RpIndiMySqlDAO implements RpIndiDAO{
 	public function update($rpIndi){
 		$sql = 'UPDATE rp_indi SET restriction_notice = ?, gender = ?, perm_rec_file_nbr = ?, anc_rec_file_nbr = ?, auto_rec_id = ?, ged_change_date = ?, update_datetime = ? WHERE id = ?  AND batch_id = ? ';
 		$sqlQuery = new SqlQuery($sql);
-		
+
 		$sqlQuery->set($rpIndi->restrictionNotice);
 		$sqlQuery->set($rpIndi->gender);
 		$sqlQuery->set($rpIndi->permRecFileNbr);
@@ -99,8 +99,8 @@ class RpIndiMySqlDAO implements RpIndiDAO{
 		$sqlQuery->set($rpIndi->gedChangeDate);
 		$sqlQuery->set($rpIndi->updateDatetime);
 
-		
-		$sqlQuery->setNumber($rpIndi->id);
+
+		$sqlQuery->set($rpIndi->id);
 
 		$sqlQuery->setNumber($rpIndi->batchId);
 
@@ -216,15 +216,15 @@ class RpIndiMySqlDAO implements RpIndiDAO{
 	}
 
 
-	
+
 	/**
 	 * Read row
 	 *
-	 * @return RpIndiMySql 
+	 * @return RpIndiMySql
 	 */
 	protected function readRow($row){
 		$rpIndi = new RpIndi();
-		
+
 		$rpIndi->id = $row['id'];
 		$rpIndi->batchId = $row['batch_id'];
 		$rpIndi->restrictionNotice = $row['restriction_notice'];
@@ -237,7 +237,7 @@ class RpIndiMySqlDAO implements RpIndiDAO{
 
 		return $rpIndi;
 	}
-	
+
 	protected function getList($sqlQuery){
 		$tab = QueryExecutor::execute($sqlQuery);
 		$ret = array();
@@ -246,28 +246,28 @@ class RpIndiMySqlDAO implements RpIndiDAO{
 		}
 		return $ret;
 	}
-	
+
 	/**
 	 * Get row
 	 *
-	 * @return RpIndiMySql 
+	 * @return RpIndiMySql
 	 */
 	protected function getRow($sqlQuery){
 		$tab = QueryExecutor::execute($sqlQuery);
 		if(count($tab)==0){
 			return null;
 		}
-		return $this->readRow($tab[0]);		
+		return $this->readRow($tab[0]);
 	}
-	
+
 	/**
 	 * Execute sql query
 	 */
 	protected function execute($sqlQuery){
 		return QueryExecutor::execute($sqlQuery);
 	}
-	
-		
+
+
 	/**
 	 * Execute sql query
 	 */

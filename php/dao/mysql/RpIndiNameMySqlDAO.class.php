@@ -11,12 +11,12 @@ class RpIndiNameMySqlDAO implements RpIndiNameDAO{
 	 * Get Domain object by primry key
 	 *
 	 * @param String $id primary key
-	 * @return RpIndiNameMySql 
+	 * @return RpIndiNameMySql
 	 */
 	public function load($indiId, $indiBatchId, $nameId){
 		$sql = 'SELECT * FROM rp_indi_name WHERE indi_id = ?  AND indi_batch_id = ?  AND name_id = ? ';
 		$sqlQuery = new SqlQuery($sql);
-		$sqlQuery->setNumber($indiId);
+		$sqlQuery->set($indiId);
 		$sqlQuery->setNumber($indiBatchId);
 		$sqlQuery->setNumber($nameId);
 
@@ -31,7 +31,7 @@ class RpIndiNameMySqlDAO implements RpIndiNameDAO{
 		$sqlQuery = new SqlQuery($sql);
 		return $this->getList($sqlQuery);
 	}
-	
+
 	/**
 	 * Get all records from table ordered by field
 	 *
@@ -42,7 +42,7 @@ class RpIndiNameMySqlDAO implements RpIndiNameDAO{
 		$sqlQuery = new SqlQuery($sql);
 		return $this->getList($sqlQuery);
 	}
-	
+
 	/**
  	 * Delete record from table
  	 * @param rpIndiName primary key
@@ -50,49 +50,43 @@ class RpIndiNameMySqlDAO implements RpIndiNameDAO{
 	public function delete($indiId, $indiBatchId, $nameId){
 		$sql = 'DELETE FROM rp_indi_name WHERE indi_id = ?  AND indi_batch_id = ?  AND name_id = ? ';
 		$sqlQuery = new SqlQuery($sql);
-		$sqlQuery->setNumber($indiId);
+		$sqlQuery->set($indiId);
 		$sqlQuery->setNumber($indiBatchId);
 		$sqlQuery->setNumber($nameId);
 
 		return $this->executeUpdate($sqlQuery);
 	}
-	
+
 	/**
  	 * Insert record to table
  	 *
  	 * @param RpIndiNameMySql rpIndiName
  	 */
 	public function insert($rpIndiName){
-		$sql = 'INSERT INTO rp_indi_name (update_datetime, indi_id, indi_batch_id, name_id) VALUES (?, ?, ?, ?)';
+		$sql = 'INSERT INTO rp_indi_name (update_datetime, indi_id, indi_batch_id, name_id) VALUES (now(), ?, ?, ?)';
 		$sqlQuery = new SqlQuery($sql);
-		
-		$sqlQuery->setNumber($rpIndiName->updateDatetime);
 
-		
-		$sqlQuery->setNumber($rpIndiName->indiId);
+		$sqlQuery->set($rpIndiName->indiId);
 
 		$sqlQuery->setNumber($rpIndiName->indiBatchId);
 
 		$sqlQuery->setNumber($rpIndiName->nameId);
 
-		$this->executeInsert($sqlQuery);	
+		$this->executeInsert($sqlQuery);
 		//$rpIndiName->id = $id;
 		//return $id;
 	}
-	
+
 	/**
  	 * Update record in table
  	 *
  	 * @param RpIndiNameMySql rpIndiName
  	 */
 	public function update($rpIndiName){
-		$sql = 'UPDATE rp_indi_name SET update_datetime = ? WHERE indi_id = ?  AND indi_batch_id = ?  AND name_id = ? ';
+		$sql = 'UPDATE rp_indi_name SET update_datetime = now() WHERE indi_id = ?  AND indi_batch_id = ?  AND name_id = ? ';
 		$sqlQuery = new SqlQuery($sql);
-		
-		$sqlQuery->setNumber($rpIndiName->updateDatetime);
 
-		
-		$sqlQuery->setNumber($rpIndiName->indiId);
+		$sqlQuery->set($rpIndiName->indiId);
 
 		$sqlQuery->setNumber($rpIndiName->indiBatchId);
 
@@ -126,15 +120,15 @@ class RpIndiNameMySqlDAO implements RpIndiNameDAO{
 	}
 
 
-	
+
 	/**
 	 * Read row
 	 *
-	 * @return RpIndiNameMySql 
+	 * @return RpIndiNameMySql
 	 */
 	protected function readRow($row){
 		$rpIndiName = new RpIndiName();
-		
+
 		$rpIndiName->indiId = $row['indi_id'];
 		$rpIndiName->indiBatchId = $row['indi_batch_id'];
 		$rpIndiName->nameId = $row['name_id'];
@@ -142,7 +136,7 @@ class RpIndiNameMySqlDAO implements RpIndiNameDAO{
 
 		return $rpIndiName;
 	}
-	
+
 	protected function getList($sqlQuery){
 		$tab = QueryExecutor::execute($sqlQuery);
 		$ret = array();
@@ -151,28 +145,28 @@ class RpIndiNameMySqlDAO implements RpIndiNameDAO{
 		}
 		return $ret;
 	}
-	
+
 	/**
 	 * Get row
 	 *
-	 * @return RpIndiNameMySql 
+	 * @return RpIndiNameMySql
 	 */
 	protected function getRow($sqlQuery){
 		$tab = QueryExecutor::execute($sqlQuery);
 		if(count($tab)==0){
 			return null;
 		}
-		return $this->readRow($tab[0]);		
+		return $this->readRow($tab[0]);
 	}
-	
+
 	/**
 	 * Execute sql query
 	 */
 	protected function execute($sqlQuery){
 		return QueryExecutor::execute($sqlQuery);
 	}
-	
-		
+
+
 	/**
 	 * Execute sql query
 	 */

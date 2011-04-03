@@ -13,7 +13,18 @@ interface RpNamePersonalDAO{
 	 * @param String $id primary key
 	 * @Return RpNamePersonal 
 	 */
-	public function loadList($id);
+	public function load($id);
+
+	/**
+	 * Get all records from table
+	 */
+	public function queryAll();
+	
+	/**
+	 * Get all records from table ordered by field
+	 * @Param $orderColumn column name
+	 */
+	public function queryAllOrderBy($orderColumn);
 	
 	/**
  	 * Delete record from table
@@ -34,6 +45,49 @@ interface RpNamePersonalDAO{
  	 * @param RpNamePersonal rpNamePersonal
  	 */
 	public function update($rpNamePersonal);	
+
+	/**
+	 * Delete all rows
+	 */
+	public function clean();
+
+	public function queryByPersonalName($value);
+
+	public function queryByNameType($value);
+
+	public function queryByPrefix($value);
+
+	public function queryByGiven($value);
+
+	public function queryByNickname($value);
+
+	public function queryBySurnamePrefix($value);
+
+	public function queryBySurname($value);
+
+	public function queryBySuffix($value);
+
+	public function queryByUpdateDatetime($value);
+
+
+	public function deleteByPersonalName($value);
+
+	public function deleteByNameType($value);
+
+	public function deleteByPrefix($value);
+
+	public function deleteByGiven($value);
+
+	public function deleteByNickname($value);
+
+	public function deleteBySurnamePrefix($value);
+
+	public function deleteBySurname($value);
+
+	public function deleteBySuffix($value);
+
+	public function deleteByUpdateDatetime($value);
+
 
 }
 ?>
