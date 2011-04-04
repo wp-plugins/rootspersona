@@ -49,38 +49,41 @@ function addIndi($credentials, $person) {
 }
 
 function updateEvents($person) {
-	$oldNames = DAOFactory::getRpIndiNameDAO()->loadList($person->Id,1);
-	if($oldNames != null && count($oldNames)>0) {
-		foreach($oldNames as $name) {
-			DAOFactory::getRpNamePersonalDAO()->delete($name->id);
+	$oldEevents = DAOFactory::getRpIndiEventDAO()->loadList($person->Id,1);
+	if($oldEevents != null && count($oldEevents)>0) {
+		foreach($oldEevents as $eve) {
+			DAOFactory::getRpEventDetailDAO()->delete($eve->id);
 		}
-		DAOFactory::getRpIndiNameDAO()->deleteByIndi($person->Id, 1);
+		DAOFactory::getRpIndiEventDAO()->deleteByIndi($person->Id, 1);
 	}
 
-	foreach($person->Names as $pName) {
-		$name = new RpNamePersonal();
-		$name->personalName = $pName->rpName->getFullName();
-		$name->nameType = $pName->rpName->Type;
-		$name->prefix = $pName->rpName->Pieces->Prefix;
-		$name->given = $pName->rpName->Pieces->Given;
-		$name->nickname = $pName->rpName->Pieces->NickName;
-		$name->surnamePrefix = $pName->rpName->Pieces->SurnamePrefix;
-		$name->surname = $pName->rpName->getSurname();
-		$name->suffix = $pName->rpName->Pieces->Suffix;
+	foreach($person->Events as $pEvent) {
+		$event = new RpEventDetail();
+		$event->id;
+		$event->eventType;
+		$event->classification;
+		$event->eventDate;
+		$event->place;
+		$event->addrId;
+		$event->respAgency;
+		$event->religiousAff;
+		$event->cause;
+		$event->restrictionNotice;
+
 
 		$id = null;
 		try {
-			$id = DAOFactory::getRpNamePersonalDAO()->insert($name);
+			$id = DAOFactory::getRpEventDetailDAO()->insert($event);
 		} catch (Exception $e) {
 			echo $e->getMessage();
 			throw $e;
 		}
-		$indiName = new RpIndiName();
-		$indiName->indiId = $person->Id;
-		$indiName->indiBatchId = 1;
-		$indiName->nameId = $id;
+		$indiEvent = new RpIndiEvent();
+		$indiEvent->indiId = $person->Id;
+		$indiEvent->indiBatchId = 1;
+		$indiEvent->eventId = $id;
 		try {
-			$id = DAOFactory::getRpIndiNameDAO()->insert($indiName);
+			$id = DAOFactory::getRpIndiEventDAO()->insert($indiEvent);
 		} catch (Exception $e) {
 			echo $e->getMessage();
 			throw $e;
@@ -133,6 +136,7 @@ function addFam($credentials, $family) {
 	$fam = new RpFam();
 	$fam->id = $family->Id;
 	$fam->batchId = 1;
+	$fam->restrictionNotice = $family->Restriction;
 	$fam->spouse1 = $family->Husband;
 	$fam->indiBatchId1 = 1;
 	$fam->spouse2 = $family->Wife;
