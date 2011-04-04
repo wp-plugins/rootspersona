@@ -44,11 +44,11 @@ function addIndi($credentials, $person) {
 		}
 	}
 	updateNames($person);
-	updateEvents($person);
+	updateIndiEvents($person);
 	$transaction->commit();
 }
 
-function updateEvents($person) {
+function updateIndiEvents($person) {
 	$oldEevents = DAOFactory::getRpIndiEventDAO()->loadList($person->Id,1);
 	if($oldEevents != null && count($oldEevents)>0) {
 		foreach($oldEevents as $eve) {
@@ -59,17 +59,15 @@ function updateEvents($person) {
 
 	foreach($person->Events as $pEvent) {
 		$event = new RpEventDetail();
-		$event->id;
-		$event->eventType;
-		$event->classification;
-		$event->eventDate;
-		$event->place;
-		$event->addrId;
-		$event->respAgency;
-		$event->religiousAff;
-		$event->cause;
-		$event->restrictionNotice;
-
+		$event->eventType = $pEvent->Type;
+		$event->classification = $pEvent->Description;
+		$event->eventDate = $pEvent->Date;
+		$event->place = $pEvent->Place;
+		//$event->addrId;
+		$event->respAgency = $pEvent->RespAgency;
+		$event->religiousAff = $pEvent->ReligiousAffiliation;
+		$event->cause = $pEvent->Cause;
+		$event->restrictionNotice = $pEvent->Restriction;
 
 		$id = null;
 		try {
@@ -164,6 +162,7 @@ function addFam($credentials, $family) {
 		}
 	}
 	updateChildren($family);
+	updateFamEvents($family);
 	$transaction->commit();
 }
 
@@ -184,7 +183,48 @@ function updateChildren($family) {
 	}
 }
 
-$gedcomFile = "C:\\Users\\ed\\Desktop\\20110208.ged";
+function updateFamEvents($family) {
+	$oldEevents = DAOFactory::getRpFamEventDAO()->loadList($family->Id,1);
+	if($oldEevents != null && count($oldEevents)>0) {
+		foreach($oldEevents as $eve) {
+			DAOFactory::getRpEventDetailDAO()->delete($eve->id);
+		}
+		DAOFactory::getRpFamEventDAO()->deleteByFam($family->Id, 1);
+	}
+
+	foreach($family->Events as $pEvent) {
+		$event = new RpEventDetail();
+		$event->eventType = $pEvent->Type;
+		$event->classification = $pEvent->Description;
+		$event->eventDate = $pEvent->Date;
+		$event->place = $pEvent->Place;
+		//$event->addrId;
+		$event->respAgency = $pEvent->RespAgency;
+		$event->religiousAff = $pEvent->ReligiousAffiliation;
+		$event->cause = $pEvent->Cause;
+		$event->restrictionNotice = $pEvent->Restriction;
+
+		$id = null;
+		try {
+			$id = DAOFactory::getRpEventDetailDAO()->insert($event);
+		} catch (Exception $e) {
+			echo $e->getMessage();
+			throw $e;
+		}
+		$famEvent = new RpFamEvent();
+		$famEvent->famId = $family->Id;
+		$famEvent->famBatchId = 1;
+		$famEvent->eventId = $id;
+		try {
+			$id = DAOFactory::getRpFamEventDAO()->insert($indiEvent);
+		} catch (Exception $e) {
+			echo $e->getMessage();
+			throw $e;
+		}
+	}
+}
+
+$gedcomFile = "C:\\Users\\ed\\Desktop\\adabell.ged";
 $credentials = array( 'hostname' => 'localhost',
 	'dbuser' => 'wpuser1',
 	'dbpassword' => 'wpuser1',
