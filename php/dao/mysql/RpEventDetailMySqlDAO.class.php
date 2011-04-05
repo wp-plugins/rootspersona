@@ -11,7 +11,7 @@ class RpEventDetailMySqlDAO implements RpEventDetailDAO{
 	 * Get Domain object by primry key
 	 *
 	 * @param String $id primary key
-	 * @return RpEventDetailMySql 
+	 * @return RpEventDetailMySql
 	 */
 	public function load($id){
 		$sql = 'SELECT * FROM rp_event_detail WHERE id = ?';
@@ -28,7 +28,7 @@ class RpEventDetailMySqlDAO implements RpEventDetailDAO{
 		$sqlQuery = new SqlQuery($sql);
 		return $this->getList($sqlQuery);
 	}
-	
+
 	/**
 	 * Get all records from table ordered by field
 	 *
@@ -39,7 +39,7 @@ class RpEventDetailMySqlDAO implements RpEventDetailDAO{
 		$sqlQuery = new SqlQuery($sql);
 		return $this->getList($sqlQuery);
 	}
-	
+
 	/**
  	 * Delete record from table
  	 * @param rpEventDetail primary key
@@ -50,16 +50,16 @@ class RpEventDetailMySqlDAO implements RpEventDetailDAO{
 		$sqlQuery->setNumber($id);
 		return $this->executeUpdate($sqlQuery);
 	}
-	
+
 	/**
  	 * Insert record to table
  	 *
  	 * @param RpEventDetailMySql rpEventDetail
  	 */
 	public function insert($rpEventDetail){
-		$sql = 'INSERT INTO rp_event_detail (event_type, classification, event_date, place, addr_id, resp_agency, religious_aff, cause, restriction_notice, update_datetime) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+		$sql = 'INSERT INTO rp_event_detail (event_type, classification, event_date, place, addr_id, resp_agency, religious_aff, cause, restriction_notice, update_datetime) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, now())';
 		$sqlQuery = new SqlQuery($sql);
-		
+
 		$sqlQuery->set($rpEventDetail->eventType);
 		$sqlQuery->set($rpEventDetail->classification);
 		$sqlQuery->set($rpEventDetail->eventDate);
@@ -69,22 +69,21 @@ class RpEventDetailMySqlDAO implements RpEventDetailDAO{
 		$sqlQuery->set($rpEventDetail->religiousAff);
 		$sqlQuery->set($rpEventDetail->cause);
 		$sqlQuery->set($rpEventDetail->restrictionNotice);
-		$sqlQuery->set($rpEventDetail->updateDatetime);
 
-		$id = $this->executeInsert($sqlQuery);	
+		$id = $this->executeInsert($sqlQuery);
 		$rpEventDetail->id = $id;
 		return $id;
 	}
-	
+
 	/**
  	 * Update record in table
  	 *
  	 * @param RpEventDetailMySql rpEventDetail
  	 */
 	public function update($rpEventDetail){
-		$sql = 'UPDATE rp_event_detail SET event_type = ?, classification = ?, event_date = ?, place = ?, addr_id = ?, resp_agency = ?, religious_aff = ?, cause = ?, restriction_notice = ?, update_datetime = ? WHERE id = ?';
+		$sql = 'UPDATE rp_event_detail SET event_type = ?, classification = ?, event_date = ?, place = ?, addr_id = ?, resp_agency = ?, religious_aff = ?, cause = ?, restriction_notice = ?, update_datetime = now() WHERE id = ?';
 		$sqlQuery = new SqlQuery($sql);
-		
+
 		$sqlQuery->set($rpEventDetail->eventType);
 		$sqlQuery->set($rpEventDetail->classification);
 		$sqlQuery->set($rpEventDetail->eventDate);
@@ -94,7 +93,6 @@ class RpEventDetailMySqlDAO implements RpEventDetailDAO{
 		$sqlQuery->set($rpEventDetail->religiousAff);
 		$sqlQuery->set($rpEventDetail->cause);
 		$sqlQuery->set($rpEventDetail->restrictionNotice);
-		$sqlQuery->set($rpEventDetail->updateDatetime);
 
 		$sqlQuery->setNumber($rpEventDetail->id);
 		return $this->executeUpdate($sqlQuery);
@@ -251,15 +249,15 @@ class RpEventDetailMySqlDAO implements RpEventDetailDAO{
 	}
 
 
-	
+
 	/**
 	 * Read row
 	 *
-	 * @return RpEventDetailMySql 
+	 * @return RpEventDetailMySql
 	 */
 	protected function readRow($row){
 		$rpEventDetail = new RpEventDetail();
-		
+
 		$rpEventDetail->id = $row['id'];
 		$rpEventDetail->eventType = $row['event_type'];
 		$rpEventDetail->classification = $row['classification'];
@@ -274,7 +272,7 @@ class RpEventDetailMySqlDAO implements RpEventDetailDAO{
 
 		return $rpEventDetail;
 	}
-	
+
 	protected function getList($sqlQuery){
 		$tab = QueryExecutor::execute($sqlQuery);
 		$ret = array();
@@ -283,28 +281,28 @@ class RpEventDetailMySqlDAO implements RpEventDetailDAO{
 		}
 		return $ret;
 	}
-	
+
 	/**
 	 * Get row
 	 *
-	 * @return RpEventDetailMySql 
+	 * @return RpEventDetailMySql
 	 */
 	protected function getRow($sqlQuery){
 		$tab = QueryExecutor::execute($sqlQuery);
 		if(count($tab)==0){
 			return null;
 		}
-		return $this->readRow($tab[0]);		
+		return $this->readRow($tab[0]);
 	}
-	
+
 	/**
 	 * Execute sql query
 	 */
 	protected function execute($sqlQuery){
 		return QueryExecutor::execute($sqlQuery);
 	}
-	
-		
+
+
 	/**
 	 * Execute sql query
 	 */

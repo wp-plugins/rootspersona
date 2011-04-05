@@ -65,7 +65,7 @@ class GedcomLoader {
 
 		foreach($person->Events as $pEvent) {
 			$event = new RpEventDetail();
-			$event->eventType = $pEvent->Type;
+			$event->eventType = ($pEvent->Tag === 'EVEN'?$pEvent->Type:$pEvent->_TYPES[$pEvent->Tag]);
 			$event->classification = $pEvent->Descr;
 			$event->eventDate = $pEvent->Date;
 			$event->place = $pEvent->Place->Name;
@@ -99,7 +99,7 @@ class GedcomLoader {
 		$oldNames = DAOFactory::getRpIndiNameDAO()->loadList($person->Id,1);
 		if($oldNames != null && count($oldNames)>0) {
 			foreach($oldNames as $name) {
-				DAOFactory::getRpNamePersonalDAO()->delete($name->id);
+				DAOFactory::getRpNamePersonalDAO()->delete($name->nameId);
 			}
 			DAOFactory::getRpIndiNameDAO()->deleteByIndi($person->Id, 1);
 		}
@@ -200,7 +200,7 @@ class GedcomLoader {
 
 		foreach($family->Events as $pEvent) {
 			$event = new RpEventDetail();
-			$event->eventType = $pEvent->Type;
+			$event->eventType = ($pEvent->Tag === 'EVEN'?$pEvent->Type:$pEvent->_TYPES[$pEvent->Tag]);
 			$event->classification = $pEvent->Descr;
 			$event->eventDate = $pEvent->Date;
 			$event->place = $pEvent->Place->Name;
