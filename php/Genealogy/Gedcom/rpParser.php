@@ -40,7 +40,7 @@ class rpParser
      * @var string $Ver
      */
     var $gedcomVersion;
-    
+
     var $charSet = 'ANSEL';
 
     /**
@@ -61,7 +61,7 @@ class rpParser
     'SrcRecs' => array(),
     'SubmRecs' => array()
     );
-    
+
     var $anselConverter = null;
 
     /**
@@ -77,14 +77,15 @@ class rpParser
      * @access public
      * @since Method available since Release 0.0.1
      */
-    public function parse($Filename)
+    public function parse($Filename, $callbackClass=null)
     {
         $this->gedcomFilename = $Filename;
+        $callback=($callbackClass==null?$this:$callbackClass);
         $line = null;
         try {
 	        if ($fp = fopen($this->gedcomFilename, 'r')) {
 	        	$buffer = array();
-	        	$nextLine = $this->_importHeader($fp, $buffer);
+	        	$nextLine = $this->_importHeader($fp, array($callback,'processHeader'));
 	     		while(true) {
 	     			$buffer[] =  $this->convertToUTF8($nextLine);
 	     			while(!feof($fp)) {
@@ -94,7 +95,7 @@ class rpParser
          				} else {
          					$gedcomTree = null;
          					$this->_createTree($buffer, 0, 0, $gedcomTree);
-       						$this->_parseTree($gedcomTree);
+       						$this->_parseTree($gedcomTree,$callback);
        						unset($buffer);
        						unset($gedcomTree);
        						$nextLine = $line;
@@ -106,7 +107,7 @@ class rpParser
 	     				break;
 	     			} else if (feof($fp)) {
 	     				fclose($fp);
-	     				throw new FileException('Invalid GEDCOM file: invalid TRLR record.');  
+	     				throw new FileException('Invalid GEDCOM file: invalid TRLR record.');
 	     			}
 	     		}
 	        } else {
@@ -120,13 +121,13 @@ class rpParser
         }
     }
 
-    function _importHeader(&$fp) {
+    function _importHeader(&$fp, $processHeader) {
     	if(feof($fp)) {
-        	throw new FileException('Invalid GEDCOM file: invalid HEAD record.'); 			
+        	throw new FileException('Invalid GEDCOM file: invalid HEAD record.');
     	}
-    	
+
         $line = trim(fgets($fp, 1024));
-        if (($line != '' ) 
+        if (($line != '' )
         	&&(strpos($line,'0 HEAD') !== false)) {
         	$buffer[] = $line;
         	while (!feof($fp) && $line[0] != '0') {
@@ -137,20 +138,20 @@ class rpParser
          	}
          	$gedcomTree = null;
          	$this->_createTree($buffer, 0, 0, $gedcomTree);
-       		$this->_parseHeader($gedcomTree);
+       		$this->_parseHeader($gedcomTree,$processHeader);
         } else {
-        	throw new FileException('Invalid GEDCOM file: invalid HEAD record.');            	
+        	throw new FileException('Invalid GEDCOM file: invalid HEAD record.');
         }
         return $line;
     }
-    
+
     function convertToUTF8($str) {
     	switch ($this->charSet) {
     		case 'UTF8':
     		case 'UTF-8':
     			return $str;
     		case 'ANSEL':
-    			if($this->anselConverter == null) 
+    			if($this->anselConverter == null)
     				$this->anselConverter = new Ansel2Unicode();
     			return $this->anselConverter->convert($str);
     		case 'ANSI':
@@ -158,11 +159,11 @@ class rpParser
     		case 'ASCII':
 				return mb_convert_encoding ($str , 'UTF-8', 'ASCII');
     		case 'ISO-8859-1':
-				return mb_convert_encoding ($str , 'UTF-8', 'ISO-8859-1');    			
+				return mb_convert_encoding ($str , 'UTF-8', 'ISO-8859-1');
     		case 'IBMPC':
-    			// Note:The IBMPC character set is not allowed. 
+    			// Note:The IBMPC character set is not allowed.
     			// This character set cannot be interpreted properly
-    			// without knowing which code page the sender was using.	
+    			// without knowing which code page the sender was using.
     			// we will fall thru to default and hope for the best
     		default:
     			return mb_convert_encoding ($str , 'UTF-8');
@@ -228,25 +229,25 @@ class rpParser
      *
      * @return void
      */
-    private function _parseTree($tree)
+    private function _parseTree($tree,$callback)
     {
         foreach ($tree as $row) {
             if (@preg_match('/0 @[A-Z, a-z, 0-9, :, !, -]*@ SUBN/US', $row[0])) {
-                $this->_parseSubmission($row);
+                $this->_parseSubmission($row,array($callback,'processSubmission'));
             } else if (@preg_match('/0 @[A-Z, a-z, 0-9, :, !, -]*@ FAM/US', $row[0])) {
-                $this->_parseFamily($row);
+                $this->_parseFamily($row,array($callback,'processFamily'));
             } else if (@preg_match('/0 @[A-Z, a-z, 0-9, :, !, -]*@ INDI/US', $row[0])) {
-                $this->_parseIndividual($row);
+                $this->_parseIndividual($row,array($callback,'processIndividual'));
             } else if (@preg_match('/0 @[A-Z, a-z, 0-9, :, !, -]*@ OBJE/US', $row[0])) {
-                $this->_parseMedia($row);
+                $this->_parseMedia($row,array($callback,'processMedia'));
             } else if (@preg_match('/0 @[A-Z, a-z, 0-9, :, !, -]*@ NOTE/US', $row[0])) {
-                $this->_parseNote($row);
+                $this->_parseNote($row,array($callback,'processNote'));
             } else if (@preg_match('/0 @[A-Z, a-z, 0-9, :, !, -]*@ REPO/US', $row[0])) {
-                $this->_parseRespository($row);
+                $this->_parseRepository($row,array($callback,'processRepository'));
             } else if (@preg_match('/0 @[A-Z, a-z, 0-9, :, !, -]*@ SOUR/US', $row[0])) {
-                $this->_parseSource($row);
+                $this->_parseSource($row,array($callback,'processSource'));
             } else if (@preg_match('/0 @[A-Z, a-z, 0-9, :, !, -]*@ SUBM/US', $row[0])) {
-                $this->_parseSubmitter($row);
+                $this->_parseSubmitter($row,array($callback,'processSubmitter'));
             }
         }
     }
@@ -257,13 +258,17 @@ class rpParser
      *
      * @return void
      */
-    private function _parseHeader($tree)
+    private function _parseHeader($tree,$processHeader)
     {
         $rec = new HeaderRecord();
         $rec->parseTree($tree, null);
-        $this->gedcomObjects['HeaderRec'] = $rec;
+		call_user_func($processHeader,$rec);
         $this->gedcomVersion = $rec->GedC->VerNbr;
         $this->charSet = $rec->CharacterSet;
+    }
+
+    function processHeader($rec) {
+        $this->gedcomObjects['HeaderRec'] = $rec;
     }
 
     /**
@@ -273,10 +278,14 @@ class rpParser
      *
      * @return void
      */
-    private function _parseSubmission($tree)
+    private function _parseSubmission($tree,$processSubmission)
     {
         $rec = new SubmissionRecord();
         $rec->parseTree(array($tree), $this->gedcomVersion);
+		call_user_func($processSubmission,$rec);
+    }
+
+    function processSubmission($rec) {
         $this->gedcomObjects['SubnRec'] = $rec;
     }
     /**
@@ -286,10 +295,15 @@ class rpParser
      *
      * @return void
      */
-    private function _parseFamily($tree)
+    private function _parseFamily($tree,$processFamily)
     {
         $rec = new FamilyRecord();
         $rec->parseTree(array($tree), $this->gedcomVersion);
+        call_user_func($processFamily,$rec);
+
+    }
+
+    function processFamily($rec) {
         $this->gedcomObjects['FamRecs']["$rec->Id"] = $rec;
     }
     /**
@@ -299,13 +313,16 @@ class rpParser
      *
      * @return void
      */
-    private function _parseIndividual($tree)
+    private function _parseIndividual($tree, $processIndividual)
     {
         $rec = new IndividualRecord();
         $rec->parseTree(array($tree), $this->gedcomVersion);
-        $this->gedcomObjects['IndiRecs']["$rec->Id"] = $rec;
+		call_user_func($processIndividual,$rec);
     }
 
+    function processIndividual($rec) {
+        $this->gedcomObjects['IndiRecs']["$rec->Id"] = $rec;
+    }
     /**
      * Creates the Media Object
      *
@@ -313,13 +330,16 @@ class rpParser
      *
      * @return void
      */
-    private function _parseMedia($tree)
+    private function _parseMedia($tree,$processMedia)
     {
-        $rec = new MediaRecord();
+        $rec = new MediaRecord($processMedia);
         $rec->parseTree(array($tree), $this->gedcomVersion);
-        $this->gedcomObjects['MediaRecs']["$rec->Id"] = $rec;
+        call_user_func($processMedia,$rec);
     }
 
+    function processMedia($rec) {
+        $this->gedcomObjects['MediaRecs']["$rec->Id"] = $rec;
+    }
     /**
      * Creates the Note Object
      *
@@ -327,12 +347,17 @@ class rpParser
      *
      * @return void
      */
-    private function _parseNote($tree)
+    private function _parseNote($tree,$processNote)
     {
         $rec = new NoteRecord();
         $rec->parseTree(array($tree), $this->gedcomVersion);
+        call_user_func($processNote,$rec);
+    }
+
+    function processNote($rec) {
         $this->gedcomObjects['NoteRecs']["$rec->Id"] = $rec;
     }
+
     /**
      * Creates the Repository Object
      *
@@ -340,12 +365,17 @@ class rpParser
      *
      * @return void
      */
-    private function _parseRespository($tree)
+    private function _parseRepository($tree,$processRepository)
     {
         $rec = new RepositoryRecord();
         $rec->parseTree(array($tree), $this->gedcomVersion);
+        call_user_func($processRepository,$rec);
+    }
+
+    function processRepository($rec) {
         $this->gedcomObjects['RepoRecs']["$rec->Id"] = $rec;
     }
+
     /**
      * Creates the Source Object
      *
@@ -353,10 +383,14 @@ class rpParser
      *
      * @return void
      */
-    private function _parseSource($tree)
+    private function _parseSource($tree, $processSource)
     {
         $rec = new SourceRecord();
         $rec->parseTree(array($tree), $this->gedcomVersion);
+        call_user_func($processSource,$rec);
+    }
+
+    function processSource($rec) {
         $this->gedcomObjects['SrcRecs']["$rec->Id"] = $rec;
     }
 
@@ -367,10 +401,14 @@ class rpParser
      *
      * @return void
      */
-    private function _parseSubmitter($tree)
+    private function _parseSubmitter($tree,$processSubmitter)
     {
         $rec = new SubmitterRecord();
         $rec->parseTree(array($tree), $this->gedcomVersion);
+        call_user_func($processSubmitter,$rec);
+    }
+
+    function processSubmitter($rec) {
         $this->gedcomObjects['SubmRecs']["$rec->Id"] = $rec;
     }
 

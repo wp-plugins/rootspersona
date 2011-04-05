@@ -11,7 +11,7 @@ class RpIndiEventMySqlDAO implements RpIndiEventDAO{
 	 * Get Domain object by primry key
 	 *
 	 * @param String $id primary key
-	 * @return RpIndiEventMySql 
+	 * @return RpIndiEventMySql
 	 */
 	public function load($indiId, $indiBatchId, $eventId){
 		$sql = 'SELECT * FROM rp_indi_event WHERE indi_id = ?  AND indi_batch_id = ?  AND event_id = ? ';
@@ -31,7 +31,7 @@ class RpIndiEventMySqlDAO implements RpIndiEventDAO{
 		$sqlQuery = new SqlQuery($sql);
 		return $this->getList($sqlQuery);
 	}
-	
+
 	/**
 	 * Get all records from table ordered by field
 	 *
@@ -42,7 +42,7 @@ class RpIndiEventMySqlDAO implements RpIndiEventDAO{
 		$sqlQuery = new SqlQuery($sql);
 		return $this->getList($sqlQuery);
 	}
-	
+
 	/**
  	 * Delete record from table
  	 * @param rpIndiEvent primary key
@@ -56,43 +56,35 @@ class RpIndiEventMySqlDAO implements RpIndiEventDAO{
 
 		return $this->executeUpdate($sqlQuery);
 	}
-	
+
 	/**
  	 * Insert record to table
  	 *
  	 * @param RpIndiEventMySql rpIndiEvent
  	 */
 	public function insert($rpIndiEvent){
-		$sql = 'INSERT INTO rp_indi_event (update_datetime, indi_id, indi_batch_id, event_id) VALUES (?, ?, ?, ?)';
+		$sql = 'INSERT INTO rp_indi_event (update_datetime, indi_id, indi_batch_id, event_id) VALUES (now(), ?, ?, ?)';
 		$sqlQuery = new SqlQuery($sql);
-		
-		$sqlQuery->set($rpIndiEvent->updateDatetime);
 
-		
-		$sqlQuery->setNumber($rpIndiEvent->indiId);
+		$sqlQuery->set($rpIndiEvent->indiId);
 
 		$sqlQuery->setNumber($rpIndiEvent->indiBatchId);
 
 		$sqlQuery->setNumber($rpIndiEvent->eventId);
 
-		$this->executeInsert($sqlQuery);	
-		//$rpIndiEvent->id = $id;
-		//return $id;
+		$this->executeInsert($sqlQuery);
 	}
-	
+
 	/**
  	 * Update record in table
  	 *
  	 * @param RpIndiEventMySql rpIndiEvent
  	 */
 	public function update($rpIndiEvent){
-		$sql = 'UPDATE rp_indi_event SET update_datetime = ? WHERE indi_id = ?  AND indi_batch_id = ?  AND event_id = ? ';
+		$sql = 'UPDATE rp_indi_event SET update_datetime = now() WHERE indi_id = ?  AND indi_batch_id = ?  AND event_id = ? ';
 		$sqlQuery = new SqlQuery($sql);
-		
-		$sqlQuery->set($rpIndiEvent->updateDatetime);
 
-		
-		$sqlQuery->setNumber($rpIndiEvent->indiId);
+		$sqlQuery->set($rpIndiEvent->indiId);
 
 		$sqlQuery->setNumber($rpIndiEvent->indiBatchId);
 
@@ -126,15 +118,15 @@ class RpIndiEventMySqlDAO implements RpIndiEventDAO{
 	}
 
 
-	
+
 	/**
 	 * Read row
 	 *
-	 * @return RpIndiEventMySql 
+	 * @return RpIndiEventMySql
 	 */
 	protected function readRow($row){
 		$rpIndiEvent = new RpIndiEvent();
-		
+
 		$rpIndiEvent->indiId = $row['indi_id'];
 		$rpIndiEvent->indiBatchId = $row['indi_batch_id'];
 		$rpIndiEvent->eventId = $row['event_id'];
@@ -142,7 +134,7 @@ class RpIndiEventMySqlDAO implements RpIndiEventDAO{
 
 		return $rpIndiEvent;
 	}
-	
+
 	protected function getList($sqlQuery){
 		$tab = QueryExecutor::execute($sqlQuery);
 		$ret = array();
@@ -151,28 +143,28 @@ class RpIndiEventMySqlDAO implements RpIndiEventDAO{
 		}
 		return $ret;
 	}
-	
+
 	/**
 	 * Get row
 	 *
-	 * @return RpIndiEventMySql 
+	 * @return RpIndiEventMySql
 	 */
 	protected function getRow($sqlQuery){
 		$tab = QueryExecutor::execute($sqlQuery);
 		if(count($tab)==0){
 			return null;
 		}
-		return $this->readRow($tab[0]);		
+		return $this->readRow($tab[0]);
 	}
-	
+
 	/**
 	 * Execute sql query
 	 */
 	protected function execute($sqlQuery){
 		return QueryExecutor::execute($sqlQuery);
 	}
-	
-		
+
+
 	/**
 	 * Execute sql query
 	 */

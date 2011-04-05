@@ -64,6 +64,7 @@ DROP TABLE IF EXISTS rp_fam;
 CREATE TABLE IF NOT EXISTS rp_fam (
   id varchar(22) NOT NULL DEFAULT '',
   batch_id tinyint(4) NOT NULL DEFAULT '1',
+  restriction_notice varchar(7) DEFAULT NULL,
   spouse1 varchar(22) DEFAULT NULL,
   indi_batch_id_1 tinyint(4) DEFAULT NULL,
   spouse2 varchar(22) DEFAULT NULL,
@@ -307,4 +308,22 @@ CREATE TABLE IF NOT EXISTS rp_submitter_note (
   note_id int(11) NOT NULL,
   update_datetime datetime NOT NULL,
   PRIMARY KEY (submitter_id,submitter_batch_id,note_id)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS rp_fam_event;
+CREATE TABLE IF NOT EXISTS `rp_fam_event` (
+  `fam_id` varchar(22) NOT NULL DEFAULT '',
+  `fam_batch_id` tinyint(4) NOT NULL DEFAULT '0',
+  `event_id` int(11) NOT NULL DEFAULT '0',
+  `update_datetime` datetime NOT NULL,
+  PRIMARY KEY (`fam_id`,`fam_batch_id`,`event_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS rp_indi_event;
+CREATE TABLE IF NOT EXISTS `rp_indi_event` (
+  `indi_id` varchar(22) NOT NULL,
+  `indi_batch_id` tinyint(4) NOT NULL,
+  `event_id` int(11) NOT NULL,
+  `update_datetime` datetime NOT NULL,
+  PRIMARY KEY (`indi_id`,`indi_batch_id`,`event_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;

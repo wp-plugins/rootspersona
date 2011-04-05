@@ -37,9 +37,9 @@ class GedcomManager extends rpParser
      * @access public
      * @since Method available since Release 0.0.1
      */
-    function parse($Filename)
+    function parse($Filename, $callbackClass=null)
     {
-        parent::parse($Filename);
+        parent::parse($Filename, $callbackClass);
     }
 
     /**
@@ -173,7 +173,7 @@ class GedcomManager extends rpParser
         return $this->gedcomObjects['MediaRecs'][$identifier];
         else return null;
     }
-    
+
     function getSource($identifier)
     {
     	if(isset($this->gedcomObjects['SrcRecs'][$identifier]))
@@ -240,7 +240,7 @@ class GedcomManager extends rpParser
 
         $ged .= "\n"
         . $this->gedcomObjects['SubnRec']->toGedcom(0, '5.5.1');
-        
+
 		$cnt = count($this->gedcomObjects['IndiRecs']);
         for ($i = 0; $i < $cnt; $i++) {
             $ged .= "\n"

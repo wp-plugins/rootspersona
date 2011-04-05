@@ -11,7 +11,7 @@ class RpFamEventMySqlDAO implements RpFamEventDAO{
 	 * Get Domain object by primry key
 	 *
 	 * @param String $id primary key
-	 * @return RpFamEventMySql 
+	 * @return RpFamEventMySql
 	 */
 	public function load($famId, $famBatchId, $eventId){
 		$sql = 'SELECT * FROM rp_fam_event WHERE fam_id = ?  AND fam_batch_id = ?  AND event_id = ? ';
@@ -31,7 +31,7 @@ class RpFamEventMySqlDAO implements RpFamEventDAO{
 		$sqlQuery = new SqlQuery($sql);
 		return $this->getList($sqlQuery);
 	}
-	
+
 	/**
 	 * Get all records from table ordered by field
 	 *
@@ -42,7 +42,7 @@ class RpFamEventMySqlDAO implements RpFamEventDAO{
 		$sqlQuery = new SqlQuery($sql);
 		return $this->getList($sqlQuery);
 	}
-	
+
 	/**
  	 * Delete record from table
  	 * @param rpFamEvent primary key
@@ -56,43 +56,35 @@ class RpFamEventMySqlDAO implements RpFamEventDAO{
 
 		return $this->executeUpdate($sqlQuery);
 	}
-	
+
 	/**
  	 * Insert record to table
  	 *
  	 * @param RpFamEventMySql rpFamEvent
  	 */
 	public function insert($rpFamEvent){
-		$sql = 'INSERT INTO rp_fam_event (update_datetime, fam_id, fam_batch_id, event_id) VALUES (?, ?, ?, ?)';
+		$sql = 'INSERT INTO rp_fam_event (update_datetime, fam_id, fam_batch_id, event_id) VALUES (now(), ?, ?, ?)';
 		$sqlQuery = new SqlQuery($sql);
-		
-		$sqlQuery->set($rpFamEvent->updateDatetime);
 
-		
-		$sqlQuery->setNumber($rpFamEvent->famId);
+		$sqlQuery->set($rpFamEvent->famId);
 
 		$sqlQuery->setNumber($rpFamEvent->famBatchId);
 
 		$sqlQuery->setNumber($rpFamEvent->eventId);
 
-		$this->executeInsert($sqlQuery);	
-		//$rpFamEvent->id = $id;
-		//return $id;
+		$this->executeInsert($sqlQuery);
 	}
-	
+
 	/**
  	 * Update record in table
  	 *
  	 * @param RpFamEventMySql rpFamEvent
  	 */
 	public function update($rpFamEvent){
-		$sql = 'UPDATE rp_fam_event SET update_datetime = ? WHERE fam_id = ?  AND fam_batch_id = ?  AND event_id = ? ';
+		$sql = 'UPDATE rp_fam_event SET update_datetime = now() WHERE fam_id = ?  AND fam_batch_id = ?  AND event_id = ? ';
 		$sqlQuery = new SqlQuery($sql);
-		
-		$sqlQuery->set($rpFamEvent->updateDatetime);
 
-		
-		$sqlQuery->setNumber($rpFamEvent->famId);
+		$sqlQuery->set($rpFamEvent->famId);
 
 		$sqlQuery->setNumber($rpFamEvent->famBatchId);
 
@@ -126,15 +118,15 @@ class RpFamEventMySqlDAO implements RpFamEventDAO{
 	}
 
 
-	
+
 	/**
 	 * Read row
 	 *
-	 * @return RpFamEventMySql 
+	 * @return RpFamEventMySql
 	 */
 	protected function readRow($row){
 		$rpFamEvent = new RpFamEvent();
-		
+
 		$rpFamEvent->famId = $row['fam_id'];
 		$rpFamEvent->famBatchId = $row['fam_batch_id'];
 		$rpFamEvent->eventId = $row['event_id'];
@@ -142,7 +134,7 @@ class RpFamEventMySqlDAO implements RpFamEventDAO{
 
 		return $rpFamEvent;
 	}
-	
+
 	protected function getList($sqlQuery){
 		$tab = QueryExecutor::execute($sqlQuery);
 		$ret = array();
@@ -151,28 +143,28 @@ class RpFamEventMySqlDAO implements RpFamEventDAO{
 		}
 		return $ret;
 	}
-	
+
 	/**
 	 * Get row
 	 *
-	 * @return RpFamEventMySql 
+	 * @return RpFamEventMySql
 	 */
 	protected function getRow($sqlQuery){
 		$tab = QueryExecutor::execute($sqlQuery);
 		if(count($tab)==0){
 			return null;
 		}
-		return $this->readRow($tab[0]);		
+		return $this->readRow($tab[0]);
 	}
-	
+
 	/**
 	 * Execute sql query
 	 */
 	protected function execute($sqlQuery){
 		return QueryExecutor::execute($sqlQuery);
 	}
-	
-		
+
+
 	/**
 	 * Execute sql query
 	 */
