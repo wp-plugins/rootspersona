@@ -9,13 +9,69 @@ class GedcomLoader {
 		$this->credentials = $credentials;
 		$this->ged = new GedcomManager();
 		$this->ged->parse($gedcomFile, $this);
-//		foreach ($ged->gedcomObjects['IndiRecs'] as $obj) {
-//			$this->addIndi($obj);
-//		}
-//
-//		foreach ($ged->gedcomObjects['FamRecs'] as $obj) {
-//			$this->addFam($obj);
-//		}
+	}
+	function addSubm($rec ) {
+		$subm = new RpSubmitter();
+		$subm->batchId = '1';
+		$subm->id = $rec->Id;
+		$subm->submitterName = $rec->Name;
+		//$subm->addrId = $rec->;
+		$subm->lang1 = $rec->Language;
+		//$subm->lang2 = $rec->;
+		//$subm->lang3 = $rec->;
+		$subm->registeredRfn = $rec->SubmitterRefNbr;
+		$subm->autoRecId = $rec->AutoRecId;
+		$subm->gedChangeDate = $rec->ChangeDate->Date;
+		try {
+			$transaction = new Transaction($this->credentials);
+			DAOFactory::getRpSubmitterDAO()->deleteByBatchId($subm->batchId);
+			DAOFactory::getRpSubmitterDAO()->insert($subm);
+		} catch (Exception $e) {
+			echo $e->getMessage();
+			throw $e;
+		}
+		$transaction->commit();
+	}
+	function addSubn($rec ) {
+
+	}
+	function addHdr($rec ) {
+		$hdr = new RpHeader();
+		$hdr->batchId = '1';
+		$hdr->srcSystemId = $rec->SourceSystem->SystemId;
+		$hdr->srcSystemVersion = $rec->SourceSystem->VerNbr;
+		$hdr->productName = $rec->SourceSystem->ProductName;
+		$hdr->corpName = $rec->SourceSystem->Corporation->Name;
+		//$hdr->corpAddrId = $rec->;
+		$hdr->srcDataName = $rec->SourceSystem->rpData->SourceName;
+		$hdr->publicationDate = $rec->SourceSystem->rpData->Date;
+		$hdr->copyrightSrcData = $rec->SourceSystem->rpData->Copyright;
+		$hdr->receivingSysName = $rec->DestinationSystem;
+		$hdr->transmissionDate = $rec->TransmissionDateTime;
+		//$hdr->transmissionTime = $rec->;
+		$hdr->submitterId = $rec->SubmitterId;
+		$hdr->submitterBatchId = $hdr->batchId;
+		$hdr->submissionId = $rec->SubmissionId;
+		$hdr->submissionBatchId = $hdr->batchId;
+		$hdr->fileName = $rec->Filename;
+		$hdr->copyrightGedFile = $rec->Copyright;
+		$hdr->lang = $rec->Language;
+		$hdr->gedcVersion = $rec->GedC->VerNbr;
+		$hdr->gedcForm = $rec->GedC->Form;
+		$hdr->charSet = $rec->CharacterSet->CharacterSet;
+		$hdr->charSetVersion = $rec->CharacterSet->VerNbr;
+		$hdr->placeHierarchy = $rec->PlaceForm;
+		$hdr->gedContentDescription = $rec->Note->Text;
+
+		try {
+			$transaction = new Transaction($this->credentials);
+			DAOFactory::getRpHeaderDAO()->deleteByBatchId($hdr->batchId);
+			DAOFactory::getRpHeaderDAO()->insert($hdr);
+		} catch (Exception $e) {
+			echo $e->getMessage();
+			throw $e;
+		}
+		$transaction->commit();
 	}
 
 	function addIndi($person) {
@@ -231,11 +287,11 @@ class GedcomLoader {
 	}
 
 	function processHeader($rec) {
-		//$this->ged->gedcomObjects['HeaderRec'] = $rec;
+		$this->addHdr($rec);
 	}
 
 	function processSubmission($rec) {
-		//$this->ged->gedcomObjects['SubnRec'] = $rec;
+		$this->addSubn($rec);
 	}
 
 	function processFamily($rec) {
@@ -263,7 +319,7 @@ class GedcomLoader {
 	}
 
 	function processSubmitter($rec) {
-		//$this->ged->gedcomObjects['SubmRecs']["$rec->Id"] = $rec;
+		$this->addSubm($rec);
 	}
 }
 //$gedcomFile = "C:\\Users\\ed\\Desktop\\adabell.ged";

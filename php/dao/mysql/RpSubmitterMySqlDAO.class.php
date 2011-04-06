@@ -11,12 +11,12 @@ class RpSubmitterMySqlDAO implements RpSubmitterDAO{
 	 * Get Domain object by primry key
 	 *
 	 * @param String $id primary key
-	 * @return RpSubmitterMySql 
+	 * @return RpSubmitterMySql
 	 */
 	public function load($id, $batchId){
 		$sql = 'SELECT * FROM rp_submitter WHERE id = ?  AND batch_id = ? ';
 		$sqlQuery = new SqlQuery($sql);
-		$sqlQuery->setNumber($id);
+		$sqlQuery->set($id);
 		$sqlQuery->setNumber($batchId);
 
 		return $this->getRow($sqlQuery);
@@ -30,7 +30,7 @@ class RpSubmitterMySqlDAO implements RpSubmitterDAO{
 		$sqlQuery = new SqlQuery($sql);
 		return $this->getList($sqlQuery);
 	}
-	
+
 	/**
 	 * Get all records from table ordered by field
 	 *
@@ -41,7 +41,7 @@ class RpSubmitterMySqlDAO implements RpSubmitterDAO{
 		$sqlQuery = new SqlQuery($sql);
 		return $this->getList($sqlQuery);
 	}
-	
+
 	/**
  	 * Delete record from table
  	 * @param rpSubmitter primary key
@@ -49,21 +49,21 @@ class RpSubmitterMySqlDAO implements RpSubmitterDAO{
 	public function delete($id, $batchId){
 		$sql = 'DELETE FROM rp_submitter WHERE id = ?  AND batch_id = ? ';
 		$sqlQuery = new SqlQuery($sql);
-		$sqlQuery->setNumber($id);
+		$sqlQuery->set($id);
 		$sqlQuery->setNumber($batchId);
 
 		return $this->executeUpdate($sqlQuery);
 	}
-	
+
 	/**
  	 * Insert record to table
  	 *
  	 * @param RpSubmitterMySql rpSubmitter
  	 */
 	public function insert($rpSubmitter){
-		$sql = 'INSERT INTO rp_submitter (submitter_name, addr_id, lang1, lang2, lang3, registered_rfn, auto_rec_id, ged_change_date, update_datetime, id, batch_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+		$sql = 'INSERT INTO rp_submitter (submitter_name, addr_id, lang1, lang2, lang3, registered_rfn, auto_rec_id, ged_change_date, update_datetime, id, batch_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, now(), ?, ?)';
 		$sqlQuery = new SqlQuery($sql);
-		
+
 		$sqlQuery->set($rpSubmitter->submitterName);
 		$sqlQuery->setNumber($rpSubmitter->addrId);
 		$sqlQuery->set($rpSubmitter->lang1);
@@ -72,27 +72,24 @@ class RpSubmitterMySqlDAO implements RpSubmitterDAO{
 		$sqlQuery->set($rpSubmitter->registeredRfn);
 		$sqlQuery->set($rpSubmitter->autoRecId);
 		$sqlQuery->set($rpSubmitter->gedChangeDate);
-		$sqlQuery->set($rpSubmitter->updateDatetime);
-
-		
-		$sqlQuery->setNumber($rpSubmitter->id);
+		$sqlQuery->set($rpSubmitter->id);
 
 		$sqlQuery->setNumber($rpSubmitter->batchId);
 
-		$this->executeInsert($sqlQuery);	
+		$this->executeInsert($sqlQuery);
 		//$rpSubmitter->id = $id;
 		//return $id;
 	}
-	
+
 	/**
  	 * Update record in table
  	 *
  	 * @param RpSubmitterMySql rpSubmitter
  	 */
 	public function update($rpSubmitter){
-		$sql = 'UPDATE rp_submitter SET submitter_name = ?, addr_id = ?, lang1 = ?, lang2 = ?, lang3 = ?, registered_rfn = ?, auto_rec_id = ?, ged_change_date = ?, update_datetime = ? WHERE id = ?  AND batch_id = ? ';
+		$sql = 'UPDATE rp_submitter SET submitter_name = ?, addr_id = ?, lang1 = ?, lang2 = ?, lang3 = ?, registered_rfn = ?, auto_rec_id = ?, ged_change_date = ?, update_datetime = now() WHERE id = ?  AND batch_id = ? ';
 		$sqlQuery = new SqlQuery($sql);
-		
+
 		$sqlQuery->set($rpSubmitter->submitterName);
 		$sqlQuery->setNumber($rpSubmitter->addrId);
 		$sqlQuery->set($rpSubmitter->lang1);
@@ -101,10 +98,7 @@ class RpSubmitterMySqlDAO implements RpSubmitterDAO{
 		$sqlQuery->set($rpSubmitter->registeredRfn);
 		$sqlQuery->set($rpSubmitter->autoRecId);
 		$sqlQuery->set($rpSubmitter->gedChangeDate);
-		$sqlQuery->set($rpSubmitter->updateDatetime);
-
-		
-		$sqlQuery->setNumber($rpSubmitter->id);
+		$sqlQuery->set($rpSubmitter->id);
 
 		$sqlQuery->setNumber($rpSubmitter->batchId);
 
@@ -248,15 +242,15 @@ class RpSubmitterMySqlDAO implements RpSubmitterDAO{
 	}
 
 
-	
+
 	/**
 	 * Read row
 	 *
-	 * @return RpSubmitterMySql 
+	 * @return RpSubmitterMySql
 	 */
 	protected function readRow($row){
 		$rpSubmitter = new RpSubmitter();
-		
+
 		$rpSubmitter->id = $row['id'];
 		$rpSubmitter->batchId = $row['batch_id'];
 		$rpSubmitter->submitterName = $row['submitter_name'];
@@ -271,7 +265,7 @@ class RpSubmitterMySqlDAO implements RpSubmitterDAO{
 
 		return $rpSubmitter;
 	}
-	
+
 	protected function getList($sqlQuery){
 		$tab = QueryExecutor::execute($sqlQuery);
 		$ret = array();
@@ -280,28 +274,28 @@ class RpSubmitterMySqlDAO implements RpSubmitterDAO{
 		}
 		return $ret;
 	}
-	
+
 	/**
 	 * Get row
 	 *
-	 * @return RpSubmitterMySql 
+	 * @return RpSubmitterMySql
 	 */
 	protected function getRow($sqlQuery){
 		$tab = QueryExecutor::execute($sqlQuery);
 		if(count($tab)==0){
 			return null;
 		}
-		return $this->readRow($tab[0]);		
+		return $this->readRow($tab[0]);
 	}
-	
+
 	/**
 	 * Execute sql query
 	 */
 	protected function execute($sqlQuery){
 		return QueryExecutor::execute($sqlQuery);
 	}
-	
-		
+
+
 	/**
 	 * Execute sql query
 	 */

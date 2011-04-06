@@ -11,7 +11,7 @@ class RpHeaderMySqlDAO implements RpHeaderDAO{
 	 * Get Domain object by primry key
 	 *
 	 * @param String $id primary key
-	 * @return RpHeaderMySql 
+	 * @return RpHeaderMySql
 	 */
 	public function load($id, $batchId){
 		$sql = 'SELECT * FROM rp_header WHERE id = ?  AND batch_id = ? ';
@@ -30,7 +30,7 @@ class RpHeaderMySqlDAO implements RpHeaderDAO{
 		$sqlQuery = new SqlQuery($sql);
 		return $this->getList($sqlQuery);
 	}
-	
+
 	/**
 	 * Get all records from table ordered by field
 	 *
@@ -41,7 +41,7 @@ class RpHeaderMySqlDAO implements RpHeaderDAO{
 		$sqlQuery = new SqlQuery($sql);
 		return $this->getList($sqlQuery);
 	}
-	
+
 	/**
  	 * Delete record from table
  	 * @param rpHeader primary key
@@ -54,16 +54,16 @@ class RpHeaderMySqlDAO implements RpHeaderDAO{
 
 		return $this->executeUpdate($sqlQuery);
 	}
-	
+
 	/**
  	 * Insert record to table
  	 *
  	 * @param RpHeaderMySql rpHeader
  	 */
 	public function insert($rpHeader){
-		$sql = 'INSERT INTO rp_header (src_system_id, src_system_version, product_name, corp_name, corp_addr_id, src_data_name, publication_date, copyright_src_data, receiving_sys_name, transmission_date, transmission_time, submitter_id, submitter_batch_id, submission_id, submission_batch_id, file_name, copyright_ged_file, lang, gedc_version, gedc_form, char_set, char_set_version, place_hierarchy, ged_content_description, update_datetime, id, batch_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+		$sql = 'INSERT INTO rp_header (src_system_id, src_system_version, product_name, corp_name, corp_addr_id, src_data_name, publication_date, copyright_src_data, receiving_sys_name, transmission_date, transmission_time, submitter_id, submitter_batch_id, submission_id, submission_batch_id, file_name, copyright_ged_file, lang, gedc_version, gedc_form, char_set, char_set_version, place_hierarchy, ged_content_description, update_datetime, batch_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now(), ?)';
 		$sqlQuery = new SqlQuery($sql);
-		
+
 		$sqlQuery->set($rpHeader->srcSystemId);
 		$sqlQuery->set($rpHeader->srcSystemVersion);
 		$sqlQuery->set($rpHeader->productName);
@@ -88,27 +88,21 @@ class RpHeaderMySqlDAO implements RpHeaderDAO{
 		$sqlQuery->set($rpHeader->charSetVersion);
 		$sqlQuery->set($rpHeader->placeHierarchy);
 		$sqlQuery->set($rpHeader->gedContentDescription);
-		$sqlQuery->set($rpHeader->updateDatetime);
-
-		
-		$sqlQuery->setNumber($rpHeader->id);
 
 		$sqlQuery->setNumber($rpHeader->batchId);
 
-		$this->executeInsert($sqlQuery);	
-		//$rpHeader->id = $id;
-		//return $id;
+		$this->executeInsert($sqlQuery);
 	}
-	
+
 	/**
  	 * Update record in table
  	 *
  	 * @param RpHeaderMySql rpHeader
  	 */
 	public function update($rpHeader){
-		$sql = 'UPDATE rp_header SET src_system_id = ?, src_system_version = ?, product_name = ?, corp_name = ?, corp_addr_id = ?, src_data_name = ?, publication_date = ?, copyright_src_data = ?, receiving_sys_name = ?, transmission_date = ?, transmission_time = ?, submitter_id = ?, submitter_batch_id = ?, submission_id = ?, submission_batch_id = ?, file_name = ?, copyright_ged_file = ?, lang = ?, gedc_version = ?, gedc_form = ?, char_set = ?, char_set_version = ?, place_hierarchy = ?, ged_content_description = ?, update_datetime = ? WHERE id = ?  AND batch_id = ? ';
+		$sql = 'UPDATE rp_header SET src_system_id = ?, src_system_version = ?, product_name = ?, corp_name = ?, corp_addr_id = ?, src_data_name = ?, publication_date = ?, copyright_src_data = ?, receiving_sys_name = ?, transmission_date = ?, transmission_time = ?, submitter_id = ?, submitter_batch_id = ?, submission_id = ?, submission_batch_id = ?, file_name = ?, copyright_ged_file = ?, lang = ?, gedc_version = ?, gedc_form = ?, char_set = ?, char_set_version = ?, place_hierarchy = ?, ged_content_description = ?, update_datetime = now() WHERE id = ?  AND batch_id = ? ';
 		$sqlQuery = new SqlQuery($sql);
-		
+
 		$sqlQuery->set($rpHeader->srcSystemId);
 		$sqlQuery->set($rpHeader->srcSystemVersion);
 		$sqlQuery->set($rpHeader->productName);
@@ -133,11 +127,8 @@ class RpHeaderMySqlDAO implements RpHeaderDAO{
 		$sqlQuery->set($rpHeader->charSetVersion);
 		$sqlQuery->set($rpHeader->placeHierarchy);
 		$sqlQuery->set($rpHeader->gedContentDescription);
-		$sqlQuery->set($rpHeader->updateDatetime);
 
-		
 		$sqlQuery->setNumber($rpHeader->id);
-
 		$sqlQuery->setNumber($rpHeader->batchId);
 
 		return $this->executeUpdate($sqlQuery);
@@ -504,15 +495,15 @@ class RpHeaderMySqlDAO implements RpHeaderDAO{
 	}
 
 
-	
+
 	/**
 	 * Read row
 	 *
-	 * @return RpHeaderMySql 
+	 * @return RpHeaderMySql
 	 */
 	protected function readRow($row){
 		$rpHeader = new RpHeader();
-		
+
 		$rpHeader->id = $row['id'];
 		$rpHeader->batchId = $row['batch_id'];
 		$rpHeader->srcSystemId = $row['src_system_id'];
@@ -543,7 +534,7 @@ class RpHeaderMySqlDAO implements RpHeaderDAO{
 
 		return $rpHeader;
 	}
-	
+
 	protected function getList($sqlQuery){
 		$tab = QueryExecutor::execute($sqlQuery);
 		$ret = array();
@@ -552,28 +543,28 @@ class RpHeaderMySqlDAO implements RpHeaderDAO{
 		}
 		return $ret;
 	}
-	
+
 	/**
 	 * Get row
 	 *
-	 * @return RpHeaderMySql 
+	 * @return RpHeaderMySql
 	 */
 	protected function getRow($sqlQuery){
 		$tab = QueryExecutor::execute($sqlQuery);
 		if(count($tab)==0){
 			return null;
 		}
-		return $this->readRow($tab[0]);		
+		return $this->readRow($tab[0]);
 	}
-	
+
 	/**
 	 * Execute sql query
 	 */
 	protected function execute($sqlQuery){
 		return QueryExecutor::execute($sqlQuery);
 	}
-	
-		
+
+
 	/**
 	 * Execute sql query
 	 */
