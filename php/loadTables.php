@@ -111,10 +111,12 @@ class GedcomLoader {
 	}
 
 	function updateIndiEvents($person) {
-		$oldEevents = DAOFactory::getRpIndiEventDAO()->loadList($person->Id,1);
-		if($oldEevents != null && count($oldEevents)>0) {
-			foreach($oldEevents as $eve) {
+		$oldEvents = DAOFactory::getRpIndiEventDAO()->loadList($person->Id,1);
+		if($oldEvents != null && count($oldEvents)>0) {
+			foreach($oldEvents as $eve) {
 				DAOFactory::getRpEventDetailDAO()->delete($eve->eventId);
+				DAOFactory::getRpEventCiteDAO()->deleteByEventId($eve->eventId);
+				DAOFactory::getRpSourceCiteDAO()->deleteOrphans();
 			}
 			DAOFactory::getRpIndiEventDAO()->deleteByIndi($person->Id, 1);
 		}
@@ -143,11 +145,12 @@ class GedcomLoader {
 			$indiEvent->indiBatchId = 1;
 			$indiEvent->eventId = $id;
 			try {
-				$id = DAOFactory::getRpIndiEventDAO()->insert($indiEvent);
+				DAOFactory::getRpIndiEventDAO()->insert($indiEvent);
 			} catch (Exception $e) {
 				echo $e->getMessage();
 				throw $e;
 			}
+			$this->updateEventCitations($id, 1, $pEvent->Citations);
 		}
 	}
 
@@ -168,7 +171,7 @@ class GedcomLoader {
 			$name->given = $pName->rpName->Pieces->Given;
 			$name->nickname = $pName->rpName->Pieces->NickName;
 			$name->surnamePrefix = $pName->rpName->Pieces->SurnamePrefix;
-			$name->surname = $pName->rpName->getSurname();
+			$name->surname = $sName==null?'Unknown':$sName;
 			$name->suffix = $pName->rpName->Pieces->Suffix;
 
 			$id = null;
@@ -246,10 +249,12 @@ class GedcomLoader {
 	}
 
 	function updateFamEvents($family) {
-		$oldEevents = DAOFactory::getRpFamEventDAO()->loadList($family->Id,1);
-		if($oldEevents != null && count($oldEevents)>0) {
-			foreach($oldEevents as $eve) {
+		$oldEvents = DAOFactory::getRpFamEventDAO()->loadList($family->Id,1);
+		if($oldEvents != null && count($oldEvents)>0) {
+			foreach($oldEvents as $eve) {
 				DAOFactory::getRpEventDetailDAO()->delete($eve->eventId);
+				DAOFactory::getRpEventCiteDAO()->deleteByEventId($eve->eventId);
+				DAOFactory::getRpSourceCiteDAO()->deleteOrphans();
 			}
 			DAOFactory::getRpFamEventDAO()->deleteByFam($family->Id, 1);
 		}
@@ -278,7 +283,37 @@ class GedcomLoader {
 			$famEvent->famBatchId = 1;
 			$famEvent->eventId = $id;
 			try {
-				$id = DAOFactory::getRpFamEventDAO()->insert($famEvent);
+				DAOFactory::getRpFamEventDAO()->insert($famEvent);
+			} catch (Exception $e) {
+				echo $e->getMessage();
+				throw $e;
+			}
+			$this->updateEventCitations($id, 1, $pEvent->Citations);
+		}
+	}
+
+	function updateEventCitations($eventId, $batchId, $citations) {
+		foreach($citations as $citation) {
+			$cite = new RpSourceCite();
+			$cite->sourceId = $citation->SourceId;
+			$cite->sourceBatchId = $batchId;
+			$cite->sourcePage = $citation->Page;
+			$cite->eventType = $citation->EventType;
+			$cite->eventRole = $citation->RoleInEvent;
+			$cite->quay = $citation->Quay;
+			//$cite->sourceDescription = $citation->;
+
+			try {
+				$id = DAOFactory::getRpSourceCiteDAO()->insert($cite);
+			} catch (Exception $e) {
+				echo $e->getMessage();
+				throw $e;
+			}
+			$eventCite = new RpEventCite();
+			$eventCite->eventId = $eventId;
+			$eventCite->citeId = $id;
+			try {
+				$id = DAOFactory::getRpEventCiteDAO()->insert($eventCite);
 			} catch (Exception $e) {
 				echo $e->getMessage();
 				throw $e;

@@ -264,7 +264,7 @@ CREATE TABLE IF NOT EXISTS rp_source (
 
 DROP TABLE IF EXISTS rp_source_cite;
 CREATE TABLE IF NOT EXISTS rp_source_cite (
-  id int(11) NOT NULL,
+  id int(11) NOT NULL AUTO_INCREMENT,
   source_id varchar(22) NOT NULL,
   source_batch_id tinyint(4) NOT NULL,
   source_page varchar(248) NOT NULL,

@@ -11,7 +11,7 @@ class RpSourceCiteMySqlDAO implements RpSourceCiteDAO{
 	 * Get Domain object by primry key
 	 *
 	 * @param String $id primary key
-	 * @return RpSourceCiteMySql 
+	 * @return RpSourceCiteMySql
 	 */
 	public function load($id){
 		$sql = 'SELECT * FROM rp_source_cite WHERE id = ?';
@@ -28,7 +28,7 @@ class RpSourceCiteMySqlDAO implements RpSourceCiteDAO{
 		$sqlQuery = new SqlQuery($sql);
 		return $this->getList($sqlQuery);
 	}
-	
+
 	/**
 	 * Get all records from table ordered by field
 	 *
@@ -39,7 +39,7 @@ class RpSourceCiteMySqlDAO implements RpSourceCiteDAO{
 		$sqlQuery = new SqlQuery($sql);
 		return $this->getList($sqlQuery);
 	}
-	
+
 	/**
  	 * Delete record from table
  	 * @param rpSourceCite primary key
@@ -50,16 +50,16 @@ class RpSourceCiteMySqlDAO implements RpSourceCiteDAO{
 		$sqlQuery->setNumber($id);
 		return $this->executeUpdate($sqlQuery);
 	}
-	
+
 	/**
  	 * Insert record to table
  	 *
  	 * @param RpSourceCiteMySql rpSourceCite
  	 */
 	public function insert($rpSourceCite){
-		$sql = 'INSERT INTO rp_source_cite (source_id, source_batch_id, source_page, event_type, event_role, quay, source_description, update_datetime) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+		$sql = 'INSERT INTO rp_source_cite (source_id, source_batch_id, source_page, event_type, event_role, quay, source_description, update_datetime) VALUES (?, ?, ?, ?, ?, ?, ?, now())';
 		$sqlQuery = new SqlQuery($sql);
-		
+
 		$sqlQuery->set($rpSourceCite->sourceId);
 		$sqlQuery->setNumber($rpSourceCite->sourceBatchId);
 		$sqlQuery->set($rpSourceCite->sourcePage);
@@ -67,22 +67,21 @@ class RpSourceCiteMySqlDAO implements RpSourceCiteDAO{
 		$sqlQuery->set($rpSourceCite->eventRole);
 		$sqlQuery->set($rpSourceCite->quay);
 		$sqlQuery->set($rpSourceCite->sourceDescription);
-		$sqlQuery->set($rpSourceCite->updateDatetime);
 
-		$id = $this->executeInsert($sqlQuery);	
+		$id = $this->executeInsert($sqlQuery);
 		$rpSourceCite->id = $id;
 		return $id;
 	}
-	
+
 	/**
  	 * Update record in table
  	 *
  	 * @param RpSourceCiteMySql rpSourceCite
  	 */
 	public function update($rpSourceCite){
-		$sql = 'UPDATE rp_source_cite SET source_id = ?, source_batch_id = ?, source_page = ?, event_type = ?, event_role = ?, quay = ?, source_description = ?, update_datetime = ? WHERE id = ?';
+		$sql = 'UPDATE rp_source_cite SET source_id = ?, source_batch_id = ?, source_page = ?, event_type = ?, event_role = ?, quay = ?, source_description = ?, update_datetime = now() WHERE id = ?';
 		$sqlQuery = new SqlQuery($sql);
-		
+
 		$sqlQuery->set($rpSourceCite->sourceId);
 		$sqlQuery->setNumber($rpSourceCite->sourceBatchId);
 		$sqlQuery->set($rpSourceCite->sourcePage);
@@ -90,7 +89,6 @@ class RpSourceCiteMySqlDAO implements RpSourceCiteDAO{
 		$sqlQuery->set($rpSourceCite->eventRole);
 		$sqlQuery->set($rpSourceCite->quay);
 		$sqlQuery->set($rpSourceCite->sourceDescription);
-		$sqlQuery->set($rpSourceCite->updateDatetime);
 
 		$sqlQuery->setNumber($rpSourceCite->id);
 		return $this->executeUpdate($sqlQuery);
@@ -219,15 +217,15 @@ class RpSourceCiteMySqlDAO implements RpSourceCiteDAO{
 	}
 
 
-	
+
 	/**
 	 * Read row
 	 *
-	 * @return RpSourceCiteMySql 
+	 * @return RpSourceCiteMySql
 	 */
 	protected function readRow($row){
 		$rpSourceCite = new RpSourceCite();
-		
+
 		$rpSourceCite->id = $row['id'];
 		$rpSourceCite->sourceId = $row['source_id'];
 		$rpSourceCite->sourceBatchId = $row['source_batch_id'];
@@ -240,7 +238,7 @@ class RpSourceCiteMySqlDAO implements RpSourceCiteDAO{
 
 		return $rpSourceCite;
 	}
-	
+
 	protected function getList($sqlQuery){
 		$tab = QueryExecutor::execute($sqlQuery);
 		$ret = array();
@@ -249,28 +247,28 @@ class RpSourceCiteMySqlDAO implements RpSourceCiteDAO{
 		}
 		return $ret;
 	}
-	
+
 	/**
 	 * Get row
 	 *
-	 * @return RpSourceCiteMySql 
+	 * @return RpSourceCiteMySql
 	 */
 	protected function getRow($sqlQuery){
 		$tab = QueryExecutor::execute($sqlQuery);
 		if(count($tab)==0){
 			return null;
 		}
-		return $this->readRow($tab[0]);		
+		return $this->readRow($tab[0]);
 	}
-	
+
 	/**
 	 * Execute sql query
 	 */
 	protected function execute($sqlQuery){
 		return QueryExecutor::execute($sqlQuery);
 	}
-	
-		
+
+
 	/**
 	 * Execute sql query
 	 */

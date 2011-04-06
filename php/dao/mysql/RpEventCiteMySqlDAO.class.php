@@ -11,7 +11,7 @@ class RpEventCiteMySqlDAO implements RpEventCiteDAO{
 	 * Get Domain object by primry key
 	 *
 	 * @param String $id primary key
-	 * @return RpEventCiteMySql 
+	 * @return RpEventCiteMySql
 	 */
 	public function load($eventId, $citeId){
 		$sql = 'SELECT * FROM rp_event_cite WHERE event_id = ?  AND cite_id = ? ';
@@ -30,7 +30,7 @@ class RpEventCiteMySqlDAO implements RpEventCiteDAO{
 		$sqlQuery = new SqlQuery($sql);
 		return $this->getList($sqlQuery);
 	}
-	
+
 	/**
 	 * Get all records from table ordered by field
 	 *
@@ -41,7 +41,7 @@ class RpEventCiteMySqlDAO implements RpEventCiteDAO{
 		$sqlQuery = new SqlQuery($sql);
 		return $this->getList($sqlQuery);
 	}
-	
+
 	/**
  	 * Delete record from table
  	 * @param rpEventCite primary key
@@ -54,40 +54,32 @@ class RpEventCiteMySqlDAO implements RpEventCiteDAO{
 
 		return $this->executeUpdate($sqlQuery);
 	}
-	
+
 	/**
  	 * Insert record to table
  	 *
  	 * @param RpEventCiteMySql rpEventCite
  	 */
 	public function insert($rpEventCite){
-		$sql = 'INSERT INTO rp_event_cite (update_datetime, event_id, cite_id) VALUES (?, ?, ?)';
+		$sql = 'INSERT INTO rp_event_cite (update_datetime, event_id, cite_id) VALUES (now(), ?, ?)';
 		$sqlQuery = new SqlQuery($sql);
-		
-		$sqlQuery->set($rpEventCite->updateDatetime);
 
-		
 		$sqlQuery->setNumber($rpEventCite->eventId);
 
 		$sqlQuery->setNumber($rpEventCite->citeId);
 
-		$this->executeInsert($sqlQuery);	
-		//$rpEventCite->id = $id;
-		//return $id;
+		$this->executeInsert($sqlQuery);
 	}
-	
+
 	/**
  	 * Update record in table
  	 *
  	 * @param RpEventCiteMySql rpEventCite
  	 */
 	public function update($rpEventCite){
-		$sql = 'UPDATE rp_event_cite SET update_datetime = ? WHERE event_id = ?  AND cite_id = ? ';
+		$sql = 'UPDATE rp_event_cite SET update_datetime = now() WHERE event_id = ?  AND cite_id = ? ';
 		$sqlQuery = new SqlQuery($sql);
-		
-		$sqlQuery->set($rpEventCite->updateDatetime);
 
-		
 		$sqlQuery->setNumber($rpEventCite->eventId);
 
 		$sqlQuery->setNumber($rpEventCite->citeId);
@@ -120,22 +112,22 @@ class RpEventCiteMySqlDAO implements RpEventCiteDAO{
 	}
 
 
-	
+
 	/**
 	 * Read row
 	 *
-	 * @return RpEventCiteMySql 
+	 * @return RpEventCiteMySql
 	 */
 	protected function readRow($row){
 		$rpEventCite = new RpEventCite();
-		
+
 		$rpEventCite->eventId = $row['event_id'];
 		$rpEventCite->citeId = $row['cite_id'];
 		$rpEventCite->updateDatetime = $row['update_datetime'];
 
 		return $rpEventCite;
 	}
-	
+
 	protected function getList($sqlQuery){
 		$tab = QueryExecutor::execute($sqlQuery);
 		$ret = array();
@@ -144,28 +136,28 @@ class RpEventCiteMySqlDAO implements RpEventCiteDAO{
 		}
 		return $ret;
 	}
-	
+
 	/**
 	 * Get row
 	 *
-	 * @return RpEventCiteMySql 
+	 * @return RpEventCiteMySql
 	 */
 	protected function getRow($sqlQuery){
 		$tab = QueryExecutor::execute($sqlQuery);
 		if(count($tab)==0){
 			return null;
 		}
-		return $this->readRow($tab[0]);		
+		return $this->readRow($tab[0]);
 	}
-	
+
 	/**
 	 * Execute sql query
 	 */
 	protected function execute($sqlQuery){
 		return QueryExecutor::execute($sqlQuery);
 	}
-	
-		
+
+
 	/**
 	 * Execute sql query
 	 */
