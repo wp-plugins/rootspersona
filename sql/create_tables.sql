@@ -327,3 +327,17 @@ CREATE TABLE IF NOT EXISTS `rp_indi_event` (
   `update_datetime` datetime NOT NULL,
   PRIMARY KEY (`indi_id`,`indi_batch_id`,`event_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+DROP TABLE IF EXISTS rp_indi_fam;
+CREATE TABLE IF NOT EXISTS rp_indi_fam (
+  indi_id varchar(22) NOT NULL,
+  indi_batch_id tinyint(4) NOT NULL,
+  fam_id varchar(22) NOT NULL,
+  fam_batch_id tinyint(4) NOT NULL,
+  link_type char(1) NOT NULL,
+  link_status varchar(15) DEFAULT NULL,
+  pedigree varchar(7) DEFAULT NULL,
+  update_datetime datetime NOT NULL,
+  PRIMARY KEY (indi_id,indi_batch_id,fam_id,fam_batch_id,link_type)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
