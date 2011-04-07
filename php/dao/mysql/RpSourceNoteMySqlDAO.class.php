@@ -11,12 +11,12 @@ class RpSourceNoteMySqlDAO implements RpSourceNoteDAO{
 	 * Get Domain object by primry key
 	 *
 	 * @param String $id primary key
-	 * @return RpSourceNoteMySql 
+	 * @return RpSourceNoteMySql
 	 */
 	public function load($sourceId, $sourceBatchId, $noteId){
 		$sql = 'SELECT * FROM rp_source_note WHERE source_id = ?  AND source_batch_id = ?  AND note_id = ? ';
 		$sqlQuery = new SqlQuery($sql);
-		$sqlQuery->setNumber($sourceId);
+		$sqlQuery->set($sourceId);
 		$sqlQuery->setNumber($sourceBatchId);
 		$sqlQuery->setNumber($noteId);
 
@@ -31,7 +31,7 @@ class RpSourceNoteMySqlDAO implements RpSourceNoteDAO{
 		$sqlQuery = new SqlQuery($sql);
 		return $this->getList($sqlQuery);
 	}
-	
+
 	/**
 	 * Get all records from table ordered by field
 	 *
@@ -42,7 +42,7 @@ class RpSourceNoteMySqlDAO implements RpSourceNoteDAO{
 		$sqlQuery = new SqlQuery($sql);
 		return $this->getList($sqlQuery);
 	}
-	
+
 	/**
  	 * Delete record from table
  	 * @param rpSourceNote primary key
@@ -50,49 +50,43 @@ class RpSourceNoteMySqlDAO implements RpSourceNoteDAO{
 	public function delete($sourceId, $sourceBatchId, $noteId){
 		$sql = 'DELETE FROM rp_source_note WHERE source_id = ?  AND source_batch_id = ?  AND note_id = ? ';
 		$sqlQuery = new SqlQuery($sql);
-		$sqlQuery->setNumber($sourceId);
+		$sqlQuery->set($sourceId);
 		$sqlQuery->setNumber($sourceBatchId);
 		$sqlQuery->setNumber($noteId);
 
 		return $this->executeUpdate($sqlQuery);
 	}
-	
+
 	/**
  	 * Insert record to table
  	 *
  	 * @param RpSourceNoteMySql rpSourceNote
  	 */
 	public function insert($rpSourceNote){
-		$sql = 'INSERT INTO rp_source_note (update_datetime, source_id, source_batch_id, note_id) VALUES (?, ?, ?, ?)';
+		$sql = 'INSERT INTO rp_source_note (update_datetime, source_id, source_batch_id, note_id) VALUES (now(), ?, ?, ?)';
 		$sqlQuery = new SqlQuery($sql);
-		
-		$sqlQuery->setNumber($rpSourceNote->updateDatetime);
 
-		
-		$sqlQuery->setNumber($rpSourceNote->sourceId);
+		$sqlQuery->set($rpSourceNote->sourceId);
 
 		$sqlQuery->setNumber($rpSourceNote->sourceBatchId);
 
 		$sqlQuery->setNumber($rpSourceNote->noteId);
 
-		$this->executeInsert($sqlQuery);	
+		$this->executeInsert($sqlQuery);
 		//$rpSourceNote->id = $id;
 		//return $id;
 	}
-	
+
 	/**
  	 * Update record in table
  	 *
  	 * @param RpSourceNoteMySql rpSourceNote
  	 */
 	public function update($rpSourceNote){
-		$sql = 'UPDATE rp_source_note SET update_datetime = ? WHERE source_id = ?  AND source_batch_id = ?  AND note_id = ? ';
+		$sql = 'UPDATE rp_source_note SET update_datetime = now() WHERE source_id = ?  AND source_batch_id = ?  AND note_id = ? ';
 		$sqlQuery = new SqlQuery($sql);
-		
-		$sqlQuery->setNumber($rpSourceNote->updateDatetime);
 
-		
-		$sqlQuery->setNumber($rpSourceNote->sourceId);
+		$sqlQuery->set($rpSourceNote->sourceId);
 
 		$sqlQuery->setNumber($rpSourceNote->sourceBatchId);
 
@@ -126,15 +120,15 @@ class RpSourceNoteMySqlDAO implements RpSourceNoteDAO{
 	}
 
 
-	
+
 	/**
 	 * Read row
 	 *
-	 * @return RpSourceNoteMySql 
+	 * @return RpSourceNoteMySql
 	 */
 	protected function readRow($row){
 		$rpSourceNote = new RpSourceNote();
-		
+
 		$rpSourceNote->sourceId = $row['source_id'];
 		$rpSourceNote->sourceBatchId = $row['source_batch_id'];
 		$rpSourceNote->noteId = $row['note_id'];
@@ -142,7 +136,7 @@ class RpSourceNoteMySqlDAO implements RpSourceNoteDAO{
 
 		return $rpSourceNote;
 	}
-	
+
 	protected function getList($sqlQuery){
 		$tab = QueryExecutor::execute($sqlQuery);
 		$ret = array();
@@ -151,28 +145,28 @@ class RpSourceNoteMySqlDAO implements RpSourceNoteDAO{
 		}
 		return $ret;
 	}
-	
+
 	/**
 	 * Get row
 	 *
-	 * @return RpSourceNoteMySql 
+	 * @return RpSourceNoteMySql
 	 */
 	protected function getRow($sqlQuery){
 		$tab = QueryExecutor::execute($sqlQuery);
 		if(count($tab)==0){
 			return null;
 		}
-		return $this->readRow($tab[0]);		
+		return $this->readRow($tab[0]);
 	}
-	
+
 	/**
 	 * Execute sql query
 	 */
 	protected function execute($sqlQuery){
 		return QueryExecutor::execute($sqlQuery);
 	}
-	
-		
+
+
 	/**
 	 * Execute sql query
 	 */

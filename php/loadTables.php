@@ -11,67 +11,67 @@ class GedcomLoader {
 		$this->ged->parse($gedcomFile, $this);
 	}
 	function addSubm($rec ) {
-		$subm = new RpSubmitter();
-		$subm->batchId = '1';
-		$subm->id = $rec->Id;
-		$subm->submitterName = $rec->Name;
-		//$subm->addrId = $rec->;
-		$subm->lang1 = $rec->Language;
-		//$subm->lang2 = $rec->;
-		//$subm->lang3 = $rec->;
-		$subm->registeredRfn = $rec->SubmitterRefNbr;
-		$subm->autoRecId = $rec->AutoRecId;
-		$subm->gedChangeDate = $rec->ChangeDate->Date;
-		try {
-			$transaction = new Transaction($this->credentials);
-			DAOFactory::getRpSubmitterDAO()->deleteByBatchId($subm->batchId);
-			DAOFactory::getRpSubmitterDAO()->insert($subm);
-		} catch (Exception $e) {
-			echo $e->getMessage();
-			throw $e;
-		}
-		$transaction->commit();
+		//		$subm = new RpSubmitter();
+		//		$subm->batchId = '1';
+		//		$subm->id = $rec->Id;
+		//		$subm->submitterName = $rec->Name;
+		//		//$subm->addrId = $rec->;
+		//		$subm->lang1 = $rec->Language;
+		//		//$subm->lang2 = $rec->;
+		//		//$subm->lang3 = $rec->;
+		//		$subm->registeredRfn = $rec->SubmitterRefNbr;
+		//		$subm->autoRecId = $rec->AutoRecId;
+		//		$subm->gedChangeDate = $rec->ChangeDate->Date;
+		//		try {
+		//			$transaction = new Transaction($this->credentials);
+		//			DAOFactory::getRpSubmitterDAO()->deleteByBatchId($subm->batchId);
+		//			DAOFactory::getRpSubmitterDAO()->insert($subm);
+		//		} catch (Exception $e) {
+		//			echo $e->getMessage();
+		//			throw $e;
+		//		}
+		//		$transaction->commit();
 	}
 	function addSubn($rec ) {
 
 	}
 	function addHdr($rec ) {
-		$hdr = new RpHeader();
-		$hdr->batchId = '1';
-		$hdr->srcSystemId = $rec->SourceSystem->SystemId;
-		$hdr->srcSystemVersion = $rec->SourceSystem->VerNbr;
-		$hdr->productName = $rec->SourceSystem->ProductName;
-		$hdr->corpName = $rec->SourceSystem->Corporation->Name;
-		//$hdr->corpAddrId = $rec->;
-		$hdr->srcDataName = $rec->SourceSystem->rpData->SourceName;
-		$hdr->publicationDate = $rec->SourceSystem->rpData->Date;
-		$hdr->copyrightSrcData = $rec->SourceSystem->rpData->Copyright;
-		$hdr->receivingSysName = $rec->DestinationSystem;
-		$hdr->transmissionDate = $rec->TransmissionDateTime;
-		//$hdr->transmissionTime = $rec->;
-		$hdr->submitterId = $rec->SubmitterId;
-		$hdr->submitterBatchId = $hdr->batchId;
-		$hdr->submissionId = $rec->SubmissionId;
-		$hdr->submissionBatchId = $hdr->batchId;
-		$hdr->fileName = $rec->Filename;
-		$hdr->copyrightGedFile = $rec->Copyright;
-		$hdr->lang = $rec->Language;
-		$hdr->gedcVersion = $rec->GedC->VerNbr;
-		$hdr->gedcForm = $rec->GedC->Form;
-		$hdr->charSet = $rec->CharacterSet->CharacterSet;
-		$hdr->charSetVersion = $rec->CharacterSet->VerNbr;
-		$hdr->placeHierarchy = $rec->PlaceForm;
-		$hdr->gedContentDescription = $rec->Note->Text;
-
-		try {
-			$transaction = new Transaction($this->credentials);
-			DAOFactory::getRpHeaderDAO()->deleteByBatchId($hdr->batchId);
-			DAOFactory::getRpHeaderDAO()->insert($hdr);
-		} catch (Exception $e) {
-			echo $e->getMessage();
-			throw $e;
-		}
-		$transaction->commit();
+		//		$hdr = new RpHeader();
+		//		$hdr->batchId = '1';
+		//		$hdr->srcSystemId = $rec->SourceSystem->SystemId;
+		//		$hdr->srcSystemVersion = $rec->SourceSystem->VerNbr;
+		//		$hdr->productName = $rec->SourceSystem->ProductName;
+		//		$hdr->corpName = $rec->SourceSystem->Corporation->Name;
+		//		//$hdr->corpAddrId = $rec->;
+		//		$hdr->srcDataName = $rec->SourceSystem->rpData->SourceName;
+		//		$hdr->publicationDate = $rec->SourceSystem->rpData->Date;
+		//		$hdr->copyrightSrcData = $rec->SourceSystem->rpData->Copyright;
+		//		$hdr->receivingSysName = $rec->DestinationSystem;
+		//		$hdr->transmissionDate = $rec->TransmissionDateTime;
+		//		//$hdr->transmissionTime = $rec->;
+		//		$hdr->submitterId = $rec->SubmitterId;
+		//		$hdr->submitterBatchId = $hdr->batchId;
+		//		$hdr->submissionId = $rec->SubmissionId;
+		//		$hdr->submissionBatchId = $hdr->batchId;
+		//		$hdr->fileName = $rec->Filename;
+		//		$hdr->copyrightGedFile = $rec->Copyright;
+		//		$hdr->lang = $rec->Language;
+		//		$hdr->gedcVersion = $rec->GedC->VerNbr;
+		//		$hdr->gedcForm = $rec->GedC->Form;
+		//		$hdr->charSet = $rec->CharacterSet->CharacterSet;
+		//		$hdr->charSetVersion = $rec->CharacterSet->VerNbr;
+		//		$hdr->placeHierarchy = $rec->PlaceForm;
+		//		$hdr->gedContentDescription = $rec->Note->Text;
+		//
+		//		try {
+		//			$transaction = new Transaction($this->credentials);
+		//			DAOFactory::getRpHeaderDAO()->deleteByBatchId($hdr->batchId);
+		//			DAOFactory::getRpHeaderDAO()->insert($hdr);
+		//		} catch (Exception $e) {
+		//			echo $e->getMessage();
+		//			throw $e;
+		//		}
+		//		$transaction->commit();
 	}
 
 	function addIndi($person) {
@@ -107,7 +107,42 @@ class GedcomLoader {
 		}
 		$this->updateNames($person);
 		$this->updateIndiEvents($person);
+		$this->updateFamilyLinks($person);
 		$transaction->commit();
+	}
+
+	function updateFamilyLinks($person) {
+		DAOFactory::getRpIndiFamDAO()->deleteByIndi($person->Id,1);
+		foreach($person->SpouseFamilyLinks as $spousal) {
+			$link = new RpIndiFam();
+			$link->indiId = $person->Id;
+			$link->indiBatchId = 1;
+			$link->famId = $spousal->FamilyId;
+			$link->famBatchId = 1;
+			$link->linkType = 'S';
+			try {
+				DAOFactory::getRpIndiFamDAO()->insert($link);
+			} catch (Exception $e) {
+				echo $e->getMessage();
+				throw $e;
+			}
+		}
+		foreach($person->ChildFamilyLinks as $child) {
+			$link = new RpIndiFam();
+			$link->indiId = $person->Id;
+			$link->indiBatchId = 1;
+			$link->famId = $child->FamilyId;
+			$link->famBatchId = 1;
+			$link->linkType = 'C';
+			$link->linkStatus = $child->LinkageStatus;
+			$link->pedigree = $child->LinkageType;
+			try {
+				DAOFactory::getRpIndiFamDAO()->insert($link);
+			} catch (Exception $e) {
+				echo $e->getMessage();
+				throw $e;
+			}
+		}
 	}
 
 	function updateIndiEvents($person) {
@@ -321,6 +356,54 @@ class GedcomLoader {
 		}
 	}
 
+	function addSrc($source) {
+		$needUpdate = false;
+		$src = new RpSource();
+		$src->id = $source->Id;
+		$src->batchId = 1;
+		$src->originator = $source->Author;
+		$src->sourceTitle = $source->Title;
+		$src->abbr = $source->AbbreviatedTitle;
+		$src->publicationFacts = $source->PublicationFacts;
+		$src->text = $source->Text;
+		$src->autoRecId = $source->AutoRecId;
+		$src->gedChangeDate = $source->ChangeDate->Date;
+		try {
+			$transaction = new Transaction($this->credentials);
+			DAOFactory::getRpSourceDAO()->insert($src);
+		} catch (Exception $e) {
+			if(stristr($e->getMessage,'Duplicate entry') >= 0) {
+				$needUpdate = true;
+			} else {
+				echo $e->getMessage();
+				throw $e;
+			}
+		}
+		if($needUpdate) {
+			try {
+				DAOFactory::getRpSourceDAO()->update($src);
+			} catch (Exception $e) {
+				echo $e->getMessage();
+				throw $e;
+			}
+		}
+		$this->updateSrcNotes($source);
+		$transaction->commit();
+	}
+
+	function updateSrcNotes($source) {
+		$oldNotes = DAOFactory::getRpSourceNoteDAO()->loadList($source->Id,1);
+		if($oldNotes != null && count($oldNotes)>0) {
+			foreach($oldNotes as $note) {
+			}
+			DAOFactory::getRpSourceNoteDAO()->deleteBySrc($source->Id, 1);
+		}
+
+		foreach($source->Notes as $note) {
+
+		}
+	}
+
 	function processHeader($rec) {
 		$this->addHdr($rec);
 	}
@@ -350,7 +433,7 @@ class GedcomLoader {
 	}
 
 	function processSource($rec) {
-		//$this->ged->gedcomObjects['SrcRecs']["$rec->Id"] = $rec;
+		$this->addSrc($rec);
 	}
 
 	function processSubmitter($rec) {

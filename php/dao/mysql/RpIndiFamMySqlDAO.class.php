@@ -16,9 +16,9 @@ class RpIndiFamMySqlDAO implements RpIndiFamDAO{
 	public function load($indiId, $indiBatchId, $famId, $famBatchId, $linkType){
 		$sql = 'SELECT * FROM rp_indi_fam WHERE indi_id = ?  AND indi_batch_id = ?  AND fam_id = ?  AND fam_batch_id = ?  AND link_type = ? ';
 		$sqlQuery = new SqlQuery($sql);
-		$sqlQuery->setNumber($indiId);
+		$sqlQuery->set($indiId);
 		$sqlQuery->setNumber($indiBatchId);
-		$sqlQuery->setNumber($famId);
+		$sqlQuery->set($famId);
 		$sqlQuery->setNumber($famBatchId);
 		$sqlQuery->setNumber($linkType);
 
@@ -52,9 +52,9 @@ class RpIndiFamMySqlDAO implements RpIndiFamDAO{
 	public function delete($indiId, $indiBatchId, $famId, $famBatchId, $linkType){
 		$sql = 'DELETE FROM rp_indi_fam WHERE indi_id = ?  AND indi_batch_id = ?  AND fam_id = ?  AND fam_batch_id = ?  AND link_type = ? ';
 		$sqlQuery = new SqlQuery($sql);
-		$sqlQuery->setNumber($indiId);
+		$sqlQuery->set($indiId);
 		$sqlQuery->setNumber($indiBatchId);
-		$sqlQuery->setNumber($famId);
+		$sqlQuery->set($famId);
 		$sqlQuery->setNumber($famBatchId);
 		$sqlQuery->setNumber($linkType);
 
@@ -67,23 +67,21 @@ class RpIndiFamMySqlDAO implements RpIndiFamDAO{
  	 * @param RpIndiFamMySql rpIndiFam
  	 */
 	public function insert($rpIndiFam){
-		$sql = 'INSERT INTO rp_indi_fam (link_status, pedigree, update_datetime, indi_id, indi_batch_id, fam_id, fam_batch_id, link_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+		$sql = 'INSERT INTO rp_indi_fam (link_status, pedigree, update_datetime, indi_id, indi_batch_id, fam_id, fam_batch_id, link_type) VALUES (?, ?, now(), ?, ?, ?, ?, ?)';
 		$sqlQuery = new SqlQuery($sql);
 
 		$sqlQuery->set($rpIndiFam->linkStatus);
 		$sqlQuery->set($rpIndiFam->pedigree);
-		$sqlQuery->set($rpIndiFam->updateDatetime);
 
-
-		$sqlQuery->setNumber($rpIndiFam->indiId);
+		$sqlQuery->set($rpIndiFam->indiId);
 
 		$sqlQuery->setNumber($rpIndiFam->indiBatchId);
 
-		$sqlQuery->setNumber($rpIndiFam->famId);
+		$sqlQuery->set($rpIndiFam->famId);
 
 		$sqlQuery->setNumber($rpIndiFam->famBatchId);
 
-		$sqlQuery->setNumber($rpIndiFam->linkType);
+		$sqlQuery->set($rpIndiFam->linkType);
 
 		$this->executeInsert($sqlQuery);
 		//$rpIndiFam->id = $id;
@@ -101,18 +99,16 @@ class RpIndiFamMySqlDAO implements RpIndiFamDAO{
 
 		$sqlQuery->set($rpIndiFam->linkStatus);
 		$sqlQuery->set($rpIndiFam->pedigree);
-		$sqlQuery->set($rpIndiFam->updateDatetime);
 
-
-		$sqlQuery->setNumber($rpIndiFam->indiId);
+		$sqlQuery->set($rpIndiFam->indiId);
 
 		$sqlQuery->setNumber($rpIndiFam->indiBatchId);
 
-		$sqlQuery->setNumber($rpIndiFam->famId);
+		$sqlQuery->set($rpIndiFam->famId);
 
 		$sqlQuery->setNumber($rpIndiFam->famBatchId);
 
-		$sqlQuery->setNumber($rpIndiFam->linkType);
+		$sqlQuery->set($rpIndiFam->linkType);
 
 		return $this->executeUpdate($sqlQuery);
 	}
