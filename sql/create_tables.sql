@@ -49,16 +49,17 @@ CREATE TABLE IF NOT EXISTS rp_event_detail (
   restriction_notice varchar(7) DEFAULT NULL,
   update_datetime datetime NOT NULL,
   PRIMARY KEY (id)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1550 ;
 
 DROP TABLE IF EXISTS rp_event_note;
 CREATE TABLE IF NOT EXISTS rp_event_note (
+  id int(11) NOT NULL AUTO_INCREMENT,
   event_id int(11) NOT NULL,
-  note_id int(11) NOT NULL,
+  note longtext NOT NULL,
   update_datetime int(11) NOT NULL,
-  PRIMARY KEY (event_id,note_id),
-  KEY note_id (note_id)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  PRIMARY KEY (id),
+  KEY event_id (event_id)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 DROP TABLE IF EXISTS rp_fam;
 CREATE TABLE IF NOT EXISTS rp_fam (
@@ -94,13 +95,13 @@ CREATE TABLE IF NOT EXISTS rp_fam_cite (
   PRIMARY KEY (fam_id,fam_batch_id,cite_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-DROP TABLE IF EXISTS rp_fam_note;
-CREATE TABLE IF NOT EXISTS rp_fam_note (
-  fam_id varchar(22) NOT NULL,
-  fam_batch_id tinyint(4) NOT NULL,
-  note_id int(11) NOT NULL,
+DROP TABLE IF EXISTS rp_fam_event;
+CREATE TABLE IF NOT EXISTS rp_fam_event (
+  fam_id varchar(22) NOT NULL DEFAULT '',
+  fam_batch_id tinyint(4) NOT NULL DEFAULT '0',
+  event_id int(11) NOT NULL DEFAULT '0',
   update_datetime datetime NOT NULL,
-  PRIMARY KEY (fam_id,fam_batch_id,note_id)
+  PRIMARY KEY (fam_id,fam_batch_id,event_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 DROP TABLE IF EXISTS rp_header;
@@ -130,10 +131,10 @@ CREATE TABLE IF NOT EXISTS rp_header (
   char_set varchar(8) DEFAULT NULL,
   char_set_version varchar(15) DEFAULT NULL,
   place_hierarchy varchar(120) DEFAULT NULL,
-  ged_content_description varchar(248) DEFAULT NULL,
+  ged_content_description longtext,
   update_datetime datetime NOT NULL,
   PRIMARY KEY (id,batch_id)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
 
 DROP TABLE IF EXISTS rp_indi;
 CREATE TABLE IF NOT EXISTS rp_indi (
@@ -158,6 +159,29 @@ CREATE TABLE IF NOT EXISTS rp_indi_cite (
   PRIMARY KEY (indi_id,indi_batch_id,cite_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+DROP TABLE IF EXISTS rp_indi_event;
+CREATE TABLE IF NOT EXISTS rp_indi_event (
+  indi_id varchar(22) NOT NULL,
+  indi_batch_id tinyint(4) NOT NULL,
+  event_id int(11) NOT NULL,
+  update_datetime datetime NOT NULL,
+  PRIMARY KEY (indi_id,indi_batch_id,event_id)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS rp_indi_fam;
+CREATE TABLE IF NOT EXISTS rp_indi_fam (
+  indi_id varchar(22) NOT NULL,
+  indi_batch_id tinyint(4) NOT NULL,
+  fam_id varchar(22) NOT NULL,
+  fam_batch_id tinyint(4) NOT NULL,
+  link_type char(1) NOT NULL,
+  link_status varchar(15) DEFAULT NULL,
+  pedigree varchar(7) DEFAULT NULL,
+  update_datetime datetime NOT NULL,
+  PRIMARY KEY (indi_id,indi_batch_id,fam_id,fam_batch_id,link_type),
+  KEY indi_id (indi_id,indi_batch_id,link_type)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 DROP TABLE IF EXISTS rp_indi_name;
 CREATE TABLE IF NOT EXISTS rp_indi_name (
   indi_id varchar(22) NOT NULL,
@@ -169,12 +193,14 @@ CREATE TABLE IF NOT EXISTS rp_indi_name (
 
 DROP TABLE IF EXISTS rp_indi_note;
 CREATE TABLE IF NOT EXISTS rp_indi_note (
+  id int(11) NOT NULL AUTO_INCREMENT,
   indi_id varchar(22) NOT NULL,
   indi_batch_id tinyint(4) NOT NULL,
-  note_id int(11) NOT NULL,
+  note longtext NOT NULL,
   update_datetime datetime NOT NULL,
-  PRIMARY KEY (indi_id,indi_batch_id,note_id)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  PRIMARY KEY (id),
+  KEY indi_id (indi_id,indi_batch_id)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 DROP TABLE IF EXISTS rp_name_cite;
 CREATE TABLE IF NOT EXISTS rp_name_cite (
@@ -195,11 +221,13 @@ CREATE TABLE IF NOT EXISTS rp_name_name (
 
 DROP TABLE IF EXISTS rp_name_note;
 CREATE TABLE IF NOT EXISTS rp_name_note (
+  id int(11) NOT NULL AUTO_INCREMENT,
   name_id int(11) NOT NULL,
-  note_id int(11) NOT NULL,
+  note longtext NOT NULL,
   update_datetime int(11) NOT NULL,
-  PRIMARY KEY (name_id,note_id)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  PRIMARY KEY (id),
+  KEY name_id (name_id)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 DROP TABLE IF EXISTS rp_name_personal;
 CREATE TABLE IF NOT EXISTS rp_name_personal (
@@ -214,7 +242,7 @@ CREATE TABLE IF NOT EXISTS rp_name_personal (
   suffix varchar(30) DEFAULT NULL,
   update_datetime datetime NOT NULL,
   PRIMARY KEY (id)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=918 ;
 
 DROP TABLE IF EXISTS rp_note;
 CREATE TABLE IF NOT EXISTS rp_note (
@@ -223,7 +251,7 @@ CREATE TABLE IF NOT EXISTS rp_note (
   auto_rec_id varchar(12) DEFAULT NULL,
   ged_change_date varchar(11) DEFAULT NULL,
   update_datetime datetime NOT NULL,
-  submitter_text varchar(248) NOT NULL,
+  submitter_text longtext NOT NULL,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
@@ -235,27 +263,30 @@ CREATE TABLE IF NOT EXISTS rp_repo (
   addr_id int(11) DEFAULT NULL,
   auto_rec_id varchar(12) DEFAULT NULL,
   ged_change_date varchar(11) DEFAULT NULL,
-  update_datetime datetime NOT NULL
+  update_datetime datetime NOT NULL,
+  PRIMARY KEY (id,batch_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 DROP TABLE IF EXISTS rp_repo_note;
 CREATE TABLE IF NOT EXISTS rp_repo_note (
+  id int(11) NOT NULL AUTO_INCREMENT,
   repo_id varchar(22) NOT NULL,
   repo_batch_id tinyint(4) NOT NULL,
-  note_id int(11) NOT NULL,
+  note longtext NOT NULL,
   update_datetime datetime NOT NULL,
-  PRIMARY KEY (repo_id,repo_batch_id,note_id)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  PRIMARY KEY (id),
+  KEY repo_id (repo_id,repo_batch_id)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 DROP TABLE IF EXISTS rp_source;
 CREATE TABLE IF NOT EXISTS rp_source (
   id varchar(22) NOT NULL,
   batch_id tinyint(4) NOT NULL DEFAULT '1',
-  originator varchar(248) DEFAULT NULL,
-  source_title varchar(248) DEFAULT NULL,
+  originator longtext,
+  source_title longtext,
   abbr varchar(60) DEFAULT NULL,
-  publication_facts varchar(248) DEFAULT NULL,
-  `text` varchar(248) DEFAULT NULL,
+  publication_facts longtext,
+  `text` longtext,
   auto_rec_id varchar(12) DEFAULT NULL,
   ged_change_date varchar(11) DEFAULT NULL,
   update_datetime datetime NOT NULL,
@@ -271,19 +302,21 @@ CREATE TABLE IF NOT EXISTS rp_source_cite (
   event_type varchar(15) DEFAULT NULL,
   event_role varchar(15) DEFAULT NULL,
   quay char(1) DEFAULT NULL,
-  source_description varchar(248) DEFAULT NULL,
+  source_description longtext,
   update_datetime datetime NOT NULL,
   PRIMARY KEY (id)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=337 ;
 
 DROP TABLE IF EXISTS rp_source_note;
 CREATE TABLE IF NOT EXISTS rp_source_note (
+  id int(11) NOT NULL AUTO_INCREMENT,
   source_id varchar(22) NOT NULL,
   source_batch_id tinyint(4) NOT NULL,
-  note_id int(11) NOT NULL,
+  note longtext NOT NULL,
   update_datetime int(11) NOT NULL,
-  PRIMARY KEY (source_id,source_batch_id,note_id)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  PRIMARY KEY (id),
+  KEY source_id (source_id,source_batch_id)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 DROP TABLE IF EXISTS rp_submitter;
 CREATE TABLE IF NOT EXISTS rp_submitter (
@@ -303,41 +336,11 @@ CREATE TABLE IF NOT EXISTS rp_submitter (
 
 DROP TABLE IF EXISTS rp_submitter_note;
 CREATE TABLE IF NOT EXISTS rp_submitter_note (
+  id int(11) NOT NULL AUTO_INCREMENT,
   submitter_id varchar(22) NOT NULL,
   submitter_batch_id tinyint(4) NOT NULL,
-  note_id int(11) NOT NULL,
+  note longtext NOT NULL,
   update_datetime datetime NOT NULL,
-  PRIMARY KEY (submitter_id,submitter_batch_id,note_id)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-DROP TABLE IF EXISTS rp_fam_event;
-CREATE TABLE IF NOT EXISTS `rp_fam_event` (
-  `fam_id` varchar(22) NOT NULL DEFAULT '',
-  `fam_batch_id` tinyint(4) NOT NULL DEFAULT '0',
-  `event_id` int(11) NOT NULL DEFAULT '0',
-  `update_datetime` datetime NOT NULL,
-  PRIMARY KEY (`fam_id`,`fam_batch_id`,`event_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-DROP TABLE IF EXISTS rp_indi_event;
-CREATE TABLE IF NOT EXISTS `rp_indi_event` (
-  `indi_id` varchar(22) NOT NULL,
-  `indi_batch_id` tinyint(4) NOT NULL,
-  `event_id` int(11) NOT NULL,
-  `update_datetime` datetime NOT NULL,
-  PRIMARY KEY (`indi_id`,`indi_batch_id`,`event_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
-DROP TABLE IF EXISTS rp_indi_fam;
-CREATE TABLE IF NOT EXISTS rp_indi_fam (
-  indi_id varchar(22) NOT NULL,
-  indi_batch_id tinyint(4) NOT NULL,
-  fam_id varchar(22) NOT NULL,
-  fam_batch_id tinyint(4) NOT NULL,
-  link_type char(1) NOT NULL,
-  link_status varchar(15) DEFAULT NULL,
-  pedigree varchar(7) DEFAULT NULL,
-  update_datetime datetime NOT NULL,
-  PRIMARY KEY (indi_id,indi_batch_id,fam_id,fam_batch_id,link_type)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  PRIMARY KEY (id),
+  KEY submitter_id (submitter_id,submitter_batch_id)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
