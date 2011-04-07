@@ -11,7 +11,7 @@ class RpSourceMySqlDAO implements RpSourceDAO{
 	 * Get Domain object by primry key
 	 *
 	 * @param String $id primary key
-	 * @return RpSourceMySql 
+	 * @return RpSourceMySql
 	 */
 	public function load($id, $batchId){
 		$sql = 'SELECT * FROM rp_source WHERE id = ?  AND batch_id = ? ';
@@ -30,7 +30,7 @@ class RpSourceMySqlDAO implements RpSourceDAO{
 		$sqlQuery = new SqlQuery($sql);
 		return $this->getList($sqlQuery);
 	}
-	
+
 	/**
 	 * Get all records from table ordered by field
 	 *
@@ -41,7 +41,7 @@ class RpSourceMySqlDAO implements RpSourceDAO{
 		$sqlQuery = new SqlQuery($sql);
 		return $this->getList($sqlQuery);
 	}
-	
+
 	/**
  	 * Delete record from table
  	 * @param rpSource primary key
@@ -54,16 +54,16 @@ class RpSourceMySqlDAO implements RpSourceDAO{
 
 		return $this->executeUpdate($sqlQuery);
 	}
-	
+
 	/**
  	 * Insert record to table
  	 *
  	 * @param RpSourceMySql rpSource
  	 */
 	public function insert($rpSource){
-		$sql = 'INSERT INTO rp_source (originator, source_title, abbr, publication_facts, text, auto_rec_id, ged_change_date, update_datetime, id, batch_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+		$sql = 'INSERT INTO rp_source (originator, source_title, abbr, publication_facts, text, auto_rec_id, ged_change_date, update_datetime, id, batch_id) VALUES (?, ?, ?, ?, ?, ?, ?, now(), ?, ?)';
 		$sqlQuery = new SqlQuery($sql);
-		
+
 		$sqlQuery->set($rpSource->originator);
 		$sqlQuery->set($rpSource->sourceTitle);
 		$sqlQuery->set($rpSource->abbr);
@@ -71,27 +71,25 @@ class RpSourceMySqlDAO implements RpSourceDAO{
 		$sqlQuery->set($rpSource->text);
 		$sqlQuery->set($rpSource->autoRecId);
 		$sqlQuery->set($rpSource->gedChangeDate);
-		$sqlQuery->set($rpSource->updateDatetime);
 
-		
-		$sqlQuery->setNumber($rpSource->id);
+		$sqlQuery->set($rpSource->id);
 
 		$sqlQuery->setNumber($rpSource->batchId);
 
-		$this->executeInsert($sqlQuery);	
+		$this->executeInsert($sqlQuery);
 		//$rpSource->id = $id;
 		//return $id;
 	}
-	
+
 	/**
  	 * Update record in table
  	 *
  	 * @param RpSourceMySql rpSource
  	 */
 	public function update($rpSource){
-		$sql = 'UPDATE rp_source SET originator = ?, source_title = ?, abbr = ?, publication_facts = ?, text = ?, auto_rec_id = ?, ged_change_date = ?, update_datetime = ? WHERE id = ?  AND batch_id = ? ';
+		$sql = 'UPDATE rp_source SET originator = ?, source_title = ?, abbr = ?, publication_facts = ?, text = ?, auto_rec_id = ?, ged_change_date = ?, update_datetime = now() WHERE id = ?  AND batch_id = ? ';
 		$sqlQuery = new SqlQuery($sql);
-		
+
 		$sqlQuery->set($rpSource->originator);
 		$sqlQuery->set($rpSource->sourceTitle);
 		$sqlQuery->set($rpSource->abbr);
@@ -99,10 +97,8 @@ class RpSourceMySqlDAO implements RpSourceDAO{
 		$sqlQuery->set($rpSource->text);
 		$sqlQuery->set($rpSource->autoRecId);
 		$sqlQuery->set($rpSource->gedChangeDate);
-		$sqlQuery->set($rpSource->updateDatetime);
 
-		
-		$sqlQuery->setNumber($rpSource->id);
+		$sqlQuery->set($rpSource->id);
 
 		$sqlQuery->setNumber($rpSource->batchId);
 
@@ -232,15 +228,15 @@ class RpSourceMySqlDAO implements RpSourceDAO{
 	}
 
 
-	
+
 	/**
 	 * Read row
 	 *
-	 * @return RpSourceMySql 
+	 * @return RpSourceMySql
 	 */
 	protected function readRow($row){
 		$rpSource = new RpSource();
-		
+
 		$rpSource->id = $row['id'];
 		$rpSource->batchId = $row['batch_id'];
 		$rpSource->originator = $row['originator'];
@@ -254,7 +250,7 @@ class RpSourceMySqlDAO implements RpSourceDAO{
 
 		return $rpSource;
 	}
-	
+
 	protected function getList($sqlQuery){
 		$tab = QueryExecutor::execute($sqlQuery);
 		$ret = array();
@@ -263,28 +259,28 @@ class RpSourceMySqlDAO implements RpSourceDAO{
 		}
 		return $ret;
 	}
-	
+
 	/**
 	 * Get row
 	 *
-	 * @return RpSourceMySql 
+	 * @return RpSourceMySql
 	 */
 	protected function getRow($sqlQuery){
 		$tab = QueryExecutor::execute($sqlQuery);
 		if(count($tab)==0){
 			return null;
 		}
-		return $this->readRow($tab[0]);		
+		return $this->readRow($tab[0]);
 	}
-	
+
 	/**
 	 * Execute sql query
 	 */
 	protected function execute($sqlQuery){
 		return QueryExecutor::execute($sqlQuery);
 	}
-	
-		
+
+
 	/**
 	 * Execute sql query
 	 */

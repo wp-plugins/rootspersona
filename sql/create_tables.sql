@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS rp_event_note (
   id int(11) NOT NULL AUTO_INCREMENT,
   event_id int(11) NOT NULL,
   note longtext NOT NULL,
-  update_datetime int(11) NOT NULL,
+  update_datetime datetime NOT NULL,
   PRIMARY KEY (id),
   KEY event_id (event_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
@@ -215,7 +215,7 @@ CREATE TABLE IF NOT EXISTS rp_name_name (
   name_id int(11) NOT NULL,
   assoc_name_id int(11) NOT NULL,
   assoc_name_type varchar(12) NOT NULL,
-  update_datetime int(11) NOT NULL,
+  update_datetime datetime NOT NULL,
   PRIMARY KEY (name_id,assoc_name_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -224,7 +224,7 @@ CREATE TABLE IF NOT EXISTS rp_name_note (
   id int(11) NOT NULL AUTO_INCREMENT,
   name_id int(11) NOT NULL,
   note longtext NOT NULL,
-  update_datetime int(11) NOT NULL,
+  update_datetime datetime NOT NULL,
   PRIMARY KEY (id),
   KEY name_id (name_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
@@ -313,7 +313,7 @@ CREATE TABLE IF NOT EXISTS rp_source_note (
   source_id varchar(22) NOT NULL,
   source_batch_id tinyint(4) NOT NULL,
   note longtext NOT NULL,
-  update_datetime int(11) NOT NULL,
+  update_datetime datetime NOT NULL,
   PRIMARY KEY (id),
   KEY source_id (source_id,source_batch_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;

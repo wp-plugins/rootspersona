@@ -392,15 +392,19 @@ class GedcomLoader {
 	}
 
 	function updateSrcNotes($source) {
-		$oldNotes = DAOFactory::getRpSourceNoteDAO()->loadList($source->Id,1);
-		if($oldNotes != null && count($oldNotes)>0) {
-			foreach($oldNotes as $note) {
-			}
-			DAOFactory::getRpSourceNoteDAO()->deleteBySrc($source->Id, 1);
-		}
+		DAOFactory::getRpSourceNoteDAO()->deleteBySrc($source->Id, 1);
 
 		foreach($source->Notes as $note) {
-
+			$srcNote = new RpSourceNote();
+			$srcNote->sourceId = $source->Id;
+			$srcNote->sourceBatchId = 1;
+			$srcNote->note = $note->Text;
+			try {
+				$id = DAOFactory::getRpSourceNoteDAO()->insert($srcNote);
+			} catch (Exception $e) {
+				echo $e->getMessage();
+				throw $e;
+			}
 		}
 	}
 

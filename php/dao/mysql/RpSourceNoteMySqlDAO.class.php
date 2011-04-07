@@ -11,7 +11,7 @@ class RpSourceNoteMySqlDAO implements RpSourceNoteDAO{
 	 * Get Domain object by primry key
 	 *
 	 * @param String $id primary key
-	 * @return RpSourceNoteMySql 
+	 * @return RpSourceNoteMySql
 	 */
 	public function load($id){
 		$sql = 'SELECT * FROM rp_source_note WHERE id = ?';
@@ -28,7 +28,7 @@ class RpSourceNoteMySqlDAO implements RpSourceNoteDAO{
 		$sqlQuery = new SqlQuery($sql);
 		return $this->getList($sqlQuery);
 	}
-	
+
 	/**
 	 * Get all records from table ordered by field
 	 *
@@ -39,7 +39,7 @@ class RpSourceNoteMySqlDAO implements RpSourceNoteDAO{
 		$sqlQuery = new SqlQuery($sql);
 		return $this->getList($sqlQuery);
 	}
-	
+
 	/**
  	 * Delete record from table
  	 * @param rpSourceNote primary key
@@ -50,26 +50,25 @@ class RpSourceNoteMySqlDAO implements RpSourceNoteDAO{
 		$sqlQuery->setNumber($id);
 		return $this->executeUpdate($sqlQuery);
 	}
-	
+
 	/**
  	 * Insert record to table
  	 *
  	 * @param RpSourceNoteMySql rpSourceNote
  	 */
 	public function insert($rpSourceNote){
-		$sql = 'INSERT INTO rp_source_note (source_id, source_batch_id, note, update_datetime) VALUES (?, ?, ?, ?)';
+		$sql = 'INSERT INTO rp_source_note (source_id, source_batch_id, note, update_datetime) VALUES (?, ?, ?, now())';
 		$sqlQuery = new SqlQuery($sql);
-		
+
 		$sqlQuery->set($rpSourceNote->sourceId);
 		$sqlQuery->setNumber($rpSourceNote->sourceBatchId);
 		$sqlQuery->set($rpSourceNote->note);
-		$sqlQuery->setNumber($rpSourceNote->updateDatetime);
 
-		$id = $this->executeInsert($sqlQuery);	
+		$id = $this->executeInsert($sqlQuery);
 		$rpSourceNote->id = $id;
 		return $id;
 	}
-	
+
 	/**
  	 * Update record in table
  	 *
@@ -78,7 +77,7 @@ class RpSourceNoteMySqlDAO implements RpSourceNoteDAO{
 	public function update($rpSourceNote){
 		$sql = 'UPDATE rp_source_note SET source_id = ?, source_batch_id = ?, note = ?, update_datetime = ? WHERE id = ?';
 		$sqlQuery = new SqlQuery($sql);
-		
+
 		$sqlQuery->set($rpSourceNote->sourceId);
 		$sqlQuery->setNumber($rpSourceNote->sourceBatchId);
 		$sqlQuery->set($rpSourceNote->note);
@@ -155,15 +154,15 @@ class RpSourceNoteMySqlDAO implements RpSourceNoteDAO{
 	}
 
 
-	
+
 	/**
 	 * Read row
 	 *
-	 * @return RpSourceNoteMySql 
+	 * @return RpSourceNoteMySql
 	 */
 	protected function readRow($row){
 		$rpSourceNote = new RpSourceNote();
-		
+
 		$rpSourceNote->id = $row['id'];
 		$rpSourceNote->sourceId = $row['source_id'];
 		$rpSourceNote->sourceBatchId = $row['source_batch_id'];
@@ -172,7 +171,7 @@ class RpSourceNoteMySqlDAO implements RpSourceNoteDAO{
 
 		return $rpSourceNote;
 	}
-	
+
 	protected function getList($sqlQuery){
 		$tab = QueryExecutor::execute($sqlQuery);
 		$ret = array();
@@ -181,28 +180,28 @@ class RpSourceNoteMySqlDAO implements RpSourceNoteDAO{
 		}
 		return $ret;
 	}
-	
+
 	/**
 	 * Get row
 	 *
-	 * @return RpSourceNoteMySql 
+	 * @return RpSourceNoteMySql
 	 */
 	protected function getRow($sqlQuery){
 		$tab = QueryExecutor::execute($sqlQuery);
 		if(count($tab)==0){
 			return null;
 		}
-		return $this->readRow($tab[0]);		
+		return $this->readRow($tab[0]);
 	}
-	
+
 	/**
 	 * Execute sql query
 	 */
 	protected function execute($sqlQuery){
 		return QueryExecutor::execute($sqlQuery);
 	}
-	
-		
+
+
 	/**
 	 * Execute sql query
 	 */
