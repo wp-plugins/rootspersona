@@ -12,6 +12,7 @@ class GedcomLoader {
 		$this->ged = new GedcomManager();
 		$this->ged->parse($gedcomFile, $this);
 	}
+
 	function addSubm($rec ) {
 		//		$subm = new RpSubmitter();
 		//		$subm->batchId = '1';
@@ -34,9 +35,11 @@ class GedcomLoader {
 		//		}
 		//		$transaction->commit();
 	}
+
 	function addSubn($rec ) {
 
 	}
+
 	function addHdr($rec ) {
 		//		$hdr = new RpHeader();
 		//		$hdr->batchId = '1';
@@ -427,15 +430,15 @@ class GedcomLoader {
 	}
 
 	function processMedia($rec) {
-		//$this->ged->gedcomObjects['MediaRecs']["$rec->Id"] = $rec;
+
 	}
 
 	function processNote($rec) {
-		//$this->ged->gedcomObjects['NoteRecs']["$rec->Id"] = $rec;
+
 	}
 
 	function processRepository($rec) {
-		//$this->ged->gedcomObjects['RepoRecs']["$rec->Id"] = $rec;
+
 	}
 
 	function processSource($rec) {
@@ -447,17 +450,17 @@ class GedcomLoader {
 	}
 }
 //$gedcomFile = "C:\\Users\\ed\\Desktop\\adabell.ged";
-$gedcomFile = "C:\\Users\\ed\\Desktop\\20110208.ged";
-$credentials = array( 'hostname' => 'localhost',
-				'dbuser' => 'wpuser1',
-				'dbpassword' => 'wpuser1',
-				'dbname' =>'wpuser1');
-$g = new GedcomLoader();
-$time_start = microtime(true);
-
-$g->loadTables($credentials, $gedcomFile);
-
-$time = microtime(true) - $time_start;
-echo "Done in $time seconds using " . memory_get_peak_usage (true)/1024/1024 . "MB." ;
+//$gedcomFile = "C:\\Users\\ed\\Desktop\\20110208.ged";
+//$credentials = array( 'hostname' => 'localhost',
+//				'dbuser' => 'wpuser1',
+//				'dbpassword' => 'wpuser1',
+//				'dbname' =>'wpuser1');
+//$g = new GedcomLoader();
+//$time_start = microtime(true);
+//
+//$g->loadTables($credentials, $gedcomFile);
+//
+//$time = microtime(true) - $time_start;
+//echo "Done in $time seconds using " . memory_get_peak_usage (true)/1024/1024 . "MB." ;
 
 ?>
