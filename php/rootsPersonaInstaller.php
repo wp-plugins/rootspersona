@@ -1,16 +1,18 @@
 <?php
 
 require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-require_once(WP_PLUGIN_DIR  . '/rootspersona/php/personUtility.php');
+require_once(WP_PLUGIN_DIR  . '/rootspersona/php/createTables.php');
 
 class rootsPersonaInstaller {
 	function rootsPersonaInstall ($pluginDir, $version) {
+		$tableCreator = new TableCreator();
+		$sqlFileToExecute = '../sql/create_tables.sql';
+		$credentials = array( 'hostname' => 'localhost',
+								'dbuser' => 'wpuser1',
+								'dbpassword' => 'wpuser1',
+								'dbname' =>'wpuser1');
+		$tableCreator->createTables($credentials, $sqlFileToExecute);
 		add_option('rootsPersonaVersion', $version);
-		$utility = new PersonUtility();
-		$utility->createDataDir($pluginDir, WP_CONTENT_DIR ."/rootsPersonaData/");
-
-		add_option('rootsDataDir', "wp-content/rootsPersonaData/");
-			
 		$page = $this->createPage(__('Edit Person Page', 'rootspersona'),'[rootsEditPersonaForm/]');
 		add_option('rootsEditPage', $page);
 		$page = $this->createPage(__('Add Person Pages', 'rootspersona'),'[rootsAddPageForm/]');
@@ -32,16 +34,6 @@ class rootsPersonaInstaller {
 
 	function rootsPersonaUpgrade($pluginDir, $version, $currVersion) {
 		update_option('rootsPersonaVersion', $version);
-
-		$opt = get_option('rootsDataDir');
-		$utility = new PersonUtility();
-		if(!isset($opt) || empty($opt) || !is_dir($opt)) {
-			$utility->createDataDir($pluginDir, WP_CONTENT_DIR ."/rootsPersonaData/");
-			add_option('rootsDataDir', "wp-content/rootsPersonaData/");
-		} else {
-			$utility->createDataDir($pluginDir, $opt);
-		}
-
 		$page = get_option('rootsEditPage');
 		if(!isset($page) || empty($page)) {
 			$page = $this->createPage(__('Edit Person Page', 'rootspersona'),'[rootsEditPersonaForm/]');
@@ -117,6 +109,15 @@ class rootsPersonaInstaller {
 		if($currVersion < '1.4.0') {
 			delete_option('rootsHideFamily');
 			unregister_setting( 'rootsPersonaOptions', 'rootsHideFamily');
+		}
+		if($currVersion < '2.0.0') {
+			$tableCreator = new TableCreator();
+			$sqlFileToExecute = '../sql/create_tables.sql';
+			$credentials = array( 'hostname' => 'localhost',
+								'dbuser' => 'wpuser1',
+								'dbpassword' => 'wpuser1',
+								'dbname' =>'wpuser1');
+			$tableCreator->createTables($credentials, $sqlFileToExecute);
 		}
 	}
 
