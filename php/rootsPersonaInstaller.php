@@ -1,7 +1,7 @@
 <?php
 
 require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-require_once(WP_PLUGIN_DIR  . '/rootspersona/php/createTables.php');
+require_once(WP_PLUGIN_DIR  . '/rootspersona/php/TableCreator.php');
 
 class rootsPersonaInstaller {
 	function rootsPersonaInstall ($pluginDir, $version) {
