@@ -111,6 +111,7 @@ class rootsPersonaInstaller {
 			unregister_setting( 'rootsPersonaOptions', 'rootsHideFamily');
 		}
 		if($currVersion < '2.0.0') {
+			delete_option('rootsDataDir');
 			$tableCreator = new TableCreator();
 			$sqlFileToExecute = '../sql/create_tables.sql';
 			$credentials = array( 'hostname' => 'localhost',

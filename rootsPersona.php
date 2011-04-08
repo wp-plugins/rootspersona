@@ -3,7 +3,7 @@
  Plugin Name: rootsPersona
  Plugin URI: http://ed4becky.net/plugins/rootsPersona
  Description: Build one or more family history pages from a Gedcom file.
- Version: 1.6.1
+ Version: 2.0.0
  Author: Ed Thompson
  Author URI: http://ed4becky.net/
  License: GPLv2
@@ -45,9 +45,8 @@ require_once(WP_PLUGIN_DIR  . '/rootspersona/php/paramParser.php');
  */
 if (!class_exists("rootsPersona")) {
 	class rootsPersona {
-		var $rootsPersonaVersion = '1.6.1';
+		var $rootsPersonaVersion = '2.0.0';
 		var $plugin_dir;
-		var $data_dir;
 		var $utility;
 
 		/**
@@ -55,7 +54,6 @@ if (!class_exists("rootsPersona")) {
 		 */
 		function __construct() {
 			$this->plugin_dir = strtr(WP_PLUGIN_DIR,'\\','/') . "/rootspersona/";
-			$this->data_dir = strtr(ABSPATH,'\\','/') . get_option("rootsDataDir");
 			$this->utility = new personUtility();
 		}
 
@@ -340,7 +338,7 @@ if (!class_exists("rootsPersona")) {
 				$xp->importStylesheet($xsl);
 				$xp->setParameter('','site_url',site_url());
 				$xp->setParameter('','data_dir',$this->data_dir);
-				
+
 				// create a DOM document and load the XML data
 				$xml_doc = new DomDocument;
 				$fileName =  $this->data_dir . '/evidence.xml';
@@ -493,11 +491,11 @@ if (!class_exists("rootsPersona")) {
 						'buildRootsOptionsPage');
 
 			$page = add_submenu_page( 'tools.php',
-								'rootsPersona Tools', 
-								'rootsPersona', 
-								'manage_options', 
+								'rootsPersona Tools',
 								'rootsPersona',
-								'buildRootsToolsPage');			
+								'manage_options',
+								'rootsPersona',
+								'buildRootsToolsPage');
 			/* Using registered $page handle to hook stylesheet loading */
 			add_action( 'admin_print_styles-' . $page, array($this,'insertRootsPersonaStyles') );
 
@@ -506,7 +504,7 @@ if (!class_exists("rootsPersona")) {
 		function rootsPersonaOptionsInit() {
 			register_setting( 'rootsPersonaOptions', 'rootsPersonaParentPage', 'intval' );
 			register_setting( 'rootsPersonaOptions', 'rootsIsSystemOfRecord');
-			register_setting( 'rootsPersonaOptions', 'rootsDataDir', 'wp_filter_nohtml_kses');
+			//register_setting( 'rootsPersonaOptions', 'rootsDataDir', 'wp_filter_nohtml_kses');
 			register_setting( 'rootsPersonaOptions', 'rootsUploadGedcomPage', 'intval' );
 			register_setting( 'rootsPersonaOptions', 'rootsCreatePage', 'intval' );
 			register_setting( 'rootsPersonaOptions', 'rootsEditPage', 'intval' );

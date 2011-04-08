@@ -1,6 +1,8 @@
 <?php
 require_once ('temp.inc.php');
-require_once ('include_dao.php');
+require_once ('tmp.inc.dao.php');
+//require_once ('include.inc.php');
+//require_once ('include.dao.php');
 
 class GedcomLoader {
 	var $ged;
