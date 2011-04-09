@@ -45,6 +45,7 @@ $credentials = array( 'hostname' => 'localhost',
 	'dbuser' => 'wpuser1',
 	'dbpassword' => 'wpuser1',
 	'dbname' =>'wpuser1');
-createTables($credentials, $sqlFileToExecute);
+$t = new TableCreator();
+$t->createTables($credentials, $sqlFileToExecute);
 
 ?>

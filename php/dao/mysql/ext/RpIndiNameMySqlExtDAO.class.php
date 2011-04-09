@@ -21,7 +21,7 @@ class RpIndiNameMySqlExtDAO extends RpIndiNameMySqlDAO{
 		$sqlQuery->set($indiId);
 		$sqlQuery->setNumber($indiBatchId);
 
-		return $this->getRow($sqlQuery);
+		return $this->getList($sqlQuery);
 	}
 
 }
