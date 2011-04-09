@@ -73,6 +73,7 @@ class XmlToDatabaseImporter {
 			if(stristr($e->getMessage,'Duplicate entry') >= 0) {
 				$needUpdate = true;
 			} else {
+				$transaction->rollback();
 				echo $e->getMessage();
 				throw $e;
 			}
@@ -81,13 +82,16 @@ class XmlToDatabaseImporter {
 			try {
 				DAOFactory::getRpIndiDAO()->update($indi);
 			} catch (Exception $e) {
+				$transaction->rollback();
 				echo $e->getMessage();
 				throw $e;
 			}
 		}
 		$this->updateNames($id, $name, $surname);
-		$this->updateIndiEvents($dom);
-		$this->updateFamilyLinks($dom);
+		$this->updateIndiEvents($id, $dom);
+
+		$this->updateFamilyLinks($id, $dom);
+
 		$transaction->commit();
 	}
 
@@ -164,36 +168,32 @@ class XmlToDatabaseImporter {
 		//		}
 	}
 
-	function updateFamilyLinks($dom) {
-		//		DAOFactory::getRpIndiFamDAO()->deleteByIndi($person->Id,1);
-		//		foreach($person->SpouseFamilyLinks as $spousal) {
-		//			$link = new RpIndiFam();
-		//			$link->indiId = $person->Id;
-		//			$link->indiBatchId = 1;
-		//			$link->famId = $spousal->FamilyId;
-		//			$link->famBatchId = 1;
-		//			$link->linkType = 'S';
-		//			try {
-		//				DAOFactory::getRpIndiFamDAO()->insert($link);
-		//			} catch (Exception $e) {
-		//				echo $e->getMessage();
-		//				throw $e;
-		//			}
-		//		}
-		//		foreach($person->ChildFamilyLinks as $child) {
-		//			$link = new RpIndiFam();
-		//			$link->indiId = $person->Id;
-		//			$link->indiBatchId = 1;
-		//			$link->famId = $child->FamilyId;
-		//			$link->famBatchId = 1;
-		//			$link->linkType = 'C';
-		//			try {
-		//				DAOFactory::getRpIndiFamDAO()->insert($link);
-		//			} catch (Exception $e) {
-		//				echo $e->getMessage();
-		//				throw $e;
-		//			}
-		//		}
+	function updateFamilyLinks($id, $dom) {
+		DAOFactory::getRpIndiFamDAO()->deleteByIndi($id,1);
+		$root = $dom->documentElement;
+		$c1 = $root->getElementsByTagName("references");
+		if($c1 != null) {
+
+			$c2 = $c1->item(0)->getElementsByTagName("familyGroups");
+			$c3 = $c2->item(0)->getElementsByTagName("familyGroup");
+
+			for($idx=0;$idx<$c3->length;$idx++) {
+				$linkType = $c3->item($idx)->getAttribute('selfType');
+				$fid = $c3->item($idx)->getAttribute('refId');
+				$link = new RpIndiFam();
+				$link->indiId = $id;
+				$link->indiBatchId = 1;
+				$link->famId = $fid;
+				$link->famBatchId = 1;
+				$link->linkType = $linkType=='child'?'C':'S';
+				try {
+					DAOFactory::getRpIndiFamDAO()->insert($link);
+				} catch (Exception $e) {
+					echo $e->getMessage();
+					throw $e;
+				}
+			}
+		}
 	}
 
 	function addFamily($dom) {
@@ -230,6 +230,7 @@ class XmlToDatabaseImporter {
 			if(stristr($e->getMessage,'Duplicate entry') >= 0) {
 				$needUpdate = true;
 			} else {
+				$transaction->rollback();
 				echo $e->getMessage();
 				throw $e;
 			}
@@ -238,6 +239,7 @@ class XmlToDatabaseImporter {
 			try {
 				DAOFactory::getRpFamDAO()->update($fam);
 			} catch (Exception $e) {
+				$transaction->rollback();
 				echo $e->getMessage();
 				throw $e;
 			}
