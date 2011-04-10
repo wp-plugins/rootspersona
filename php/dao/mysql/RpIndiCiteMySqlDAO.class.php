@@ -11,12 +11,12 @@ class RpIndiCiteMySqlDAO implements RpIndiCiteDAO{
 	 * Get Domain object by primry key
 	 *
 	 * @param String $id primary key
-	 * @return RpIndiCiteMySql 
+	 * @return RpIndiCiteMySql
 	 */
 	public function load($indiId, $indiBatchId, $citeId){
 		$sql = 'SELECT * FROM rp_indi_cite WHERE indi_id = ?  AND indi_batch_id = ?  AND cite_id = ? ';
 		$sqlQuery = new SqlQuery($sql);
-		$sqlQuery->setNumber($indiId);
+		$sqlQuery->set($indiId);
 		$sqlQuery->setNumber($indiBatchId);
 		$sqlQuery->setNumber($citeId);
 
@@ -31,7 +31,7 @@ class RpIndiCiteMySqlDAO implements RpIndiCiteDAO{
 		$sqlQuery = new SqlQuery($sql);
 		return $this->getList($sqlQuery);
 	}
-	
+
 	/**
 	 * Get all records from table ordered by field
 	 *
@@ -42,7 +42,7 @@ class RpIndiCiteMySqlDAO implements RpIndiCiteDAO{
 		$sqlQuery = new SqlQuery($sql);
 		return $this->getList($sqlQuery);
 	}
-	
+
 	/**
  	 * Delete record from table
  	 * @param rpIndiCite primary key
@@ -50,49 +50,41 @@ class RpIndiCiteMySqlDAO implements RpIndiCiteDAO{
 	public function delete($indiId, $indiBatchId, $citeId){
 		$sql = 'DELETE FROM rp_indi_cite WHERE indi_id = ?  AND indi_batch_id = ?  AND cite_id = ? ';
 		$sqlQuery = new SqlQuery($sql);
-		$sqlQuery->setNumber($indiId);
+		$sqlQuery->set($indiId);
 		$sqlQuery->setNumber($indiBatchId);
 		$sqlQuery->setNumber($citeId);
 
 		return $this->executeUpdate($sqlQuery);
 	}
-	
+
 	/**
  	 * Insert record to table
  	 *
  	 * @param RpIndiCiteMySql rpIndiCite
  	 */
 	public function insert($rpIndiCite){
-		$sql = 'INSERT INTO rp_indi_cite (update_datetime, indi_id, indi_batch_id, cite_id) VALUES (?, ?, ?, ?)';
+		$sql = 'INSERT INTO rp_indi_cite (update_datetime, indi_id, indi_batch_id, cite_id) VALUES (now(), ?, ?, ?)';
 		$sqlQuery = new SqlQuery($sql);
-		
-		$sqlQuery->set($rpIndiCite->updateDatetime);
 
-		
-		$sqlQuery->setNumber($rpIndiCite->indiId);
+		$sqlQuery->set($rpIndiCite->indiId);
 
 		$sqlQuery->setNumber($rpIndiCite->indiBatchId);
 
 		$sqlQuery->setNumber($rpIndiCite->citeId);
 
-		$this->executeInsert($sqlQuery);	
-		//$rpIndiCite->id = $id;
-		//return $id;
+		$this->executeInsert($sqlQuery);
 	}
-	
+
 	/**
  	 * Update record in table
  	 *
  	 * @param RpIndiCiteMySql rpIndiCite
  	 */
 	public function update($rpIndiCite){
-		$sql = 'UPDATE rp_indi_cite SET update_datetime = ? WHERE indi_id = ?  AND indi_batch_id = ?  AND cite_id = ? ';
+		$sql = 'UPDATE rp_indi_cite SET update_datetime = now() WHERE indi_id = ?  AND indi_batch_id = ?  AND cite_id = ? ';
 		$sqlQuery = new SqlQuery($sql);
-		
-		$sqlQuery->set($rpIndiCite->updateDatetime);
 
-		
-		$sqlQuery->setNumber($rpIndiCite->indiId);
+		$sqlQuery->set($rpIndiCite->indiId);
 
 		$sqlQuery->setNumber($rpIndiCite->indiBatchId);
 
@@ -126,15 +118,15 @@ class RpIndiCiteMySqlDAO implements RpIndiCiteDAO{
 	}
 
 
-	
+
 	/**
 	 * Read row
 	 *
-	 * @return RpIndiCiteMySql 
+	 * @return RpIndiCiteMySql
 	 */
 	protected function readRow($row){
 		$rpIndiCite = new RpIndiCite();
-		
+
 		$rpIndiCite->indiId = $row['indi_id'];
 		$rpIndiCite->indiBatchId = $row['indi_batch_id'];
 		$rpIndiCite->citeId = $row['cite_id'];
@@ -142,7 +134,7 @@ class RpIndiCiteMySqlDAO implements RpIndiCiteDAO{
 
 		return $rpIndiCite;
 	}
-	
+
 	protected function getList($sqlQuery){
 		$tab = QueryExecutor::execute($sqlQuery);
 		$ret = array();
@@ -151,28 +143,28 @@ class RpIndiCiteMySqlDAO implements RpIndiCiteDAO{
 		}
 		return $ret;
 	}
-	
+
 	/**
 	 * Get row
 	 *
-	 * @return RpIndiCiteMySql 
+	 * @return RpIndiCiteMySql
 	 */
 	protected function getRow($sqlQuery){
 		$tab = QueryExecutor::execute($sqlQuery);
 		if(count($tab)==0){
 			return null;
 		}
-		return $this->readRow($tab[0]);		
+		return $this->readRow($tab[0]);
 	}
-	
+
 	/**
 	 * Execute sql query
 	 */
 	protected function execute($sqlQuery){
 		return QueryExecutor::execute($sqlQuery);
 	}
-	
-		
+
+
 	/**
 	 * Execute sql query
 	 */

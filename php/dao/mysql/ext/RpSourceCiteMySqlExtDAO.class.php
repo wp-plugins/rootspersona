@@ -12,6 +12,12 @@ class RpSourceCiteMySqlExtDAO extends RpSourceCiteMySqlDAO{
 		$sqlQuery = new SqlQuery($sql);
 		return $this->executeUpdate($sqlQuery);
 	}
-
+	public function deleteBySrc($srcId, $srcBatchId){
+		$sql = 'DELETE FROM rp_source_cite WHERE source_id = ? and source_batch_id = ?';
+		$sqlQuery = new SqlQuery($sql);
+		$sqlQuery->set($srcId);
+		$sqlQuery->setNumber($srcBatchId);
+		return $this->executeUpdate($sqlQuery);
+	}
 }
 ?>

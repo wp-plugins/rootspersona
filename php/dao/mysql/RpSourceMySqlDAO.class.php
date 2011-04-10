@@ -43,25 +43,25 @@ class RpSourceMySqlDAO implements RpSourceDAO{
 	}
 
 	/**
- 	 * Delete record from table
- 	 * @param rpSource primary key
- 	 */
+	 * Delete record from table
+	 * @param rpSource primary key
+	 */
 	public function delete($id, $batchId){
 		$sql = 'DELETE FROM rp_source WHERE id = ?  AND batch_id = ? ';
 		$sqlQuery = new SqlQuery($sql);
-		$sqlQuery->setNumber($id);
+		$sqlQuery->set($id);
 		$sqlQuery->setNumber($batchId);
 
 		return $this->executeUpdate($sqlQuery);
 	}
 
 	/**
- 	 * Insert record to table
- 	 *
- 	 * @param RpSourceMySql rpSource
- 	 */
+	 * Insert record to table
+	 *
+	 * @param RpSourceMySql rpSource
+	 */
 	public function insert($rpSource){
-		$sql = 'INSERT INTO rp_source (originator, source_title, abbr, publication_facts, text, auto_rec_id, ged_change_date, update_datetime, id, batch_id) VALUES (?, ?, ?, ?, ?, ?, ?, now(), ?, ?)';
+		$sql = 'INSERT INTO rp_source (originator, source_title, abbr, publication_facts, text, auto_rec_id, ged_change_date, update_datetime, wp_page_id, id, batch_id) VALUES (?, ?, ?, ?, ?, ?, ?, now(), ?, ?, ?)';
 		$sqlQuery = new SqlQuery($sql);
 
 		$sqlQuery->set($rpSource->originator);
@@ -71,6 +71,7 @@ class RpSourceMySqlDAO implements RpSourceDAO{
 		$sqlQuery->set($rpSource->text);
 		$sqlQuery->set($rpSource->autoRecId);
 		$sqlQuery->set($rpSource->gedChangeDate);
+		$sqlQuery->setNumber($rpSource->wpPageId);
 
 		$sqlQuery->set($rpSource->id);
 
@@ -82,12 +83,12 @@ class RpSourceMySqlDAO implements RpSourceDAO{
 	}
 
 	/**
- 	 * Update record in table
- 	 *
- 	 * @param RpSourceMySql rpSource
- 	 */
+	 * Update record in table
+	 *
+	 * @param RpSourceMySql rpSource
+	 */
 	public function update($rpSource){
-		$sql = 'UPDATE rp_source SET originator = ?, source_title = ?, abbr = ?, publication_facts = ?, text = ?, auto_rec_id = ?, ged_change_date = ?, update_datetime = now() WHERE id = ?  AND batch_id = ? ';
+		$sql = 'UPDATE rp_source SET originator = ?, source_title = ?, abbr = ?, publication_facts = ?, text = ?, auto_rec_id = ?, ged_change_date = ?, wp_page_id = ?, update_datetime = now() WHERE id = ?  AND batch_id = ? ';
 		$sqlQuery = new SqlQuery($sql);
 
 		$sqlQuery->set($rpSource->originator);
@@ -97,6 +98,7 @@ class RpSourceMySqlDAO implements RpSourceDAO{
 		$sqlQuery->set($rpSource->text);
 		$sqlQuery->set($rpSource->autoRecId);
 		$sqlQuery->set($rpSource->gedChangeDate);
+		$sqlQuery->setNumber($rpSource->wpPageId);
 
 		$sqlQuery->set($rpSource->id);
 
@@ -106,8 +108,8 @@ class RpSourceMySqlDAO implements RpSourceDAO{
 	}
 
 	/**
- 	 * Delete all rows
- 	 */
+	 * Delete all rows
+	 */
 	public function clean(){
 		$sql = 'DELETE FROM rp_source';
 		$sqlQuery = new SqlQuery($sql);

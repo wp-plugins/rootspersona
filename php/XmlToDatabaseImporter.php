@@ -6,7 +6,7 @@ require_once ('temp.dao.php');
 
 class XmlToDatabaseImporter {
 	var $credentials;
-
+	var $pages;
 	function loadTables($credentials, $dataDir) {
 		$this->credentials = $credentials;
 		$dh  = opendir($dataDir);
@@ -21,21 +21,18 @@ class XmlToDatabaseImporter {
 			$root = $dom->documentElement;
 			if(isset($root)) {
 				if($root->tagName == "persona:person") {
-					$this->addPerson($dom);
+					//$this->addPerson($dom);
 				} elseif ($root->tagName == "persona:familyGroup") {
-					$this->addFamily($dom);
+					//$this->addFamily($dom);
 				} elseif ($root->tagName == "cite:evidence") {
-					$evidenceDoc = $dom;
+					$this->addEvidence($dom);
 				} elseif ($root->tagName == "map:idMap") {
-					$mapDoc = $dom;
+					//$this->addMappingData($dom);
 				}
 			}
 		}
-		if ($evidenceDoc != null) {
-			$this->addEvidence($evidenceDoc);
-		}
-		if ($mapDoc != null) {
-			$this->addMappingData($evidenceDoc);
+		if ($this->pages != null && count($this->pages) > 0) {
+			$this->updatePages();
 		}
 		//then archive(?) and delete the files and data dir
 	}
@@ -167,8 +164,12 @@ class XmlToDatabaseImporter {
 				}
 				$event = new RpEventDetail();
 				$event->eventType = $type;
-				$event->eventDate = $d->item(0)->nodeValue;
-				$event->place = $p->item(0)->nodeValue;
+				if($d != null && $d->length > 0) {
+					$event->eventDate = $d->item(0)->nodeValue;
+				}
+				if($p != null && $p->length > 0) {
+					$event->place = $p->item(0)->nodeValue;
+				}
 				if($iid != null) {
 					$event->classification = $pid.':'.$iid;
 				}
@@ -302,10 +303,131 @@ class XmlToDatabaseImporter {
 	}
 
 	function addEvidence($dom) {
+		try {
+			$transaction = new Transaction($this->credentials);
+			// only cause we are upgrading
+			DAOFactory::getRpIndiCiteDAO()->clean();
+			$transaction->commit();
+		} catch (Exception $e) {
+			$transaction->rollback();
+			echo $e->getMessage();
+			throw $e;
+		}
+		$root = $dom->documentElement;
+		$c1 = $root->getElementsByTagName("source");
+		for($idx=0;$idx<$c1->length;$idx++) {
+			$needUpdate = false;
+			$srcId = $c1->item($idx)->getAttribute('sourceId');
+			$pageId = $c1->item($idx)->getAttribute('pageId');
+			$a1 = null;
+			$t1 = null;
+			$a1 = $c1->item($idx)->getElementsByTagName("abbr");
+			if($a1 != null && $a1->length > 0) {
+				$abbr = $a1->item(0)->nodeValue;
+			}
+			$t1 = $c1->item($idx)->getElementsByTagName("title");
+			if($t1 != null && $t1->length > 0) {
+				$title = $t1->item(0)->nodeValue;
+			}
 
+			$src = new RpSource();
+			$src->id = $srcId;
+			$src->batchId = 1;
+			$src->wpPageId = $pageId;
+			$src->sourceTitle = $title;
+			$src->abbr = $abbr;
+			try {
+				$transaction = new Transaction($this->credentials);
+				DAOFactory::getRpSourceDAO()->insert($src);
+			} catch (Exception $e) {
+				if(stristr($e->getMessage(),'Duplicate entry') >= 0) {
+					$needUpdate = true;
+				} else {
+					$transaction->rollback();
+					echo $e->getMessage();
+					throw $e;
+				}
+			}
+			if($needUpdate) {
+				try {
+					DAOFactory::getRpSourceDAO()->update($src);
+				} catch (Exception $e) {
+					$transaction->rollback();
+					echo $e->getMessage();
+					throw $e;
+				}
+			}
+			$this->addCitations($srcId, $c1->item($idx));
+			$transaction->commit();
+		}
+	}
+
+	function addCitations($srcId, $doc) {
+		DAOFactory::getRpSourceCiteDAO()->deleteBySrc($srcId,1);
+		$c1 = $doc->getElementsByTagName("citation");
+
+		for($idx=0;$idx<$c1->length;$idx++) {
+			$detail = null;
+			$c2 = $c1->item($idx)->getElementsByTagName("detail");
+			if($c2 != null && $c2->length > 0) {
+				$detail = $c2->item(0)->nodeValue;
+			}
+			$cite = new RpSourceCite();
+			$cite->sourceId = $srcId;
+			$cite->sourceBatchId = 1;
+			$cite->sourcePage = $detail;
+			try {
+				$id = DAOFactory::getRpSourceCiteDAO()->insert($cite);
+				$c3 = $c1->item($idx)->getElementsByTagName("person");
+				for($idx2=0;$idx2<$c3->length;$idx2++) {
+					$personId = $c3->item($idx2)->getAttribute('id');
+					$indiCite = new RpIndiCite();
+					$indiCite->indiId = $personId;
+					$indiCite->indiBatchId = 1;
+					$indiCite->citeId = $id;
+					try {
+						DAOFactory::getRpIndiCiteDAO()->insert($indiCite);
+					} catch (Exception $e) {
+						echo $e->getMessage();
+						throw $e;
+					}
+				}
+			} catch (Exception $e) {
+				echo $e->getMessage();
+				throw $e;
+			}
+		}
 	}
 
 	function addMappingData($dom) {
+		$pages = array();
+		$root = $dom->documentElement;
+		$e1 = $root->getElementsByTagName("entry");
+		for($idx=0;$idx<$e1->length;$idx++) {
+			$pageId = $e1->item($idx)->getAttribute('pageId');
+			if($pageId !=null && !empty($pageId)) {
+				$personId = $e1->item($idx)->getAttribute('personId');
+				$this->pages[$idx] =  array($personId,$pageId);
+			}
+		}
+	}
+
+	function updatePages() {
+		for($idx=0;$idx<count($this->pages);$idx++) {
+			$pageId = $this->pages[$idx][1];
+			if($pageId !=null && !empty($pageId)) {
+				$personId = $this->pages[$idx][0];
+				try {
+					$transaction = new Transaction($this->credentials);
+					DAOFactory::getRpIndiDAO()->updatePage($personId,1,$pageId);
+					$transaction->commit();
+				} catch (Exception $e) {
+					echo $e->getMessage();
+					$transaction->rollback();
+					throw $e;
+				}
+			}
+		}
 
 	}
 }

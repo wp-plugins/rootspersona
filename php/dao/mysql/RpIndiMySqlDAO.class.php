@@ -61,7 +61,7 @@ class RpIndiMySqlDAO implements RpIndiDAO{
  	 * @param RpIndiMySql rpIndi
  	 */
 	public function insert($rpIndi){
-		$sql = 'INSERT INTO rp_indi (restriction_notice, gender, perm_rec_file_nbr, anc_rec_file_nbr, auto_rec_id, ged_change_date, update_datetime, id, batch_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+		$sql = 'INSERT INTO rp_indi (restriction_notice, gender, perm_rec_file_nbr, anc_rec_file_nbr, auto_rec_id, ged_change_date, update_datetime, id, batch_id) VALUES (?, ?, ?, ?, ?, ?, now(), ?, ?)';
 		$sqlQuery = new SqlQuery($sql);
 
 		$sqlQuery->set($rpIndi->restrictionNotice);
@@ -70,7 +70,6 @@ class RpIndiMySqlDAO implements RpIndiDAO{
 		$sqlQuery->set($rpIndi->ancRecFileNbr);
 		$sqlQuery->set($rpIndi->autoRecId);
 		$sqlQuery->set($rpIndi->gedChangeDate);
-		$sqlQuery->set($rpIndi->updateDatetime);
 
 
 		$sqlQuery->set($rpIndi->id);
@@ -88,7 +87,7 @@ class RpIndiMySqlDAO implements RpIndiDAO{
  	 * @param RpIndiMySql rpIndi
  	 */
 	public function update($rpIndi){
-		$sql = 'UPDATE rp_indi SET restriction_notice = ?, gender = ?, perm_rec_file_nbr = ?, anc_rec_file_nbr = ?, auto_rec_id = ?, ged_change_date = ?, update_datetime = ? WHERE id = ?  AND batch_id = ? ';
+		$sql = 'UPDATE rp_indi SET restriction_notice = ?, gender = ?, perm_rec_file_nbr = ?, anc_rec_file_nbr = ?, auto_rec_id = ?, ged_change_date = ?, update_datetime = now() WHERE id = ?  AND batch_id = ? ';
 		$sqlQuery = new SqlQuery($sql);
 
 		$sqlQuery->set($rpIndi->restrictionNotice);
@@ -97,8 +96,6 @@ class RpIndiMySqlDAO implements RpIndiDAO{
 		$sqlQuery->set($rpIndi->ancRecFileNbr);
 		$sqlQuery->set($rpIndi->autoRecId);
 		$sqlQuery->set($rpIndi->gedChangeDate);
-		$sqlQuery->set($rpIndi->updateDatetime);
-
 
 		$sqlQuery->set($rpIndi->id);
 
