@@ -16,7 +16,8 @@ class XmlToDatabaseImporter {
 			|| $filename == "templatePerson.xml"
 			|| $filename == "f000.xml") continue;
 
-			$dom = DOMDocument::load($dataDir . "/" . $filename);
+			$dom = new DOMDocument();
+			$dom->load($dataDir . "/" . $filename);
 			$root = $dom->documentElement;
 			if(isset($root)) {
 				if($root->tagName == "persona:person") {
@@ -70,7 +71,7 @@ class XmlToDatabaseImporter {
 			$transaction = new Transaction($this->credentials);
 			DAOFactory::getRpIndiDAO()->insert($indi);
 		} catch (Exception $e) {
-			if(stristr($e->getMessage,'Duplicate entry') >= 0) {
+			if(stristr($e->getMessage(),'Duplicate entry') >= 0) {
 				$needUpdate = true;
 			} else {
 				$transaction->rollback();
@@ -89,7 +90,6 @@ class XmlToDatabaseImporter {
 		}
 		$this->updateNames($id, $name, $surname);
 		$this->updateIndiEvents($id, $dom);
-
 		$this->updateFamilyLinks($id, $dom);
 
 		$transaction->commit();
@@ -130,67 +130,94 @@ class XmlToDatabaseImporter {
 		}
 	}
 
-	function updateIndiEvents($dom) {
-		//		$oldEvents = DAOFactory::getRpIndiEventDAO()->loadList($person->Id,1);
-		//		if($oldEvents != null && count($oldEvents)>0) {
-		//			foreach($oldEvents as $eve) {
-		//				DAOFactory::getRpEventDetailDAO()->delete($eve->eventId);
-		//				DAOFactory::getRpEventCiteDAO()->deleteByEventId($eve->eventId);
-		//				DAOFactory::getRpSourceCiteDAO()->deleteOrphans();
-		//			}
-		//			DAOFactory::getRpIndiEventDAO()->deleteByIndi($person->Id, 1);
-		//		}
-		//
-		//		foreach($person->Events as $pEvent) {
-		//			$event = new RpEventDetail();
-		//			$event->eventType = ($pEvent->Tag === 'EVEN'?$pEvent->Type:$pEvent->_TYPES[$pEvent->Tag]);
-		//			$event->eventDate = $pEvent->Date;
-		//			$event->place = $pEvent->Place->Name;
-		//
-		//			$id = null;
-		//			try {
-		//				$id = DAOFactory::getRpEventDetailDAO()->insert($event);
-		//			} catch (Exception $e) {
-		//				echo $e->getMessage();
-		//				throw $e;
-		//			}
-		//			$indiEvent = new RpIndiEvent();
-		//			$indiEvent->indiId = $person->Id;
-		//			$indiEvent->indiBatchId = 1;
-		//			$indiEvent->eventId = $id;
-		//			try {
-		//				DAOFactory::getRpIndiEventDAO()->insert($indiEvent);
-		//			} catch (Exception $e) {
-		//				echo $e->getMessage();
-		//				throw $e;
-		//			}
-		//			//$this->updateEventCitations($id, 1, $pEvent->Citations);
-		//		}
+	function updateIndiEvents($pid, $dom) {
+		$familyFactArray = Array('Annulment',
+		    	'Divorce',
+    			'Divorce Filed',
+    			'Engagement',
+    			'Marriage Bann',
+    			'Marriage Constract',
+    			'Marriage',
+    			'Marriage License',
+    			'Marriage Settlement',
+    			'Residence');
+		$oldEvents = DAOFactory::getRpIndiEventDAO()->loadList($pid,1);
+		if($oldEvents != null && count($oldEvents)>0) {
+			foreach($oldEvents as $eve) {
+				DAOFactory::getRpEventDetailDAO()->delete($eve->eventId);
+				DAOFactory::getRpEventCiteDAO()->deleteByEventId($eve->eventId);
+				DAOFactory::getRpSourceCiteDAO()->deleteOrphans();
+			}
+			DAOFactory::getRpIndiEventDAO()->deleteByIndi($pid,1);
+		}
+		$root = $dom->documentElement;
+		$c1 = $root->getElementsByTagName("events");
+		if($c1 != null && $c1->length > 0) {
+			$c2 = $c1->item(0)->getElementsByTagName("event");
+			for($idx=0;$idx<$c2->length;$idx++) {
+				$type = $c2->item($idx)->getAttribute('type');
+				$d = $c2->item($idx)->getElementsByTagName("date");
+				$p = $c2->item($idx)->getElementsByTagName("place");
+				$iid = null;
+				if(in_array($type, $familyFactArray)) {
+					$indi = $c2->item($idx)->getElementsByTagName("person");
+					if($indi != null && $indi->length > 0) {
+						$iid = $indi->item(0)->getAttribute('id');
+					}
+				}
+				$event = new RpEventDetail();
+				$event->eventType = $type;
+				$event->eventDate = $d->item(0)->nodeValue;
+				$event->place = $p->item(0)->nodeValue;
+				if($iid != null) {
+					$event->classification = $pid.':'.$iid;
+				}
+
+				$id = null;
+				try {
+					$id = DAOFactory::getRpEventDetailDAO()->insert($event);
+				} catch (Exception $e) {
+					echo $e->getMessage();
+					throw $e;
+				}
+				$indiEvent = new RpIndiEvent();
+				$indiEvent->indiId = $pid;
+				$indiEvent->indiBatchId = 1;
+				$indiEvent->eventId = $id;
+				try {
+					DAOFactory::getRpIndiEventDAO()->insert($indiEvent);
+				} catch (Exception $e) {
+					echo $e->getMessage();
+					throw $e;
+				}
+				//$this->updateEventCitations($id, 1, $pEvent->Citations);
+			}
+		}
 	}
 
 	function updateFamilyLinks($id, $dom) {
 		DAOFactory::getRpIndiFamDAO()->deleteByIndi($id,1);
 		$root = $dom->documentElement;
 		$c1 = $root->getElementsByTagName("references");
-		if($c1 != null) {
-
+		if($c1 != null && $c1->length > 0) {
 			$c2 = $c1->item(0)->getElementsByTagName("familyGroups");
-			$c3 = $c2->item(0)->getElementsByTagName("familyGroup");
-
-			for($idx=0;$idx<$c3->length;$idx++) {
-				$linkType = $c3->item($idx)->getAttribute('selfType');
-				$fid = $c3->item($idx)->getAttribute('refId');
-				$link = new RpIndiFam();
-				$link->indiId = $id;
-				$link->indiBatchId = 1;
-				$link->famId = $fid;
-				$link->famBatchId = 1;
-				$link->linkType = $linkType=='child'?'C':'S';
-				try {
-					DAOFactory::getRpIndiFamDAO()->insert($link);
-				} catch (Exception $e) {
-					echo $e->getMessage();
-					throw $e;
+			if($c2 == null && $c2->length > 0) {
+				$c3 = $c2->item(0)->getElementsByTagName("familyGroup");
+				for($idx=0;$idx<$c3->length;$idx++) {
+					$linkType = $c3->item($idx)->getAttribute('selfType');
+					$fid = $c3->item($idx)->getAttribute('refId');
+					$link = new RpIndiFam();
+					$link->indiId = $id;
+					$link->indiBatchId = 1;
+					$link->famId = $fid;
+					$link->famBatchId = 1;
+					$link->linkType = $linkType=='child'?'C':'S';
+					try {
+						DAOFactory::getRpIndiFamDAO()->insert($link);
+					} catch (Exception $e) {
+						echo $e->getMessage();
+						throw $e;
+					}
 				}
 			}
 		}
@@ -227,7 +254,7 @@ class XmlToDatabaseImporter {
 			$transaction = new Transaction($this->credentials);
 			DAOFactory::getRpFamDAO()->insert($fam);
 		} catch (Exception $e) {
-			if(stristr($e->getMessage,'Duplicate entry') >= 0) {
+			if(stristr($e->getMessage(),'Duplicate entry') >= 0) {
 				$needUpdate = true;
 			} else {
 				$transaction->rollback();

@@ -60,7 +60,7 @@ class rpEvent extends FactDetail
     'MARL' => 'Marriage License',
     'MARS' => 'Marriage Settlement',
     'RESI' => 'Residence',
-    'EVEN' => 'rpEvent'
+    'EVEN' => 'Event'
     );
 
     /**

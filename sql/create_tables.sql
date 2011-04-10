@@ -140,6 +140,7 @@ DROP TABLE IF EXISTS rp_indi;
 CREATE TABLE IF NOT EXISTS rp_indi (
   id varchar(22) NOT NULL,
   batch_id tinyint(4) NOT NULL DEFAULT '1',
+  wp_page_id int(11) DEFAULT NULL,
   restriction_notice varchar(7) DEFAULT NULL,
   gender char(1) DEFAULT NULL,
   perm_rec_file_nbr varchar(90) DEFAULT NULL,
@@ -282,6 +283,7 @@ DROP TABLE IF EXISTS rp_source;
 CREATE TABLE IF NOT EXISTS rp_source (
   id varchar(22) NOT NULL,
   batch_id tinyint(4) NOT NULL DEFAULT '1',
+  wp_page_id int(11) DEFAULT NULL,
   originator longtext,
   source_title longtext,
   abbr varchar(60) DEFAULT NULL,

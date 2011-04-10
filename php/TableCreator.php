@@ -19,6 +19,8 @@ class TableCreator {
 		$f = fopen($sqlFileToExecute,"r+");
 		$sqlFile = fread($f, filesize($sqlFileToExecute));
 		$sqlArray = explode(';',$sqlFile);
+		$sqlErrorCode = 0;
+		$sqlErrorText = null;
 		foreach ($sqlArray as $stmt) {
 			if (strlen($stmt)>3 && substr(ltrim($stmt),0,2)!='/*') {
 				$result = mysql_query($stmt);
@@ -47,5 +49,4 @@ $credentials = array( 'hostname' => 'localhost',
 	'dbname' =>'wpuser1');
 $t = new TableCreator();
 $t->createTables($credentials, $sqlFileToExecute);
-
 ?>
