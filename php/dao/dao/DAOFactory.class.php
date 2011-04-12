@@ -6,7 +6,11 @@
  * @date: ${date}
  */
 class DAOFactory{
-	
+
+	public static function getRpPersonaDAO () {
+		return new RpPersonaMySqlExtDAO();
+	}
+
 	/**
 	 * @return RpAddressDAO
 	 */
