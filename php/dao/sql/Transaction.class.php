@@ -10,15 +10,20 @@ class Transaction{
 
 	private $connection;
 
-	public function Transaction($credentials){
+	public function Transaction($credentials, $isQuery=false){
 		$this->connection = new Connection($credentials);
 		if(!Transaction::$transactions){
 			Transaction::$transactions = new ArrayList();
 		}
 		Transaction::$transactions->add($this);
-		$this->connection->executeQuery('BEGIN');
+		if(!$isQuery)
+			$this->connection->executeQuery('BEGIN');
 	}
 
+	public function close(){
+		$this->connection->close();
+		Transaction::$transactions->removeLast();
+	}
 	/**
 	 * Zakonczenie transakcji i zapisanie zmian
 	 */
