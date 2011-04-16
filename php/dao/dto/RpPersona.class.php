@@ -1,10 +1,7 @@
 <?php
-class RpPersona {
-	var $id;
-	var $batchId;
-	var $fullName;
-	var $birthDate;
-	var $deathDate;
+class RpPersona extends RpSimplePerson {
 	var $facts;
 	var $sources;
+	var $ancestors;
+	var $groups;
 }

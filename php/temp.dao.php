@@ -117,6 +117,7 @@ require_once('dao/dto/RpSubmitterNote.class.php');
 require_once('dao/mysql/RpSubmitterNoteMySqlDAO.class.php');
 require_once('dao/mysql/ext/RpSubmitterNoteMySqlExtDAO.class.php');
 require_once('dao/mysql/ext/RpPersonaMySqlExtDAO.class.php');
+require_once('dao/dto/RpSimplePerson.class.php');
 require_once('dao/dto/RpPersona.class.php');
-
+require_once('dao/mysql/ext/RpAncestorsMySqlExtDAO.class.php');
 ?>

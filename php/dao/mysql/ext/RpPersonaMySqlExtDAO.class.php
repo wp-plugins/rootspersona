@@ -3,10 +3,13 @@
 class RpPersonaMySqlExtDAO {
 
 	public function getPersona($id,$batchId){
-		$sql1 = "SELECT ri.id AS id, ri.batch_id AS batch_id, rnp.personal_name AS full_name, ri.gender AS gender"
+		$sql1 = "SELECT ri.id AS id, ri.batch_id AS batch_id"
+		. ", rnp.personal_name AS full_name, ri.gender AS gender, rf.spouse1 AS father, rf.spouse2 AS mother"
 		. " FROM rp_indi ri"
 		. " JOIN rp_indi_name rip ON ri.id = rip.indi_id AND ri.batch_id = rip.indi_batch_id"
 		. " JOIN rp_name_personal rnp ON rip.name_id = rnp.id"
+		. " JOIN rp_fam_child rfc ON ri.id = rfc.child_id AND ri.batch_id = rfc.indi_batch_id"
+		. " JOIN rp_fam rf ON rfc.fam_id = rf.id AND rfc.fam_batch_id = rf.batch_id"
 		. " WHERE ri.id = ? AND ri.batch_id = ?";
 
 		$sql2 = "SELECT event_date"
@@ -139,6 +142,9 @@ class RpPersonaMySqlExtDAO {
 		$rpPersona->batchId = $row['batch_id'];
 		$rpPersona->gender = $row['gender'];
 		$rpPersona->fullName = $row['full_name'];
+		$rpPersona->father = $row['father'];
+		$rpPersona->mother = $row['mother'];
+
 		return $rpPersona;
 	}
 

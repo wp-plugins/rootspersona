@@ -7,6 +7,10 @@
  */
 class DAOFactory{
 
+	public static function getRpAncestorsDAO () {
+		return new RpAncestorsMySqlExtDAO();
+	}
+
 	public static function getRpPersonaDAO () {
 		return new RpPersonaMySqlExtDAO();
 	}

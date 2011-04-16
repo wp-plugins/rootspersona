@@ -117,5 +117,7 @@ require_once('wp-content/plugins/rootspersona/php/dao/dto/RpSubmitterNote.class.
 require_once('wp-content/plugins/rootspersona/php/dao/mysql/RpSubmitterNoteMySqlDAO.class.php');
 require_once('wp-content/plugins/rootspersona/php/dao/mysql/ext/RpSubmitterNoteMySqlExtDAO.class.php');
 require_once('wp-content/plugins/rootspersona/php/dao/mysql/ext/RpPersonaMySqlExtDAO.class.php');
+require_once('wp-content/plugins/rootspersona/php/dao/dto/RpSimplePerson.class.php');
 require_once('wp-content/plugins/rootspersona/php/dao/dto/RpPersona.class.php');
+require_once('wp-content/plugins/rootspersona/php/dao/mysql/ext/RpAncestorsMySqlExtDAO.class.php');'
 ?>
