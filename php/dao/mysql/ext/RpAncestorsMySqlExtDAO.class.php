@@ -2,7 +2,7 @@
 
 class RpAncestorsMySqlExtDAO {
 
-	public function getAncestors($persona, $options){
+	public function getAncestors($persona){
 
 		$ancestors = array();
 		$ancestors[1] = $persona;
@@ -18,10 +18,12 @@ class RpAncestorsMySqlExtDAO {
 		}
 
 		for($idx =1; $idx <= 7; $idx++) {
-			if($ancestors[$idx] == null || $ancestors[$idx]->isPrivate) {
-				$ancestors[$idx] = getUnknown($persona,
-					($ancestors[$idx]==null?false:$ancestors[$idx]->isPrivate));
+			if(!isset($ancestors[$idx]) ||  $ancestors[$idx]== null || !isset($ancestors[$idx]->isPrivate)) {
+				$ancestors[$idx] = $this->getUnknown($persona,	false);
+			} else if (isset($ancestors[$idx]) &&  $ancestors[$idx]!= null && isset($ancestors[$idx]->isPrivate) && $ancestors[$idx]->isPrivate) {
+				$ancestors[$idx] = $this->getUnknown($persona,	false);
 			}
+			if($ancestors[$idx]->page == null) $ancestors[$idx]->page = $ancestors[1]->page;
 		}
 
 		return $ancestors;
@@ -35,7 +37,8 @@ class RpAncestorsMySqlExtDAO {
 		$p->birthDate = '';
 		$p->deathDate = '';
 		$p->isPrivate = false;
-		$p->page = $person->page;
+		$p->page = $persona->page;
+		return $p;
 	}
 }
 ?>

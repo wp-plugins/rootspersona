@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS rp_fam_child (
   child_id varchar(22) NOT NULL,
   indi_batch_id tinyint(4) NOT NULL,
   update_datetime datetime NOT NULL,
-  PRIMARY KEY (fam_id,fam_batch_id,child_id,indi_batch_id)
+  PRIMARY KEY (fam_id,fam_batch_id,child_id,indi_batch_id),
   KEY `child_id` (`child_id`,`indi_batch_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 

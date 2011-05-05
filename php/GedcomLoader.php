@@ -1,8 +1,8 @@
 <?php
-require_once ('temp.inc.php');
-require_once ('tmp.dao.php');
-//require_once ('include.inc.php');
-//require_once ('include.dao.php');
+//require_once ('temp.inc.php');
+//require_once ('tmp.dao.php');
+require_once ('include.inc.php');
+require_once ('include.dao.php');
 
 class GedcomLoader {
 	var $ged;
@@ -205,12 +205,13 @@ class GedcomLoader {
 
 		foreach($person->Names as $pName) {
 			$name = new RpNamePersonal();
-			$name->personalName = $pName->rpName->getFullName();
+			$name->personalName = $pName->getName();
 			$name->nameType = $pName->rpName->Type;
 			$name->prefix = $pName->rpName->Pieces->Prefix;
 			$name->given = $pName->rpName->Pieces->Given;
 			$name->nickname = $pName->rpName->Pieces->NickName;
 			$name->surnamePrefix = $pName->rpName->Pieces->SurnamePrefix;
+			$sName = $pName->rpName->getSurName();
 			$name->surname = $sName==null?'Unknown':$sName;
 			$name->suffix = $pName->rpName->Pieces->Suffix;
 
@@ -449,18 +450,5 @@ class GedcomLoader {
 		$this->addSubm($rec);
 	}
 }
-//$gedcomFile = "C:\\Users\\ed\\Desktop\\adabell.ged";
-//$gedcomFile = "C:\\Users\\ed\\Desktop\\20110208.ged";
-//$credentials = array( 'hostname' => 'localhost',
-//				'dbuser' => 'wpuser1',
-//				'dbpassword' => 'wpuser1',
-//				'dbname' =>'wpuser1');
-//$g = new GedcomLoader();
-//$time_start = microtime(true);
-//
-//$g->loadTables($credentials, $gedcomFile);
-//
-//$time = microtime(true) - $time_start;
-//echo "Done in $time seconds using " . memory_get_peak_usage (true)/1024/1024 . "MB." ;
 
 ?>

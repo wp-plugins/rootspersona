@@ -1,15 +1,35 @@
 <?php
-require_once 'GEDTransformer.php';
-
 
 class PersonUtility {
-	function addPage($fileName, $dataDir) {
-		$name = $this->getName($fileName, $dataDir);
-		$pid = substr($fileName,0,-4);
+
+	function createEvidencePage($title, $contents, $page='') {
+		// Create post object
+		$my_post = array();
+		$my_post['post_title'] = $title;
+		$my_post['post_content'] = $contents;
+		$my_post['post_status'] = 'publish';
+		$my_post['post_author'] = 0;
+		$my_post['post_type'] = 'page';
+		$my_post['ping_status'] = 'closed';
+		$my_post['comment_status'] = 'closed';
+		$my_post['post_parent'] = get_option('rootsEvidencePage');
+
+		$pageID = '';
+		if(empty($page)) {
+			$pageID = wp_insert_post( $my_post );
+		} else {
+			$my_post['ID'] = $page;
+			wp_update_post( $my_post );
+			$pageID = $page;
+		}
+		return $pageID;
+	}
+
+	function addPage($person, $name) {
 		// Create post object
 		$my_post = array();
 		$my_post['post_title'] = $name;
-		$my_post['post_content'] = "[rootsPersona personId='$pid'/]";
+		$my_post['post_content'] = "[rootsPersona personId='$person'/]";
 		$my_post['post_status'] = 'publish';
 		$my_post['post_author'] = 0;
 		$my_post['post_type'] = 'page';
@@ -18,11 +38,6 @@ class PersonUtility {
 
 		// Insert the post into the database
 		$pageID = wp_insert_post( $my_post );
-		if($pageID != false)
-		{
-			$surname = $this->getSurname($fileName, $dataDir);
-			$this->createMapEntry($pid,$pageID, $name, $surname, $dataDir);
-		}
 		return $pageID;
 	}
 

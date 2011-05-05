@@ -120,4 +120,5 @@ require_once('dao/mysql/ext/RpPersonaMySqlExtDAO.class.php');
 require_once('dao/dto/RpSimplePerson.class.php');
 require_once('dao/dto/RpPersona.class.php');
 require_once('dao/mysql/ext/RpAncestorsMySqlExtDAO.class.php');
+require_once('dao/mysql/ext/RpDescendantsMySqlExtDAO.class.php');
 ?>

@@ -224,6 +224,7 @@ class RpIndiMySqlDAO implements RpIndiDAO{
 
 		$rpIndi->id = $row['id'];
 		$rpIndi->batchId = $row['batch_id'];
+		$rpIndi->wpPageId = $row['wp_page_id'];
 		$rpIndi->restrictionNotice = $row['restriction_notice'];
 		$rpIndi->gender = $row['gender'];
 		$rpIndi->permRecFileNbr = $row['perm_rec_file_nbr'];

@@ -2,9 +2,115 @@
 
 class RpPersonaMySqlExtDAO {
 
+	public function getIndexedPageCnt($batchId) {
+		$sql = "SELECT count(*)"
+				. " FROM rp_indi ri"
+				. " WHERE ri.batch_id = ? AND ri.wp_page_id IS NOT NULL";
+
+		$sqlQuery = new SqlQuery($sql);
+		$sqlQuery->setNumber($batchId);
+		$cnt =  $this->querySingleResult($sqlQuery);
+
+		return $cnt;
+	}
+
+	public function getIndexedPage($batchId, $page, $perPage) {
+		$sql = "SELECT ri.id AS id, rnp.surname AS surname"
+				. ", rnp.given AS given"
+				. ", ri.wp_page_id AS page"
+				. " FROM rp_indi ri"
+				. " JOIN rp_indi_name rip"
+				. " ON ri.id = rip.indi_id AND ri.batch_id = rip.indi_batch_id"
+				. " JOIN rp_name_personal rnp ON rip.name_id = rnp.id"
+				. " WHERE ri.batch_id = ? AND ri.wp_page_id IS NOT NULL"
+				. " ORDER BY rnp.surname, rnp.given"
+				. " LIMIT " . (($page - 1) * $perPage) . "," . $perPage;
+
+		$sql2 = "SELECT event_date AS birth_date"
+		. " FROM rp_indi_event rie"
+		. " JOIN rp_event_detail red ON red.id = rie.event_id and red.event_type = 'Birth'"
+		. " WHERE rie.indi_id = ? AND rie.indi_batch_id = ?";
+
+		$sql3 = "SELECT event_date As death_date"
+		. " FROM rp_indi_event rie"
+		. " JOIN rp_event_detail red ON red.id = rie.event_id and red.event_type = 'Death'"
+		. " WHERE rie.indi_id = ? AND rie.indi_batch_id = ?";
+
+		$sqlQuery = new SqlQuery($sql);
+		$sqlQuery->setNumber($batchId);
+		$rows =  $this->getRows($sqlQuery);
+
+		$persons = array();
+		if($rows > 0) {
+			$cnt = count($rows);
+			for($idx = 0; $idx <$cnt;$idx++ ) {
+				$person = array();
+				$person['surname'] = $rows[$idx]['surname'];
+				$person['given'] = $rows[$idx]['given'];
+				$person['page'] = $rows[$idx]['page'];
+
+				$sqlQuery = new SqlQuery($sql2);
+				$sqlQuery->set($rows[$idx]['id']);
+				$sqlQuery->setNumber($batchId);
+				$person['dates'] = $this->querySingleResult($sqlQuery);
+
+				$person['dates'] .= ' - ';
+
+				$sqlQuery = new SqlQuery($sql3);
+				$sqlQuery->set($rows[$idx]['id']);
+				$sqlQuery->setNumber($batchId);
+				$person['dates'] .= $this->querySingleResult($sqlQuery);
+				$persons[$idx] = $person;
+			}
+		}
+		return $persons;
+	}
+
+	public function getFullname($id, $batchId) {
+		$sql = "SELECT replace(rnp.personal_name,'/','') AS fullname"
+		. " FROM rp_indi ri"
+		. " JOIN rp_indi_name rip ON ri.id = rip.indi_id AND ri.batch_id = rip.indi_batch_id"
+		. " JOIN rp_name_personal rnp ON rip.name_id = rnp.id"
+		. " WHERE ri.id = ? AND ri.batch_id = ?";
+
+		$sqlQuery = new SqlQuery($sql);
+		$sqlQuery->set($id);
+		$sqlQuery->setNumber($batchId);
+		return $this->querySingleResult($sqlQuery);
+	}
+
+	public function getPersonsNoPage($batchId){
+		$sql = "SELECT ri.id AS id, ri.batch_id AS batch_id"
+		. ", rnp.given AS given, rnp.surname AS surname"
+		. " FROM rp_indi ri"
+		. " JOIN rp_indi_name rip ON ri.id = rip.indi_id AND ri.batch_id = rip.indi_batch_id"
+		. " JOIN rp_name_personal rnp ON rip.name_id = rnp.id"
+		. " WHERE ri.wp_page_id IS NULL AND ri.batch_id = ?"
+		. " ORDER BY rnp.surname";
+
+		$sqlQuery = new SqlQuery($sql);
+		$sqlQuery->setNumber($batchId);
+		$rows = $this->getRows($sqlQuery);
+
+		$persons = array();
+		if($rows > 0) {
+			$cnt = count($rows);
+			for($idx = 0; $idx <$cnt;$idx++ ) {
+				$person = array();
+				$person['id'] = $rows[$idx]['id'];
+				$person['batch_id'] = $rows[$idx]['batch_id'];
+				$person['given'] = $rows[$idx]['given'];
+				$person['surname'] = $rows[$idx]['surname'];
+
+				$persons[$idx] = $person;
+			}
+		}
+		return $persons;
+	}
+
 	public function getPersona($id,$batchId){
 		$sql1 = "SELECT ri.id AS id, ri.batch_id AS batch_id"
-		. ", rnp.personal_name AS full_name, ri.gender AS gender, rf.spouse1 AS father, rf.spouse2 AS mother"
+		. ", replace(rnp.personal_name,'/','') AS full_name, ri.gender AS gender, rf.spouse1 AS father, rf.spouse2 AS mother"
 		. " FROM rp_indi ri"
 		. " JOIN rp_indi_name rip ON ri.id = rip.indi_id AND ri.batch_id = rip.indi_batch_id"
 		. " JOIN rp_name_personal rnp ON rip.name_id = rnp.id"

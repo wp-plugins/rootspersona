@@ -1,7 +1,6 @@
 <?php
 require_once(ABSPATH . 'wp-content/plugins/rootspersona/php/Genealogy/Gedcom/Structures/EntityAbstract.php');
 require_once(ABSPATH . 'wp-content/plugins/rootspersona/php/Genealogy/Gedcom/rpParser.php');
-//require_once(ABSPATH . 'wp-content/plugins/rootspersona/php/Genealogy/Gedcom/Exceptions/Exception.php');
 require_once(ABSPATH . 'wp-content/plugins/rootspersona/php/Genealogy/Gedcom/Exceptions/FileException.php');
 require_once(ABSPATH . 'wp-content/plugins/rootspersona/php/Genealogy/Gedcom/Exceptions/InvalidFieldException.php');
 require_once(ABSPATH . 'wp-content/plugins/rootspersona/php/Genealogy/Gedcom/GedcomManager.php');

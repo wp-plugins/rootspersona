@@ -1,6 +1,6 @@
 <?php
 class TableCreator {
-	function createTables($credentials, $sqlFileToExecute) {
+	static function updateTables($credentials, $sqlFileToExecute) {
 		try {
 			$link = mysql_connect($credentials['hostname'], $credentials['dbuser'], $credentials['dbpassword']);
 		} catch (Exception $e) {
@@ -9,8 +9,7 @@ class TableCreator {
 		}
 
 		if (!$link) {
-			echo "MySQL Connection error";
-			die ("MySQL Connection error");
+			throw new Exception("MySQL Connection error");
 		}
 
 		mysql_select_db($credentials['dbname'], $link) or die ("Wrong MySQL Database");
@@ -32,21 +31,9 @@ class TableCreator {
 				}
 			}
 		}
-		if ($sqlErrorCode == 0) {
-			echo "Script is executed succesfully!";
-		} else {
-			echo "An error occured during installation!<br/>";
-			echo "Error code: $sqlErrorCode<br/>";
-			echo "Error text: $sqlErrorText<br/>";
-			echo "Statement:<br/> $sqlStmt<br/>";
+		if ($sqlErrorCode != 0) {
+			throw new Exception($sqlErrorText);
 		}
 	}
 }
-$sqlFileToExecute = '../sql/create_tables.sql';
-$credentials = array( 'hostname' => 'localhost',
-	'dbuser' => 'wpuser1',
-	'dbpassword' => 'wpuser1',
-	'dbname' =>'wpuser1');
-$t = new TableCreator();
-$t->createTables($credentials, $sqlFileToExecute);
 ?>

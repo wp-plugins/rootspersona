@@ -38,7 +38,7 @@ require_once(WP_PLUGIN_DIR  . '/rootspersona/php/pages/rootsIncludePage.php');
 require_once(WP_PLUGIN_DIR  . '/rootspersona/php/pages/rootsUploadPage.php');
 require_once(WP_PLUGIN_DIR  . '/rootspersona/php/pages/rootsIndexPage.php');
 require_once(WP_PLUGIN_DIR  . '/rootspersona/php/pages/rootsPersonaPage.php');
-require_once(WP_PLUGIN_DIR  . '/rootspersona/php/paramParser.php');
+require_once(WP_PLUGIN_DIR  . '/rootspersona/php/GedcomLoader.php');
 
 /**
  * First, make sure class exists
@@ -48,6 +48,7 @@ if (!class_exists("rootsPersona")) {
 		var $rootsPersonaVersion = '2.0.0';
 		var $plugin_dir;
 		var $utility;
+		var $credentials;
 
 		/**
 		 * Constructor
@@ -55,6 +56,10 @@ if (!class_exists("rootsPersona")) {
 		function __construct() {
 			$this->plugin_dir = strtr(WP_PLUGIN_DIR,'\\','/') . "/rootspersona/";
 			$this->utility = new personUtility();
+			$this->credentials = array( 'hostname' => DB_HOST,
+							  'dbuser' => DB_USER,
+							  'dbpassword' => DB_PASSWORD,
+							  'dbname' =>DB_NAME);
 		}
 
 		/**
@@ -73,23 +78,31 @@ if (!class_exists("rootsPersona")) {
 			$rootsPersonId = $atts["personid"];
 			$block = "";
 			if(isset($rootsPersonId)) {
-				if($this->utility->isExcluded($rootsPersonId, $this->data_dir))
-				return $this->utility->returnDefaultEmpty( __('Privacy Protected.', 'rootspersona'),plugins_url(),$this->plugin_dir);
-
-				$block = buildPersonaPage($atts, $callback,
-				site_url(),
-				$this->data_dir,
-				$this->plugin_dir,
-				$this->getPageId());
+				$block = buildPersonaPage($atts, $callback, $this->getPageId());
 			}
 			return $block ;
 		}
 
 		function rootsIndexPageHandler( $atts, $content = null ) {
-			$block = buildPersonaIndexPage($atts,
-			site_url(),
-			$this->data_dir,
-			$this->plugin_dir);
+			global $wp_query;
+			$requestedPage = $wp_query->query_vars['rootsvar'];
+			if(!isset($requestedPage) || empty($requestedPage)) {
+				$requestedPage = 1;
+			}
+
+			$batchId = $atts['batchId'];
+			if(!isset($batchId) || empty($batchId)) {
+				$batchId = 1;
+			}
+
+			$perPage = get_option('rootsIndexPerPage');
+			if(!isset($perPage) || empty($perPage)) {
+				$perPage = 25;
+			}
+
+			$block = "<div id='personaIndex'>";
+			$block .= buildPersonaIndexPage($batchId, $requestedPage, $perPage, $this->credentials);
+			$block .= "</div>";
 			return $block;
 		}
 
@@ -192,39 +205,33 @@ if (!class_exists("rootsPersona")) {
 		function rootsAddPageHandler() {
 			$action =  site_url() . '/?page_id=' . $this->getPageId();
 			$msg ='';
+			$transaction = new Transaction($this->credentials, false);
 			if (isset($_POST['submitAddPageForm']))
 			{
-				$fileNames  = $_POST['fileNames'];
+				$persons  = $_POST['persons'];
 
-				if(!isset($fileNames) || count($fileNames) == 0) {
-					$msg = __('No files selected.', 'rootspersona');
+				if(!isset($persons) || count($persons) == 0) {
+					$msg = __('No people selected.', 'rootspersona');
 				} else {
-					$dataDir = $this->data_dir;
-					foreach($fileNames as $fileName) {
-						$page = $this->utility->addPage($fileName, $dataDir);
-						if($page != false) $msg = $msg . "<br/>" . __('Page created for', 'rootspersona') . " " .$fileName;
-						else $msg = $msg . "<br/>" . __('Error creating page for', 'rootspersona') . " " .$fileName;
+					foreach($persons as $p) {
+						$name = DAOFactory::getRpPersonaDAO()->getFullname($p, 1);
+						$pageId = $this->utility->addPage($p, $name);
+						if($pageId != false) {
+							DAOFactory::getRpIndiDAO()->updatePage($p,1,$pageId);
+							$msg = $msg . "<br/>" . sprintf(__('Page %s created for', 'rootspersona'),$pageId) . " " . $p;
+						}
+						else {
+							$msg = $msg . "<br/>" . __('Error creating page for', 'rootspersona') . " " . $p;
+						}
 						set_time_limit(60);
 					}
 				}
-			} /*else if (isset($_POST['submitExcPageForm']))
-			{
-			$fileNames  = $_POST['fileNames'];
-
-			if(!isset($fileNames) || count($fileNames) == 0) {
-			$msg = __('No persons selected.', 'rootspersona');
-			} else {
-
-			$dataDir = $this->data_dir;
-			foreach($fileNames as $fileName) {
-			$pid = substr($fileName,0,-4);
-			$this->utility->updateExcluded($pid, "ture", $dataDir);
-			$msg = $msg . "<br/>" . sprintf(__('Person %s excluded.', 'rootspersona'),$pid);
 			}
-			}
-			}*/
-			$files = $this->utility->getMissing($this->data_dir);
-			return showAddPageForm($action,$files,$this->data_dir,$msg);
+
+			$persons = DAOFactory::getRpPersonaDAO()->getPersonsNoPage(1);
+			$retStr =  showAddPageForm($action, $persons, $msg);
+			$transaction->commit();
+			return $retStr;
 		}
 
 		function rootsIncludePageHandler() {
@@ -251,34 +258,27 @@ if (!class_exists("rootsPersona")) {
 		function rootsUtilityPageHandler() {
 			$action =  site_url() . '/?page_id=' . $this->getPageId();
 			$msg ='';
-			$dataDir = $this->data_dir;
 			if (isset($_GET['utilityAction'])) {
 				$action  = $_GET['utilityAction'];
 
-				if($action == 'validate') {
+				if($action == 'validatePages') {
 					$mender = new rootsPersonaMender();
-					return $mender->validateMap($dataDir, false);
-				} else if($action == 'repair') {
-					$mender = new rootsPersonaMender();
-					return $mender->validate($dataDir, true);
-				} else if($action == 'validatePages') {
-					$mender = new rootsPersonaMender();
-					return $mender->validatePages($dataDir, false);
+					return $mender->validatePages(false);
 				}else if($action == 'repairPages') {
 					$mender = new rootsPersonaMender();
-					return $mender->validatePages($dataDir, true);
+					return $mender->validatePages(true);
 				} else if($action == 'validateEvidencePages') {
 					$mender = new rootsPersonaMender();
-					return $mender->validateEvidencePages($dataDir, false);
+					return $mender->validateEvidencePages(false);
 				} else if($action == 'repairEvidencePages') {
 					$mender = new rootsPersonaMender();
-					return $mender->validateEvidencePages($dataDir, true);
+					return $mender->validateEvidencePages(true);
 				} else if($action == 'delete') {
 					$mender = new rootsPersonaMender();
-					return $mender->deletePages($this->plugin_dir, $dataDir);
-				} else if($action == 'deleteFiles') {
+					return $mender->deletePages();
+				} else if($action == 'addEvidence') {
 					$mender = new rootsPersonaMender();
-					return $mender->deleteFiles($this->plugin_dir, $dataDir);
+					return $mender->addEvidencePages();
 				}
 			}
 			return 'For internal use only.<br/>';
@@ -363,12 +363,12 @@ if (!class_exists("rootsPersona")) {
 
 		// shortcode [rootsUploadGedcomForm/]
 		function rootsUploadGedcomHandler() {
-			if (!current_user_can('upload_files'))
-			wp_die(__('You do not have permission to upload files.', 'rootspersona'));
-
+			if (!current_user_can('upload_files')) {
+				wp_die(__('You do not have permission to upload files.', 'rootspersona'));
+			}
 			$action =  site_url() . '/?page_id=' . $this->getPageId();
-
 			$msg ='';
+			$retStr = '';
 
 			if (isset($_POST['submitUploadGedcomForm']))
 			{
@@ -376,11 +376,18 @@ if (!class_exists("rootsPersona")) {
 					$msg =  __('Empty File.', 'rootspersona');
 				}
 				else {
+					if( WP_DEBUG === true ){
+						$time_start = microtime(true);
+					}
 					$fileName = $_FILES['gedcomFile']['tmp_name'];
-					$stageDir = $this->plugin_dir . "stage/";
-					$this->utility->processGedcomForm($fileName, $stageDir, $this->data_dir);
+					$loader = new GedcomLoader();
+					$loader->loadTables($this->credentials, $fileName);
 					unlink($_FILES['gedcomFile']['tmp_name']);
 
+					if( WP_DEBUG === true ){
+						$time = microtime(true) - $time_start;
+						error_log("Done in $time seconds using " . memory_get_peak_usage (true)/1024/1024 . "MB.") ;
+					}
 				}
 			}
 			if(empty($msg) && isset($_POST['submitUploadGedcomForm'])) {
@@ -388,12 +395,12 @@ if (!class_exists("rootsPersona")) {
 				// therefore, it will not work either after header information
 				// has been defined for a page.
 				$location = site_url() . '/?page_id=' . get_option("rootsCreatePage");
-				return '<script type="text/javascript">window.location="' . $location . '"; </script>';
+				$retStr =  '<script type="text/javascript">window.location="' . $location . '"; </script>';
 
 			} else {
-				return showUploadGedcomForm($action,$this->data_dir,$this->plugin_dir . "stage/",$msg);
+				$retStr =  showUploadGedcomForm($action,$msg);
 			}
-
+			return $retStr;
 		}
 
 		/**
@@ -428,13 +435,11 @@ if (!class_exists("rootsPersona")) {
 			wp_enqueue_style( 'rootsPersona-2');
 			wp_register_style('rootsPersona-3', plugins_url('css/person.css',__FILE__), false, '1.0', 'screen');
 			wp_enqueue_style( 'rootsPersona-3');
-			wp_register_style('rootsPersona-4', plugins_url('css/sortableTable.css',__FILE__), false, '1.0', 'screen');
+			wp_register_style('rootsPersona-4', plugins_url('css/indexTable.css',__FILE__), false, '1.0', 'screen');
 			wp_enqueue_style( 'rootsPersona-4');
 		}
 
 		function insertRootsPersonaScripts() {
-			wp_register_script('sortable_us', plugins_url('scripts/sortable_us.js',__FILE__));
-			wp_enqueue_script('sortable_us');
 			wp_register_script('rootsUtilities', plugins_url('scripts/rootsUtilities.js',__FILE__));
 			wp_enqueue_script('rootsUtilities');
 		}
@@ -504,7 +509,6 @@ if (!class_exists("rootsPersona")) {
 		function rootsPersonaOptionsInit() {
 			register_setting( 'rootsPersonaOptions', 'rootsPersonaParentPage', 'intval' );
 			register_setting( 'rootsPersonaOptions', 'rootsIsSystemOfRecord');
-			//register_setting( 'rootsPersonaOptions', 'rootsDataDir', 'wp_filter_nohtml_kses');
 			register_setting( 'rootsPersonaOptions', 'rootsUploadGedcomPage', 'intval' );
 			register_setting( 'rootsPersonaOptions', 'rootsCreatePage', 'intval' );
 			register_setting( 'rootsPersonaOptions', 'rootsEditPage', 'intval' );
@@ -522,6 +526,13 @@ if (!class_exists("rootsPersona")) {
 			register_setting( 'rootsPersonaOptions', 'rootsHideEditLinks');
 			register_setting( 'rootsPersonaOptions', 'rootsPersonaHideDates');
 			register_setting( 'rootsPersonaOptions', 'rootsPersonaHidePlaces');
+		}
+
+		function parameter_queryvars( $qvars )
+		{
+
+			$qvars[] = 'rootsvar';
+			return $qvars;
 		}
 	}
 }
@@ -562,5 +573,7 @@ if (isset($rootsPersonaplugin)) {
 	add_action('wp_print_scripts', array($rootsPersonaplugin, 'insertRootsPersonaScripts'));
 	add_filter( 'the_content', array($rootsPersonaplugin, 'checkPermissions'), 2 );
 	load_plugin_textdomain('rootspersona', null, "rootspersona/localization/");
+
+	add_filter('query_vars', array($rootsPersonaplugin, 'parameter_queryvars') );
 }
 ?>

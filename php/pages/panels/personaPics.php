@@ -1,8 +1,6 @@
 <?php
-require_once ('../../temp.inc.php');
-require_once ('../../temp.dao.php');
 
-function getPersonaPics($links, $captions) {
+function getPersonaPics($options) {
 	$block = '<div class="rp_truncate">'
 	. '<div class="rp_pictures"><table class="personGallery" cellspacing="5px"><tbody>'
 	. '<tr>';
@@ -24,7 +22,7 @@ function getPersonaPics($links, $captions) {
 		. '</td>';
 	}
 
-	$block = '</tr></tbody></table></div>';
+	$block .= '</tr></tbody></table></div></div>';
 
 	return $block;
 }

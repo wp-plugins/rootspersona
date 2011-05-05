@@ -1,19 +1,11 @@
-<?php 
+<?php
 
 function buildRootsOptionsPage() {
 
-$dataDir =  get_option('rootsDataDir');
-$fullDataDir = strtr(ABSPATH,'\\','/') .$dataDir;
-
 echo "<div class='wrap'><h2>rootsPersona</h2>";
-if(!is_dir($fullDataDir)) {
-echo "<p style='padding: .5em; background-color: red; color: white; font-weight: bold;'>" .__("Data Directory", 'rootspersona') . " " 
-	. $fullDataDir . " " . sprintf(__('does not exist. Make sure %s is writable, then reactivate plugin.', 'rootspersona'),"wp-content")."</p>";
-} else if (!is_writable($fullDataDir)) {
-	echo "<p style='padding: .5em; background-color: red; color: white; font-weight: bold;'>" .__("Data Directory", 'rootspersona') . " "
-	. $fullDataDir . " " . __('is not writable. Update directory permissions, then reactivate plugin.', 'rootspersona')."</p>";
-}
 echo  "<form method='post' action='options.php'>";
+
+echo  "<p class='submit'><input type='submit' name='Submit' value=' " . __('Save Changes', 'rootspersona') . " '/></p>";
 echo  "<table class='form-table'>";
 
 echo  "<tr valign='top'>";
@@ -25,65 +17,59 @@ echo  "<tr valign='top'>";
 echo  "<th scope='row'><label for='rootsPersonaParentPage'>rootsPersona " .  __('Parent Page Id', 'rootspersona') . "</label></th>";
 echo  "<td><input type='text' size='5' name='rootsPersonaParentPage' id='rootsPersonaParentPage'";
 echo  " value=' " . get_option('rootsPersonaParentPage'). " '/></td>";
-echo  "<td><a href=' " . site_url() . "?page_id=" . get_option('rootsPersonaParentPage') . "'>" . __('Page', 'rootspersona') 
+echo  "<td><a href=' " . site_url() . "?page_id=" . get_option('rootsPersonaParentPage') . "'>" . __('Page', 'rootspersona')
 		. "</a> " . sprintf(__('you want %s pages to be organized under in a menu structure.  0 indicates no parent page.', 'rootspersona'),"persona")
-		. "</td></tr>";			
-
-echo  "<tr valign='top'>";
-echo  "<th scope='row'><label for='rootsDataDir'>rootsPersona " .  __('Data Directory', 'rootspersona') . "</label></th>";
-echo  "<td><input type='text' size='35' name='rootsDataDir' id='rootsDataDir'";
-echo  " value=' " . $dataDir . " '/></td>";
-echo  "<td>" . __('Directory where data files are stored. There is usually no need to change this.', 'rootspersona'). "</td></tr>";
+		. "</td></tr>";
 
 echo  "<tr valign='top'>";
 echo  "<th scope='row'><label for='rootsEditPage'>" .  __('Edit Person Page Id', 'rootspersona') . "</label></th>";
 echo  "<td><input type='text' size='5' name='rootsEditPage' id='rootsEditPage'";
 echo  " value=' " . get_option('rootsEditPage'). " '/></td>";
-echo  "<td><a href=' " . site_url() . "?page_id=" . get_option('rootsEditPage') . "'>" 
-		. __('Page', 'rootspersona') . "</a> " 
-		. __('with the Edit Page shortcode.  There is usually no need to change this.', 'rootspersona'). "</td></tr>";			
+echo  "<td><a href=' " . site_url() . "?page_id=" . get_option('rootsEditPage') . "'>"
+		. __('Page', 'rootspersona') . "</a> "
+		. __('with the Edit Page shortcode.  There is usually no need to change this.', 'rootspersona'). "</td></tr>";
 
 echo  "<tr valign='top'>";
 echo  "<th scope='row'><label for='rootsCreatePage'>" .  __('Add Person Page Id', 'rootspersona') . "</label></th>";
 echo  "<td><input type='text' size='5' name='rootsCreatePage' id='rootsCreatePage'";
 echo  " value=' " . get_option('rootsCreatePage'). " '/></td>";
-echo  "<td><a href=' " . site_url() . "?page_id=" . get_option('rootsCreatePage') . "'>" . __('Page', 'rootspersona') . "</a> " 
+echo  "<td><a href=' " . site_url() . "?page_id=" . get_option('rootsCreatePage') . "'>" . __('Page', 'rootspersona') . "</a> "
 	. __('with the Add Page shortcode.  There is usually no need to change this.', 'rootspersona'). "</td></tr>";
 
 echo  "<tr valign='top'>";
 echo  "<th scope='row'><label for='rootsUploadGedcomPage'>" .  __('Upload Gedcom Page Id', 'rootspersona') . "</label></th>";
 echo  "<td><input type='text' size='5' name='rootsUploadGedcomPage' id='rootsUploadGedcomPage'";
 echo  " value=' " . get_option('rootsUploadGedcomPage'). " '/></td>";
-echo  "<td><a href=' " . site_url() . "?page_id=" . get_option('rootsUploadGedcomPage') . "'>" 
-	. __('Page', 'rootspersona') . "</a> " 
+echo  "<td><a href=' " . site_url() . "?page_id=" . get_option('rootsUploadGedcomPage') . "'>"
+	. __('Page', 'rootspersona') . "</a> "
 	. __('with the Upload GEDCOM page shortcode.  There is usually no need to change this.', 'rootspersona'). "</td></tr>";
 
 echo  "<tr valign='top'>";
 echo  "<th scope='row'><label for='rootsIncludePage'>" .  __('Include Person Page Id', 'rootspersona') . "</label></th>";
 echo  "<td><input type='text' size='5' name='rootsIncludePage' id='rootsIncludePage'";
 echo  " value=' " . get_option('rootsIncludePage'). " '/></td>";
-echo  "<td><a href=' " . site_url() . "?page_id=" . get_option('rootsIncludePage') . "'>" . __('Page', 'rootspersona') . "</a> " 
+echo  "<td><a href=' " . site_url() . "?page_id=" . get_option('rootsIncludePage') . "'>" . __('Page', 'rootspersona') . "</a> "
 	. __('with the Include Person page shortcode.  There is usually no need to change this.', 'rootspersona'). "</td></tr>";
 
 echo  "<tr valign='top'>";
 echo  "<th scope='row'><label for='rootsIndexPage'>" .  __('Persona Index Page Id', 'rootspersona') . "</label></th>";
 echo  "<td><input type='text' size='5' name='rootsPersonaIndexPage' id='rootsPersonaIndexPage'";
 echo  " value=' " . get_option('rootsPersonaIndexPage'). " '/></td>";
-echo  "<td><a href=' " . site_url() . "?page_id=" . get_option('rootsPersonaIndexPage') . "'>" . __('Page', 'rootspersona') . "</a> " 
+echo  "<td><a href=' " . site_url() . "?page_id=" . get_option('rootsPersonaIndexPage') . "'>" . __('Page', 'rootspersona') . "</a> "
 	. __('with the Name Index shortcode.  There is usually no need to change this.', 'rootspersona'). "</td></tr>";
-	
+
 echo  "<tr valign='top'>";
 echo  "<th scope='row'><label for='rootsEvidencePage'>" .  __('Evidence Page Id', 'rootspersona') . "</label></th>";
 echo  "<td><input type='text' size='5' name='rootsEvidencePage' id='rootsEvidencePage'";
 echo  " value=' " . get_option('rootsEvidencePage'). " '/></td>";
-echo  "<td><a href=' " . site_url() . "?page_id=" . get_option('rootsEvidencePage') . "'>" . __('Page', 'rootspersona') . "</a> " 
+echo  "<td><a href=' " . site_url() . "?page_id=" . get_option('rootsEvidencePage') . "'>" . __('Page', 'rootspersona') . "</a> "
 	. __('with the Evidence Index shortcode.  There is usually no need to change this.', 'rootspersona'). "</td></tr>";
-	
+
 echo  "<tr valign='top'>";
 echo  "<th scope='row'><label for='rootsUtilityPage'>" .  __('Persona Utility Page Id', 'rootspersona') . "</label></th>";
 echo  "<td><input type='text' size='5' name='rootsUtilityPage' id='rootsUtilityPage'";
 echo  " value=' " . get_option('rootsUtilityPage'). " '/></td>";
-echo  "<td><a href=' " . site_url() . "?page_id=" . get_option('rootsUtilityPage') . "'>" . __('Page', 'rootspersona') . "</a> " 
+echo  "<td><a href=' " . site_url() . "?page_id=" . get_option('rootsUtilityPage') . "'>" . __('Page', 'rootspersona') . "</a> "
 	. __('with the Utility page shortcode.  For internal use only (used to display output from various utility functions).', 'rootspersona'). "</td></tr>";
 
 echo  "<tr valign='top' style='border-top: solid black 1px;'>";

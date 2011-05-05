@@ -4,14 +4,22 @@ require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 require_once(WP_PLUGIN_DIR  . '/rootspersona/php/TableCreator.php');
 
 class rootsPersonaInstaller {
+	var $credentials;
+	var $sqlFileToCreateTables;
+	var $sqlFileToDropTables;
+
+	function __construct() {
+		$this->credentials = array( 'hostname' => DB_HOST,
+							  'dbuser' => DB_USER,
+							  'dbpassword' => DB_PASSWORD,
+							  'dbname' =>DB_NAME);
+		$this->sqlFileToCreateTables = WP_PLUGIN_DIR .  '/rootspersona/sql/create_tables.sql';
+		$this->sqlFileToDropTables = WP_PLUGIN_DIR .  '/rootspersona/sql/drop_tables.sql';
+	}
+
 	function rootsPersonaInstall ($pluginDir, $version) {
-		$tableCreator = new TableCreator();
-		$sqlFileToExecute = '../sql/create_tables.sql';
-		$credentials = array( 'hostname' => 'localhost',
-								'dbuser' => 'wpuser1',
-								'dbpassword' => 'wpuser1',
-								'dbname' =>'wpuser1');
-		$tableCreator->createTables($credentials, $sqlFileToExecute);
+		TableCreator::updateTables($this->credentials, $this->sqlFileToCreateTables);
+
 		add_option('rootsPersonaVersion', $version);
 		$page = $this->createPage(__('Edit Person Page', 'rootspersona'),'[rootsEditPersonaForm/]');
 		add_option('rootsEditPage', $page);
@@ -21,7 +29,7 @@ class rootsPersonaInstaller {
 		add_option('rootsUploadGedcomPage', $page);
 		$page = $this->createPage(__('Include Person Page', 'rootspersona'),'[rootsIncludePageForm/]');
 		add_option('rootsIncludePage', $page);
-		$page = $this->createPage(__('Persona Index', 'rootspersona'),'[rootsPersonaIndexPage/]');
+		$page = $this->createPage(__('Persona Index', 'rootspersona'),'[rootsPersonaIndexPage batchId="1"/]');
 		add_option('rootsPersonaIndexPage', $page);
 		$page = $this->createPage(__('Evidence', 'rootspersona'),'[rootsEvidencePage/]','','publish');
 		add_option('rootsEvidencePage', $page);
@@ -90,10 +98,10 @@ class rootsPersonaInstaller {
 		unset($page);
 		$page = get_option('rootsPersonaIndexPage');
 		if(!isset($page) || empty($page)) {
-			$page = $this->createPage(__('Persona Index', 'rootspersona'),'[rootsPersonaIndexPage/]');
+			$page = $this->createPage(__('Persona Index', 'rootspersona'),'[rootsPersonaIndexPage batchId="1"/]');
 			add_option('rootsPersonaIndexPage', $page);
 		} else {
-			$this->createPage(__('Persona Index', 'rootspersona'),'[rootsPersonaIndexPage/]',$page);
+			$this->createPage(__('Persona Index', 'rootspersona'),'[rootsPersonaIndexPage batchId="1"/]',$page);
 		}
 
 		unset($opt);
@@ -112,13 +120,7 @@ class rootsPersonaInstaller {
 		}
 		if($currVersion < '2.0.0') {
 			delete_option('rootsDataDir');
-			$tableCreator = new TableCreator();
-			$sqlFileToExecute = '../sql/create_tables.sql';
-			$credentials = array( 'hostname' => 'localhost',
-								'dbuser' => 'wpuser1',
-								'dbpassword' => 'wpuser1',
-								'dbname' =>'wpuser1');
-			$tableCreator->createTables($credentials, $sqlFileToExecute);
+			TableCreator::updateTables($this->credentials, $this->sqlFileToCreateTables);
 		}
 	}
 
@@ -191,7 +193,7 @@ class rootsPersonaInstaller {
 				wp_delete_post($page->ID);
 			}
 		}
-
+		TableCreator::updateTables($this->credentials, $this->sqlFileToDropTables);
 	}
 }
 ?>
