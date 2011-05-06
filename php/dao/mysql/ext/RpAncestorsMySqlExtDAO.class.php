@@ -3,7 +3,6 @@
 class RpAncestorsMySqlExtDAO {
 
 	public function getAncestors($persona){
-
 		$ancestors = array();
 		$ancestors[1] = $persona;
 		$ancestors[2] = DAOFactory::getRpPersonaDAO()->getPersona($persona->father, $persona->batchId);
@@ -37,7 +36,7 @@ class RpAncestorsMySqlExtDAO {
 		$p->birthDate = '';
 		$p->deathDate = '';
 		$p->isPrivate = false;
-		$p->page = $persona->page;
+		$p->page = isset($persona->page)?$persona->page:'';
 		return $p;
 	}
 }

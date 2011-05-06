@@ -164,23 +164,24 @@ function getEndOfPage($rootsPersonId, $pageId) {
 		. "&personId=" . $rootsPersonId
 		. "&srcPage=" . $pageId . "&action=";
 
-		$block =  "<div style='margin-top:10px;text-align: center ;'><a href='".$editPage
-		. "edit'>".__('Edit Person', 'rootspersona')."</a>"
-		. "&#160;&#160;<a href='#'"
-		. " onClick='javascript:rootsConfirm(\"" . $win1 . "\",\""
-		. $editPage . "exclude\");return false;'>".__('Exclude Person', 'rootspersona')."</a>"
-		. "&#160;&#160;<a href='#'"
-		. " onClick='javascript:rootsConfirm(\"" . $win2 . "\",\""
-		. $editPage . "delete\");return false;'>".__('Delete Person', 'rootspersona')."</a>"
-		. "&#160;&#160;<a href='#'";
+		$block =  "<div style='margin-top:10px;text-align: center;'>"
+			. "<span class='rp_linkbutton' style='width:100px'><a href='".$editPage
+			. "edit'>".__('Edit Person', 'rootspersona')."</a></span>"
+			. "&#160;&#160;<span class='rp_linkbutton' style='width:120px'><a href='#'"
+			. " onClick='javascript:rootsConfirm(\"" . $win1 . "\",\""
+			. $editPage . "exclude\");return false;'>".__('Exclude Person', 'rootspersona')."</a></span>"
+			. "&#160;&#160;<span class='rp_linkbutton' style='width:120px'><a href='#'"
+			. " onClick='javascript:rootsConfirm(\"" . $win2 . "\",\""
+			. $editPage . "delete\");return false;'>".__('Delete Person', 'rootspersona')."</a></span>"
+			. "&#160;&#160;<span class='rp_linkbutton' style='width:150px'><a href='#'";
 
 		$perms = get_post_meta($pageId, 'permissions', true);
 		if ( empty($perms) || $perms == 'false') {
 			$block = $block .  " onClick='javascript:rootsConfirm(\"" . $win3 . "\",\""
-			. $editPage . "makePrivate\");return false;'>".__('Make Person Private', 'rootspersona')."</a>";
+			. $editPage . "makePrivate\");return false;'>".__('Make Person Private', 'rootspersona')."</a></span>";
 		}  else {
 			$block = $block .  " onClick='javascript:rootsConfirm(\"" . $win4 . "\",\""
-			. $editPage . "makePublic\");return false;'>".__('Make Person Public', 'rootspersona')."</a>" ;
+			. $editPage . "makePublic\");return false;'>".__('Make Person Public', 'rootspersona')."</a></span>" ;
 		}
 		$block = $block .  "</div>";
 	}

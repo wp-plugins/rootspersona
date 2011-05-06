@@ -12,8 +12,12 @@ div.rp_linkbutton, span.rp_linkbutton {
 	background: url("../images/button-standard-long.gif") no-repeat scroll left bottom transparent;
 	text-align: center;
 	width: 160px;
-
+	display: inline-block;
 }
+
+ span.rp_linkbutton {
+ 	font-size:smaller;
+ }
 
 div.rp_pictures table.personGallery {
 	margin-top: 10px !important;
@@ -35,8 +39,8 @@ div.rp_pictures table.personGallery td.rp_picture img {
 	width: 100px !important;
 }
 
-div.rp_pictures table.personGallery td.rp_picture a,div.rp_pictures table.personGallery td.rp_picture a img
-	{
+div.rp_pictures table.personGallery td.rp_picture a,
+div.rp_pictures table.personGallery td.rp_picture a img {
 	text-decoration: none;
 	border: none;
 	vertical-align: top;
