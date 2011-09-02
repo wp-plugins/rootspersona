@@ -169,8 +169,9 @@ class RP_Persona_Installer {
             unset( $options['evidence_page'] );
             unset( $options['index_page'] );
             update_option( 'persona_plugin', $options );
-            
         }
+        $options['version'] = $version;
+        update_option( 'persona_plugin', $options );
     }
 
     /**
