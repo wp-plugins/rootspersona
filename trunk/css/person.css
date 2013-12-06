@@ -1,0 +1,207 @@
+/*form#editPersonaForm * input[type='button'] {
+    background: url("../images/sbutton.jpg") repeat-x left bottom transparent;
+}
+*/
+div.persona_msg{
+    margin: 5px;
+    font-weight: bold;
+}
+form#editPersonaForm * input[type='text'] {
+    background-color:lavender;
+}
+
+form#editPersonaForm * textarea {
+    background-color: lavender;
+}
+
+.rp_biopic {
+    margin:0px 30px 5px 0px !important;
+    width:150px !important;
+}
+.rp_banner {
+    padding: 3px 0px 3px 8px;
+    background-image: url("../images/personBanner.jpg");
+    color: black;
+    font-weight: bold;
+    font-size: larger;
+}
+
+.rp_linkbutton{
+    margin: 10px 0;
+    padding: 5px 0px 5px 0px;
+    background: url("../images/sbutton.jpg") repeat-x scroll left bottom transparent;
+    text-align: center;
+    width: 160px;
+    display: inline-block;
+}
+
+.rp_hoverbutton {
+    margin: 10px 0;
+    padding: 5px 0px 5px 0px;
+    background: url("../images/sbutton2.jpg") repeat-x scroll left bottom transparent;
+    text-align: center;
+    width: 160px;
+    display: inline-block;
+}
+
+.rp_clickbutton {
+    margin: 10px 0;
+    padding: 5px 0px 5px 0px;
+    background: url("../images/sbutton3.jpg") repeat-x scroll left bottom transparent;
+    text-align: center;
+    width: 160px;
+    display: inline-block;
+}
+
+.rp_linkbutton a, .rp_hoverbutton a, .rpclick_button a {
+    color:black;
+    text-decoration:none;
+ }
+
+div.rp_pictures {
+    margin-top: 10px !important;
+    margin-bottom: 10px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    border: 0 none !important;
+    border-collapse: separate !important;
+    border-spacing: 2px !important;
+    text-indent: 0;
+    overflow:hidden;
+}
+
+div.rp_pictures div.rp_picture {
+    float:left;
+    margin: 3px;
+}
+
+div.rp_pictures div.rp_picture img {
+    width: 100px !important;
+    border: 4px ridge brown !important;
+    padding: 1px !important;
+}
+
+div.rp_pictures div.rp_picture a,
+div.rp_pictures div.rp_picture a img {
+    text-decoration: none;
+    border: none;
+    vertical-align: top;
+}
+
+div.rp_pictures div.rp_caption {
+    border: 0 none !important;
+    text-align: center !important;
+    width: 100px;
+}
+
+.rp_truncate {
+    overflow: hidden !important;
+}
+
+div.rp_header div.rp_headerbox {
+    padding: 25px 5px 5px;
+    float: left;
+}
+
+div.rp_header span.rp_headerbox {
+    font-size: larger;
+    font-weight: bold;
+    color: black;
+}
+
+.rp_truncate div.rp_header img.rp_headerbox {
+    border: 4px ridge brown;
+    margin: 0px 10px 10px 0px ! important;
+    padding: 5px;
+    width: 100px ! important;
+    text-align: center;
+    float: left;
+}
+
+div.rp_facts span.rp_place {
+    font-style: italic
+}
+
+div.rp_evidence table.rp_evi {
+    margin: 10px !important;
+    margin-bottom: 10px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding: 0px !important;
+    border: 0px none !important;
+    border-collapse: separate !important;
+    border-spacing: 0px !important;
+    text-indent: 0 !important;
+    width: 100% !important;
+}
+
+div.rp_evidence table.rp_evi td {
+
+    border: 0px none !important;
+    border-collapse: separate !important;
+    border-spacing: 0px !important;
+    margin: 0px !important;;
+    padding: 0px !important;
+    text-indent: 0 !important;
+}
+
+div.rp_evidence table.rp_evi td div.rp_evisrc {
+    margin-top: 0.5em !important;
+}
+
+div.rp_evidence table.rp_evi td.rp_evilink {
+    white-space:nowrap;
+    text-align: right;
+}
+div.rp_evidence table.rp_evi td.rp_evilink a {
+    padding-right: 0.5em;
+    text-decoration: none;
+}
+
+div.rp_evidence table.rp_evi td div.rp_evicite {
+    margin-left: 2em !important;
+}
+
+div.rp_evidence table.rp_evi td div.rp_eviempty {
+}
+
+span.optionsHdr {
+    font-weight: bold;
+    font-size: larger;
+}
+
+table.form-table tr td.left-label {
+   width: 170px;
+   display: inline-block;
+}
+
+.label4,
+.label6,
+.label7,
+.label8 {
+	display: inline-block;
+	text-align:right;
+	padding:0px 4px 0px 0px;
+}
+
+.label4 {
+	width:4em;
+}
+.label6 {
+	width:6em;
+}
+.label7 {
+	width:7em;
+}
+.label8 {
+	width:8em;
+}
+form#editPersonaForm input.submitPersonForm {
+    background: url("../images/sbutton.jpg") repeat-x scroll left bottom transparent;
+}
+form#editPersonaForm input.submitPersonFormHover {
+    background: url("../images/sbutton2.jpg") repeat-x scroll left bottom transparent;
+}
+form#editPersonaForm input.submitPersonFormClick {
+    background: url("../images/sbutton3.jpg") repeat-x scroll left bottom transparent;
+}
