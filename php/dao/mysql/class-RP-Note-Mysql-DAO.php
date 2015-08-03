@@ -12,7 +12,7 @@ class RP_Note_Mysql_Dao extends Rp_Mysql_DAO {
 	 * @param String $id primary key
 	 * @return RpNoteMySql
 	 */
-	public function load( $id, $batch_id = '1' ) {
+	public function load( $id, $batch_id  ) {
 		$sql = 'SELECT * FROM rp_note WHERE id = ? AND batch_id = ?';
 		$sql_query = new RP_Sql_Query( $sql, $this->prefix );
 		$sql_query->set( $id );
@@ -24,7 +24,7 @@ class RP_Note_Mysql_Dao extends Rp_Mysql_DAO {
 	 * Delete record FROM table
 	 * @param rpNote primary key
 	 */
-	public function delete( $id, $batch_id = '1' ) {
+	public function delete( $id, $batch_id ) {
 		$sql = 'DELETE FROM rp_note WHERE id = ? AND batch_id = ?';
 		$sql_query = new RP_Sql_Query( $sql, $this->prefix );
 		$sql_query->set( $id );
