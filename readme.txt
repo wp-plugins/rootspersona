@@ -4,7 +4,7 @@ Donate link: http://ed4becky.net/plugins
 Tags: roots, genealogy, GEDCOM, ancestors, family
 Requires at least: 3.0
 Tested up to: 4.2.3
-Stable tag: 3.3.1
+Stable tag: 3.3.2
 
 RootsPersona creates one or more pages of family history using data imported from a GEDCOM file (version 5.5).
 
@@ -20,7 +20,7 @@ be mixed and matched for optimum customization.
 <li>You can now identify RootsPersona as the System of Record, allowing you to edit your data online!</li>
 <li>Includes a Top Ten Surnames widget!</li>
 <li>Support for multi-site installs</li>
-<li> <a href="http://rootspersona.ed4becky.net" title="Demo Site">New Demo Site</a></li>
+<li> <a href="http://rootspersona.com" title="Demo Site">New Demo Site</a></li>
 </ul>
 
 **Features**
@@ -106,7 +106,7 @@ Currently you will lose any links to pictures if you do that.
 5. Lots of options for customization
 
 == Changelog ==
-= 3.3.1 = 
+= 3.3.2 = 
 * fix surname widget (missing div)
 * add batch id to notes lookups
 
@@ -121,7 +121,6 @@ Currently you will lose any links to pictures if you do that.
 * surname widget now has links
 * fixed bug blocking new facts in Persona Editor
 
-== Changelog ==
 = 3.1.2 = 
 * some users reported install issues.  read only file was opened rw, perm issues
 
