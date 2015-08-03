@@ -44,7 +44,7 @@ class RP_Indi_Note_Mysql_Dao extends Rp_Mysql_DAO{
                 if ( ( !isset( $note->note ) || empty( $note->note ))
                         && isset ( $note->note_rec_id ) ) {
                     $rec = RP_Dao_Factory::get_rp_note_dao( $this->prefix )
-                            ->load($note->note_rec_id);
+                            ->load($note->note_rec_id, $batch_id);
                     $note->note = $rec->submitter_text;
                 }
             }

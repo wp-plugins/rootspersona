@@ -72,7 +72,7 @@ class Surname_Widget extends WP_Widget {
                     //echo '<div style="margin-left:10px;">' . $rows[$idx]['surname'] . ' (' . $rows[$idx]['cnt'] . ')</div>';
                     echo '<div style="margin-left:10px;"><a href="' 
                         . get_home_url(null,'/?s=' . $rows[$idx]['surname'] . '&posttype=page&widget=advanced-search-widget-3') 
-                        . '" rel="nofollow">' . $rows[$idx]['surname'] . '</a> (' . $rows[$idx]['cnt'] . ')<div>';                
+                        . '" rel="nofollow">' . $rows[$idx]['surname'] . '</a> (' . $rows[$idx]['cnt'] . ')</div>';                
                     
                 }
             }
